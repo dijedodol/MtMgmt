@@ -1,6 +1,6 @@
 <%-- 
-    Document   : home
-    Created on : Jul 1, 2013, 1:32:56 AM
+    Document   : input_totalizer
+    Created on : Jul 2, 2013, 12:52:32 AM
     Author     : Uyeee
 --%>
 
@@ -12,12 +12,9 @@
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-        <title>Supervisor - Home</title>
+        <title>Supervisor - Input Machine Totalizer</title>
     </head>
     <body>
-			<ul>
-				<li><a href="list_failure.htm"><s:message code="label.menu.list.failure"/></a></li>
-				<li><a href="input_totalizer.htm"><s:message code="label.menu.input.totalizer"/></a></li>
-			</ul>
+        <h1>Hello World!</h1>
     </body>
 </html>

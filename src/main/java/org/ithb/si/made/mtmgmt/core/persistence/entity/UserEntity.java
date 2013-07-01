@@ -95,7 +95,7 @@ public class UserEntity implements Serializable {
 
 	@Override
 	public String toString() {
-		return "org.ithb.si.made.mtmgmt.entity.UserEntity[ id=" + id + " ]";
+		return "UserEntity{" + "id=" + id + ", loginId=" + loginId + ", passwordHash=" + passwordHash + ", fullName=" + fullName + ", accessRole=" + accessRole + '}';
 	}
 
 	public static enum AccessRole {

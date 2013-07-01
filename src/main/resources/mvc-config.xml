@@ -1,44 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
-	   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	   xmlns:mvc="http://www.springframework.org/schema/mvc"
-	   xmlns:context="http://www.springframework.org/schema/context"
-	   xmlns:http="http://www.springframework.org/schema/security"
+			 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+			 xmlns:mvc="http://www.springframework.org/schema/mvc"
+			 xmlns:context="http://www.springframework.org/schema/context"
 
-	   xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.2.xsd
+			 xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.2.xsd
           http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc.xsd
-          http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.2.xsd
-          http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security.xsd">
+          http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.2.xsd">
 
 	<context:component-scan base-package="org.ithb.si.made.mtmgmt.web"/>
 	<mvc:annotation-driven />
-	
-	<http auto-config='true'>
-		<intercept-url pattern="/**" access="ROLE_USER" />
-		<form-login login-page="/login.htm"/>
-	</http>
-	<http pattern="/asset/**" security="none"/>
-	<http pattern="/login.htm*" security="none"/>
-	
-	<authentication-manager>
-		<authentication-provider user-service-ref="mtMgmtUserDetailsService"/>
-	</authentication-manager>
-	<bean id="mtMgmtUserDetailsService" class="org.ithb.si.made.mtmgmt.core.security.MtMgmtUserDetailsService"/>
-	
-	<bean id="roleVoter" class="org.springframework.security.access.vote.RoleHierarchyVoter">
-		<constructor-arg ref="roleHierarchy" />
-	</bean>
-	<bean id="roleHierarchy" class="org.springframework.security.access.hierarchicalroles.RoleHierarchyImpl">
-		<property name="hierarchy">
-			<value>
-				ADMIN > TECHNICIAN
-				ADMIN > SUPERVISOR
-				ADMIN > PUBLIC
-				TECHNICIAN > PUBLIC
-				SUPERVISOR > PUBLIC
-			</value>
-		</property>
-	</bean>
 	
 	<bean id="viewResolver" class="org.springframework.web.servlet.view.UrlBasedViewResolver">
 		<property name="viewClass" value="org.springframework.web.servlet.view.JstlView"/>
@@ -47,17 +18,23 @@
 	</bean>
 	
 	<bean id="localeResolver" class="org.springframework.web.servlet.i18n.SessionLocaleResolver">
-		<property name="defaultLocale" value="en_US" />
-	</bean>
-	<bean id="localeChangeInterceptor" class="org.springframework.web.servlet.i18n.LocaleChangeInterceptor">
-		<property name="paramName" value="ln" />
+		<property name="defaultLocale" value="id_ID" />
 	</bean>
 	
-	<bean id="handlerMapping" class="org.springframework.web.servlet.mvc.annotation.DefaultAnnotationHandlerMapping">
+	<mvc:interceptors>
+		<bean id="localeChangeInterceptor" class="org.springframework.web.servlet.i18n.LocaleChangeInterceptor">
+			<property name="paramName" value="ln" />
+		</bean>
+	</mvc:interceptors>
+	
+	<!-- <bean id="handlerMapping" class="org.springframework.web.servlet.mvc.annotation.DefaultAnnotationHandlerMapping">
 		<property name="interceptors">
-			<ref local="localeChangeInterceptor"/>
+			<list>
+				<ref bean="localeChangeInterceptor" />
+			</list>
 		</property>
-	</bean>
+	</bean> -->
+	
 	<bean id="messageSource" class="org.springframework.context.support.ResourceBundleMessageSource">
 		<property name="basename" value="i18n/message" />
 	</bean>

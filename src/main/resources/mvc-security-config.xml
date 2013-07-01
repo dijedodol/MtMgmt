@@ -1,0 +1,29 @@
+<beans:beans xmlns="http://www.springframework.org/schema/security"
+						 xmlns:beans="http://www.springframework.org/schema/beans"
+						 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+						 xsi:schemaLocation="http://www.springframework.org/schema/beans
+           http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+           http://www.springframework.org/schema/security
+           http://www.springframework.org/schema/security/spring-security-3.1.xsd">
+
+	<http auto-config="true" use-expressions="true">
+		<intercept-url pattern="/admin/*" access="hasRole('ADMIN')" />
+		<intercept-url pattern="/technician/*" access="hasAnyRole('ADMIN','TECHNICIAN')" />
+		<intercept-url pattern="/supervisor/*" access="hasAnyRole('ADMIN','SUPERVISOR')" />
+		<intercept-url pattern="/common/*" access="isAuthenticated()" />
+		
+		<intercept-url pattern="/asset/*" access="permitAll" />
+		<intercept-url pattern="/login.htm" access="permitAll" />
+		<intercept-url pattern="/*" access="denyAll" />
+		
+		<!-- <form-login login-page="/login.htm"/> -->
+		<http-basic />
+    <logout />
+	</http>
+	
+	<authentication-manager>
+		<authentication-provider user-service-ref="mtMgmtUserDetailsService"/>
+	</authentication-manager>
+	<beans:bean id="mtMgmtUserDetailsService" class="org.ithb.si.made.mtmgmt.core.security.MtMgmtUserDetailsService"/>
+	
+</beans:beans>

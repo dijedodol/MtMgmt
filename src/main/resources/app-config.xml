@@ -22,6 +22,7 @@
 	<context:property-placeholder location="classpath:app-config.properties"/>
 	<context:component-scan base-package="org.ithb.si.made.mtmgmt.core" />
 	<jpa:repositories base-package="org.ithb.si.made.mtmgmt.core"/>
+	<import resource="classpath:mvc-security-config.xml"/>
     
 	<!-- Spring bean configuration. Tell Spring to bounce off BoneCP -->
 	<bean id="dataSource" class="org.springframework.jdbc.datasource.LazyConnectionDataSourceProxy">

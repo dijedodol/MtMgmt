@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
  *
  * @author Uyeee
  */
-@Controller
+@Controller("supervisorHomeController")
 @RequestMapping("/supervisor/home")
 public class HomeController {
 
