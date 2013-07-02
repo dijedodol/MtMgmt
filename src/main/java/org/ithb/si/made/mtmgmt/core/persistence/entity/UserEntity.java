@@ -5,11 +5,15 @@
 package org.ithb.si.made.mtmgmt.core.persistence.entity;
 
 import java.io.Serializable;
+import java.util.List;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 /**
@@ -24,14 +28,19 @@ public class UserEntity implements Serializable {
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Long id;
-	@Column(unique = true, nullable = false)
+	@Column(name = "login_id", unique = true, nullable = false)
 	private String loginId;
-	@Column(nullable = false)
+	@Column(name = "password_hash", nullable = false)
 	private String passwordHash;
-	@Column(nullable = false)
+	@Column(name = "full_name", nullable = false)
 	private String fullName;
-	@Column(nullable = false)
+	@Column(name = "access_role", nullable = false)
 	private AccessRole accessRole;
+	@OneToMany(cascade = CascadeType.ALL, mappedBy = "supervisor", fetch = FetchType.LAZY)
+	private List<SpbuEntity> spbuList;
+
+	public UserEntity() {
+	}
 
 	public Long getId() {
 		return id;
@@ -73,6 +82,14 @@ public class UserEntity implements Serializable {
 		this.accessRole = accessRole;
 	}
 
+	public List<SpbuEntity> getSpbuList() {
+		return spbuList;
+	}
+
+	public void setSpbuList(List<SpbuEntity> spbuList) {
+		this.spbuList = spbuList;
+	}
+
 	@Override
 	public int hashCode() {
 		int hash = 0;
@@ -95,7 +112,7 @@ public class UserEntity implements Serializable {
 
 	@Override
 	public String toString() {
-		return "UserEntity{" + "id=" + id + ", loginId=" + loginId + ", passwordHash=" + passwordHash + ", fullName=" + fullName + ", accessRole=" + accessRole + '}';
+		return "UserEntity{" + "id=" + id + ", loginId=" + loginId + ", passwordHash=" + passwordHash + ", fullName=" + fullName + ", accessRole=" + accessRole + ", spbuList=" + spbuList + '}';
 	}
 
 	public static enum AccessRole {

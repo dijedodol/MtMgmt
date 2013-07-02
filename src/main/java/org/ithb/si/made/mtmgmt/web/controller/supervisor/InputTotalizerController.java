@@ -7,10 +7,12 @@ package org.ithb.si.made.mtmgmt.web.controller.supervisor;
 import java.security.Principal;
 import javax.validation.Valid;
 import org.ithb.si.made.mtmgmt.core.persistence.dao.UserDao;
+import org.ithb.si.made.mtmgmt.core.persistence.entity.UserEntity;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -28,8 +30,11 @@ public class InputTotalizerController {
 	private UserDao userDao;
 	
 	@RequestMapping(method = RequestMethod.GET)
-	public String showInputTotalizer(Principal principal) {
+	public String showInputTotalizer(Principal principal, Model model) {
 		LOG.debug("showInputTotalizer principal:[{}]", principal);
+		
+		final UserEntity dbUserEntity = userDao.findByLoginId(principal.getName());
+		model.addAttribute("userEntity", dbUserEntity);
 		return "supervisor/input_totalizer";
 	}
 

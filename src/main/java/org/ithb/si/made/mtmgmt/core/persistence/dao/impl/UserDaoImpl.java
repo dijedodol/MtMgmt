@@ -24,7 +24,6 @@ public class UserDaoImpl extends AbstractDaoImpl<UserEntity, Long> implements Us
 	private UserRepository userRepository;
 
 	public UserDaoImpl() {
-		System.out.println("UserDaoImpl!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
 	}
 
 	@Override
@@ -35,5 +34,19 @@ public class UserDaoImpl extends AbstractDaoImpl<UserEntity, Long> implements Us
 	@Override
 	public UserEntity findByLoginId(String loginId) {
 		return userRepository.findByLoginId(loginId);
+	}
+
+	@Override
+	public UserEntity getSpbuList(String loginId) {
+		final UserEntity ret = findByLoginId(loginId);
+		ret.getSpbuList();
+		return ret;
+	}
+
+	@Override
+	public UserEntity getSpbuList(UserEntity dbUserEntity) {
+		final UserEntity ret = findByLoginId(dbUserEntity.getLoginId());
+		ret.getSpbuList();
+		return ret;
 	}
 }

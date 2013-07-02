@@ -2,7 +2,6 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-
 package org.ithb.si.made.mtmgmt.core.persistence.entity;
 
 import java.io.Serializable;
@@ -29,35 +28,36 @@ import javax.validation.constraints.Size;
  * @author Uyeee
  */
 @Entity
-@Table(name = "failure_mode_handlings")
-@NamedQueries({
-	@NamedQuery(name = "FailureModeHandlings.findAll", query = "SELECT f FROM FailureModeHandlings f")})
-public class FailureModeHandlings implements Serializable {
+@Table(name = "spbu_machines")
+public class SpbuMachineEntity implements Serializable {
+
 	private static final long serialVersionUID = 1L;
 	@Id
-  @GeneratedValue(strategy = GenerationType.IDENTITY)
-  @Basic(optional = false)
-  @Column(name = "id", nullable = false)
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Basic(optional = false)
+	@Column(name = "id", nullable = false)
 	private Long id;
 	@Basic(optional = false)
-  @NotNull
-  @Size(min = 1, max = 255)
-  @Column(name = "name", nullable = false, length = 255)
+	@NotNull
+	@Size(min = 1, max = 255)
+	@Column(name = "name", nullable = false, length = 255)
 	private String name;
-	@JoinColumn(name = "failure_mode_id", referencedColumnName = "id", nullable = false)
-  @ManyToOne(optional = false, fetch = FetchType.LAZY)
-	private PartFailureModes partFailureModes;
-	@OneToMany(cascade = CascadeType.ALL, mappedBy = "failureModeHandlings", fetch = FetchType.LAZY)
-	private List<MachineHistories> machineHistoriesList;
+	@OneToMany(cascade = CascadeType.ALL, mappedBy = "spbuMachine", fetch = FetchType.LAZY)
+	private List<MachineTotalizerEntity> machineTotalizersList;
+	@JoinColumn(name = "spbu_id", referencedColumnName = "id", nullable = false)
+	@ManyToOne(optional = false, fetch = FetchType.LAZY)
+	private SpbuEntity spbu;
+	@OneToMany(cascade = CascadeType.ALL, mappedBy = "spbuMachine", fetch = FetchType.LAZY)
+	private List<MachineHistoryEntity> machineHistoriesList;
 
-	public FailureModeHandlings() {
+	public SpbuMachineEntity() {
 	}
 
-	public FailureModeHandlings(Long id) {
+	public SpbuMachineEntity(Long id) {
 		this.id = id;
 	}
 
-	public FailureModeHandlings(Long id, String name) {
+	public SpbuMachineEntity(Long id, String name) {
 		this.id = id;
 		this.name = name;
 	}
@@ -78,19 +78,27 @@ public class FailureModeHandlings implements Serializable {
 		this.name = name;
 	}
 
-	public PartFailureModes getPartFailureModes() {
-		return partFailureModes;
+	public List<MachineTotalizerEntity> getMachineTotalizersList() {
+		return machineTotalizersList;
 	}
 
-	public void setPartFailureModes(PartFailureModes partFailureModes) {
-		this.partFailureModes = partFailureModes;
+	public void setMachineTotalizersList(List<MachineTotalizerEntity> machineTotalizersList) {
+		this.machineTotalizersList = machineTotalizersList;
 	}
 
-	public List<MachineHistories> getMachineHistoriesList() {
+	public SpbuEntity getSpbu() {
+		return spbu;
+	}
+
+	public void setSpbu(SpbuEntity spbu) {
+		this.spbu = spbu;
+	}
+
+	public List<MachineHistoryEntity> getMachineHistoriesList() {
 		return machineHistoriesList;
 	}
 
-	public void setMachineHistoriesList(List<MachineHistories> machineHistoriesList) {
+	public void setMachineHistoriesList(List<MachineHistoryEntity> machineHistoriesList) {
 		this.machineHistoriesList = machineHistoriesList;
 	}
 
@@ -104,10 +112,10 @@ public class FailureModeHandlings implements Serializable {
 	@Override
 	public boolean equals(Object object) {
 		// TODO: Warning - this method won't work in the case the id fields are not set
-		if (!(object instanceof FailureModeHandlings)) {
+		if (!(object instanceof SpbuMachineEntity)) {
 			return false;
 		}
-		FailureModeHandlings other = (FailureModeHandlings) object;
+		SpbuMachineEntity other = (SpbuMachineEntity) object;
 		if ((this.id == null && other.id != null) || (this.id != null && !this.id.equals(other.id))) {
 			return false;
 		}
@@ -116,7 +124,6 @@ public class FailureModeHandlings implements Serializable {
 
 	@Override
 	public String toString() {
-		return "org.ithb.si.made.mtmgmt.core.persistence.entity.FailureModeHandlings[ id=" + id + " ]";
+		return "SpbuMachineEntity{" + "id=" + id + ", name=" + name + ", machineTotalizersList=" + machineTotalizersList + ", spbu=" + spbu + ", machineHistoriesList=" + machineHistoriesList + '}';
 	}
-
 }

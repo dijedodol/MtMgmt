@@ -2,7 +2,6 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-
 package org.ithb.si.made.mtmgmt.core.persistence.entity;
 
 import java.io.Serializable;
@@ -15,8 +14,6 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
@@ -29,35 +26,31 @@ import javax.validation.constraints.Size;
  * @author Uyeee
  */
 @Entity
-@Table(name = "part_failure_modes")
-@NamedQueries({
-	@NamedQuery(name = "PartFailureModes.findAll", query = "SELECT p FROM PartFailureModes p")})
-public class PartFailureModes implements Serializable {
+@Table(name = "machine_parts")
+public class MachinePartEntity implements Serializable {
+
 	private static final long serialVersionUID = 1L;
 	@Id
-  @GeneratedValue(strategy = GenerationType.IDENTITY)
-  @Basic(optional = false)
-  @Column(name = "id", nullable = false)
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Basic(optional = false)
+	@Column(name = "id", nullable = false)
 	private Long id;
 	@Basic(optional = false)
-  @NotNull
-  @Size(min = 1, max = 255)
-  @Column(name = "name", nullable = false, length = 255)
+	@NotNull
+	@Size(min = 1, max = 255)
+	@Column(name = "name", nullable = false, length = 255)
 	private String name;
-	@OneToMany(cascade = CascadeType.ALL, mappedBy = "partFailureModes", fetch = FetchType.LAZY)
-	private List<FailureModeHandlings> failureModeHandlingsList;
-	@JoinColumn(name = "part_id", referencedColumnName = "id", nullable = false)
-  @ManyToOne(optional = false, fetch = FetchType.LAZY)
-	private MachineParts machineParts;
+	@OneToMany(cascade = CascadeType.ALL, mappedBy = "machinePart", fetch = FetchType.LAZY)
+	private List<PartFailureModeEntity> partFailureModesList;
 
-	public PartFailureModes() {
+	public MachinePartEntity() {
 	}
 
-	public PartFailureModes(Long id) {
+	public MachinePartEntity(Long id) {
 		this.id = id;
 	}
 
-	public PartFailureModes(Long id, String name) {
+	public MachinePartEntity(Long id, String name) {
 		this.id = id;
 		this.name = name;
 	}
@@ -78,20 +71,12 @@ public class PartFailureModes implements Serializable {
 		this.name = name;
 	}
 
-	public List<FailureModeHandlings> getFailureModeHandlingsList() {
-		return failureModeHandlingsList;
+	public List<PartFailureModeEntity> getPartFailureModesList() {
+		return partFailureModesList;
 	}
 
-	public void setFailureModeHandlingsList(List<FailureModeHandlings> failureModeHandlingsList) {
-		this.failureModeHandlingsList = failureModeHandlingsList;
-	}
-
-	public MachineParts getMachineParts() {
-		return machineParts;
-	}
-
-	public void setMachineParts(MachineParts machineParts) {
-		this.machineParts = machineParts;
+	public void setPartFailureModesList(List<PartFailureModeEntity> partFailureModesList) {
+		this.partFailureModesList = partFailureModesList;
 	}
 
 	@Override
@@ -104,10 +89,10 @@ public class PartFailureModes implements Serializable {
 	@Override
 	public boolean equals(Object object) {
 		// TODO: Warning - this method won't work in the case the id fields are not set
-		if (!(object instanceof PartFailureModes)) {
+		if (!(object instanceof MachinePartEntity)) {
 			return false;
 		}
-		PartFailureModes other = (PartFailureModes) object;
+		MachinePartEntity other = (MachinePartEntity) object;
 		if ((this.id == null && other.id != null) || (this.id != null && !this.id.equals(other.id))) {
 			return false;
 		}
@@ -116,7 +101,6 @@ public class PartFailureModes implements Serializable {
 
 	@Override
 	public String toString() {
-		return "org.ithb.si.made.mtmgmt.core.persistence.entity.PartFailureModes[ id=" + id + " ]";
+		return "MachinePartEntity{" + "id=" + id + ", name=" + name + ", partFailureModesList=" + partFailureModesList + '}';
 	}
-
 }

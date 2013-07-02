@@ -2,22 +2,20 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-
 package org.ithb.si.made.mtmgmt.core.persistence.entity;
 
 import java.io.Serializable;
-import java.util.List;
 import javax.persistence.Basic;
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
-import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
@@ -27,34 +25,39 @@ import javax.validation.constraints.Size;
  * @author Uyeee
  */
 @Entity
-@Table(name = "machine_parts")
-@NamedQueries({
-	@NamedQuery(name = "MachineParts.findAll", query = "SELECT m FROM MachineParts m")})
-public class MachineParts implements Serializable {
+@Table(name = "machine_totalizers")
+public class MachineTotalizerEntity implements Serializable {
+
 	private static final long serialVersionUID = 1L;
 	@Id
-  @GeneratedValue(strategy = GenerationType.IDENTITY)
-  @Basic(optional = false)
-  @Column(name = "id", nullable = false)
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Basic(optional = false)
+	@Column(name = "id", nullable = false)
 	private Long id;
 	@Basic(optional = false)
-  @NotNull
-  @Size(min = 1, max = 255)
-  @Column(name = "name", nullable = false, length = 255)
+	@NotNull
+	@Size(min = 1, max = 255)
+	@Column(name = "name", nullable = false, length = 255)
 	private String name;
-	@OneToMany(cascade = CascadeType.ALL, mappedBy = "machineParts", fetch = FetchType.LAZY)
-	private List<PartFailureModes> partFailureModesList;
+	@Basic(optional = false)
+	@NotNull
+	@Column(name = "total", nullable = false)
+	private boolean total;
+	@JoinColumn(name = "machine_id", referencedColumnName = "id", nullable = false)
+	@ManyToOne(optional = false, fetch = FetchType.LAZY)
+	private SpbuMachineEntity spbuMachine;
 
-	public MachineParts() {
+	public MachineTotalizerEntity() {
 	}
 
-	public MachineParts(Long id) {
+	public MachineTotalizerEntity(Long id) {
 		this.id = id;
 	}
 
-	public MachineParts(Long id, String name) {
+	public MachineTotalizerEntity(Long id, String name, boolean total) {
 		this.id = id;
 		this.name = name;
+		this.total = total;
 	}
 
 	public Long getId() {
@@ -73,12 +76,20 @@ public class MachineParts implements Serializable {
 		this.name = name;
 	}
 
-	public List<PartFailureModes> getPartFailureModesList() {
-		return partFailureModesList;
+	public boolean getTotal() {
+		return total;
 	}
 
-	public void setPartFailureModesList(List<PartFailureModes> partFailureModesList) {
-		this.partFailureModesList = partFailureModesList;
+	public void setTotal(boolean total) {
+		this.total = total;
+	}
+
+	public SpbuMachineEntity getSpbuMachine() {
+		return spbuMachine;
+	}
+
+	public void setSpbuMachine(SpbuMachineEntity spbuMachine) {
+		this.spbuMachine = spbuMachine;
 	}
 
 	@Override
@@ -91,10 +102,10 @@ public class MachineParts implements Serializable {
 	@Override
 	public boolean equals(Object object) {
 		// TODO: Warning - this method won't work in the case the id fields are not set
-		if (!(object instanceof MachineParts)) {
+		if (!(object instanceof MachineTotalizerEntity)) {
 			return false;
 		}
-		MachineParts other = (MachineParts) object;
+		MachineTotalizerEntity other = (MachineTotalizerEntity) object;
 		if ((this.id == null && other.id != null) || (this.id != null && !this.id.equals(other.id))) {
 			return false;
 		}
@@ -103,7 +114,6 @@ public class MachineParts implements Serializable {
 
 	@Override
 	public String toString() {
-		return "org.ithb.si.made.mtmgmt.core.persistence.entity.MachineParts[ id=" + id + " ]";
+		return "MachineTotalizerEntity{" + "id=" + id + ", name=" + name + ", total=" + total + ", spbuMachine=" + spbuMachine + '}';
 	}
-
 }

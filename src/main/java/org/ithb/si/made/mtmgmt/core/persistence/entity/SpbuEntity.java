@@ -2,7 +2,6 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-
 package org.ithb.si.made.mtmgmt.core.persistence.entity;
 
 import java.io.Serializable;
@@ -15,6 +14,8 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
@@ -28,44 +29,45 @@ import javax.validation.constraints.Size;
  * @author Uyeee
  */
 @Entity
-@Table(name = "spbus", uniqueConstraints = {
-	@UniqueConstraint(columnNames = {"code"})})
-@NamedQueries({
-	@NamedQuery(name = "Spbus.findAll", query = "SELECT s FROM Spbus s")})
-public class Spbus implements Serializable {
+@Table(name = "spbus")
+public class SpbuEntity implements Serializable {
+
 	private static final long serialVersionUID = 1L;
 	@Id
-  @GeneratedValue(strategy = GenerationType.IDENTITY)
-  @Basic(optional = false)
-  @Column(name = "id", nullable = false)
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Basic(optional = false)
+	@Column(name = "id", nullable = false)
 	private Long id;
 	@Basic(optional = false)
-  @NotNull
-  @Size(min = 1, max = 20)
-  @Column(name = "code", nullable = false, length = 20)
+	@NotNull
+	@Size(min = 1, max = 20)
+	@Column(name = "code", unique = true, nullable = false, length = 20)
 	private String code;
 	@Basic(optional = false)
-  @NotNull
-  @Size(min = 1, max = 255)
-  @Column(name = "address", nullable = false, length = 255)
+	@NotNull
+	@Size(min = 1, max = 255)
+	@Column(name = "address", nullable = false, length = 255)
 	private String address;
 	// @Pattern(regexp="^\\(?(\\d{3})\\)?[- ]?(\\d{3})[- ]?(\\d{4})$", message="Invalid phone/fax format, should be as xxx-xxx-xxxx")//if the field contains phone or fax number consider using this annotation to enforce field validation
 	@Basic(optional = false)
-  @NotNull
-  @Size(min = 1, max = 20)
-  @Column(name = "phone", nullable = false, length = 20)
+	@NotNull
+	@Size(min = 1, max = 20)
+	@Column(name = "phone", nullable = false, length = 20)
 	private String phone;
-	@OneToMany(cascade = CascadeType.ALL, mappedBy = "spbus", fetch = FetchType.LAZY)
-	private List<SpbuMachines> spbuMachinesList;
+	@JoinColumn(name = "supervisor_id", referencedColumnName = "id", nullable = false)
+	@ManyToOne(optional = false, fetch = FetchType.LAZY)
+	private UserEntity supervisor;
+	@OneToMany(cascade = CascadeType.ALL, mappedBy = "spbu", fetch = FetchType.LAZY)
+	private List<SpbuMachineEntity> spbuMachinesList;
 
-	public Spbus() {
+	public SpbuEntity() {
 	}
 
-	public Spbus(Long id) {
+	public SpbuEntity(Long id) {
 		this.id = id;
 	}
 
-	public Spbus(Long id, String code, String address, String phone) {
+	public SpbuEntity(Long id, String code, String address, String phone) {
 		this.id = id;
 		this.code = code;
 		this.address = address;
@@ -104,12 +106,20 @@ public class Spbus implements Serializable {
 		this.phone = phone;
 	}
 
-	public List<SpbuMachines> getSpbuMachinesList() {
+	public List<SpbuMachineEntity> getSpbuMachinesList() {
 		return spbuMachinesList;
 	}
 
-	public void setSpbuMachinesList(List<SpbuMachines> spbuMachinesList) {
+	public void setSpbuMachinesList(List<SpbuMachineEntity> spbuMachinesList) {
 		this.spbuMachinesList = spbuMachinesList;
+	}
+
+	public UserEntity getSupervisor() {
+		return supervisor;
+	}
+
+	public void setSupervisor(UserEntity supervisor) {
+		this.supervisor = supervisor;
 	}
 
 	@Override
@@ -122,10 +132,10 @@ public class Spbus implements Serializable {
 	@Override
 	public boolean equals(Object object) {
 		// TODO: Warning - this method won't work in the case the id fields are not set
-		if (!(object instanceof Spbus)) {
+		if (!(object instanceof SpbuEntity)) {
 			return false;
 		}
-		Spbus other = (Spbus) object;
+		SpbuEntity other = (SpbuEntity) object;
 		if ((this.id == null && other.id != null) || (this.id != null && !this.id.equals(other.id))) {
 			return false;
 		}
@@ -134,7 +144,6 @@ public class Spbus implements Serializable {
 
 	@Override
 	public String toString() {
-		return "org.ithb.si.made.mtmgmt.core.persistence.entity.Spbus[ id=" + id + " ]";
+		return "SpbuEntity{" + "id=" + id + ", code=" + code + ", address=" + address + ", phone=" + phone + ", supervisor=" + supervisor + ", spbuMachinesList=" + spbuMachinesList + '}';
 	}
-
 }

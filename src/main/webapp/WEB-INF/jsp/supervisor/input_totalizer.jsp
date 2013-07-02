@@ -16,5 +16,6 @@
     </head>
     <body>
         <h1>Hello World!</h1>
+		${dbUserEntity.spbuList}<br/>
     </body>
 </html>

@@ -2,11 +2,12 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-
 package org.ithb.si.made.mtmgmt.core.persistence.entity;
 
 import java.io.Serializable;
+import java.util.List;
 import javax.persistence.Basic;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -17,6 +18,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
@@ -26,40 +28,36 @@ import javax.validation.constraints.Size;
  * @author Uyeee
  */
 @Entity
-@Table(name = "machine_totalizers")
-@NamedQueries({
-	@NamedQuery(name = "MachineTotalizers.findAll", query = "SELECT m FROM MachineTotalizers m")})
-public class MachineTotalizers implements Serializable {
+@Table(name = "part_failure_modes")
+public class PartFailureModeEntity implements Serializable {
+
 	private static final long serialVersionUID = 1L;
 	@Id
-  @GeneratedValue(strategy = GenerationType.IDENTITY)
-  @Basic(optional = false)
-  @Column(name = "id", nullable = false)
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Basic(optional = false)
+	@Column(name = "id", nullable = false)
 	private Long id;
 	@Basic(optional = false)
-  @NotNull
-  @Size(min = 1, max = 255)
-  @Column(name = "name", nullable = false, length = 255)
+	@NotNull
+	@Size(min = 1, max = 255)
+	@Column(name = "name", nullable = false, length = 255)
 	private String name;
-	@Basic(optional = false)
-  @NotNull
-  @Column(name = "total", nullable = false)
-	private boolean total;
-	@JoinColumn(name = "machine_id", referencedColumnName = "id", nullable = false)
-  @ManyToOne(optional = false, fetch = FetchType.LAZY)
-	private SpbuMachines spbuMachines;
+	@OneToMany(cascade = CascadeType.ALL, mappedBy = "partFailureMode", fetch = FetchType.LAZY)
+	private List<FailureModeHandlingEntity> failureModeHandlingsList;
+	@JoinColumn(name = "part_id", referencedColumnName = "id", nullable = false)
+	@ManyToOne(optional = false, fetch = FetchType.LAZY)
+	private MachinePartEntity machinePart;
 
-	public MachineTotalizers() {
+	public PartFailureModeEntity() {
 	}
 
-	public MachineTotalizers(Long id) {
+	public PartFailureModeEntity(Long id) {
 		this.id = id;
 	}
 
-	public MachineTotalizers(Long id, String name, boolean total) {
+	public PartFailureModeEntity(Long id, String name) {
 		this.id = id;
 		this.name = name;
-		this.total = total;
 	}
 
 	public Long getId() {
@@ -78,20 +76,20 @@ public class MachineTotalizers implements Serializable {
 		this.name = name;
 	}
 
-	public boolean getTotal() {
-		return total;
+	public List<FailureModeHandlingEntity> getFailureModeHandlingsList() {
+		return failureModeHandlingsList;
 	}
 
-	public void setTotal(boolean total) {
-		this.total = total;
+	public void setFailureModeHandlingsList(List<FailureModeHandlingEntity> failureModeHandlingsList) {
+		this.failureModeHandlingsList = failureModeHandlingsList;
 	}
 
-	public SpbuMachines getSpbuMachines() {
-		return spbuMachines;
+	public MachinePartEntity getMachinePart() {
+		return machinePart;
 	}
 
-	public void setSpbuMachines(SpbuMachines spbuMachines) {
-		this.spbuMachines = spbuMachines;
+	public void setMachinePart(MachinePartEntity machinePart) {
+		this.machinePart = machinePart;
 	}
 
 	@Override
@@ -104,10 +102,10 @@ public class MachineTotalizers implements Serializable {
 	@Override
 	public boolean equals(Object object) {
 		// TODO: Warning - this method won't work in the case the id fields are not set
-		if (!(object instanceof MachineTotalizers)) {
+		if (!(object instanceof PartFailureModeEntity)) {
 			return false;
 		}
-		MachineTotalizers other = (MachineTotalizers) object;
+		PartFailureModeEntity other = (PartFailureModeEntity) object;
 		if ((this.id == null && other.id != null) || (this.id != null && !this.id.equals(other.id))) {
 			return false;
 		}
@@ -116,7 +114,6 @@ public class MachineTotalizers implements Serializable {
 
 	@Override
 	public String toString() {
-		return "org.ithb.si.made.mtmgmt.core.persistence.entity.MachineTotalizers[ id=" + id + " ]";
+		return "PartFailureModeEntity{" + "id=" + id + ", name=" + name + ", failureModeHandlingsList=" + failureModeHandlingsList + ", machinePart=" + machinePart + '}';
 	}
-
 }

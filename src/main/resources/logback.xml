@@ -10,7 +10,7 @@
 	</appender>
 
   <logger name="org.ithb.si.made.mtmgmt" level="debug"/>
-	<root level="info">
+	<root level="warn">
 		<appender-ref ref="stdout" />
 	</root>
 </configuration>

@@ -2,7 +2,6 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-
 package org.ithb.si.made.mtmgmt.core.persistence.entity;
 
 import java.io.Serializable;
@@ -29,35 +28,34 @@ import javax.validation.constraints.NotNull;
  */
 @Entity
 @Table(name = "machine_histories")
-@NamedQueries({
-	@NamedQuery(name = "MachineHistories.findAll", query = "SELECT m FROM MachineHistories m")})
-public class MachineHistories implements Serializable {
+public class MachineHistoryEntity implements Serializable {
+
 	private static final long serialVersionUID = 1L;
 	@Id
-  @GeneratedValue(strategy = GenerationType.IDENTITY)
-  @Basic(optional = false)
-  @Column(name = "id", nullable = false)
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Basic(optional = false)
+	@Column(name = "id", nullable = false)
 	private Long id;
 	@Basic(optional = false)
-  @NotNull
-  @Column(name = "date", nullable = false)
-  @Temporal(TemporalType.DATE)
+	@NotNull
+	@Column(name = "date", nullable = false)
+	@Temporal(TemporalType.DATE)
 	private Date date;
 	@JoinColumn(name = "machine_id", referencedColumnName = "id", nullable = false)
-  @ManyToOne(optional = false, fetch = FetchType.LAZY)
-	private SpbuMachines spbuMachines;
+	@ManyToOne(optional = false, fetch = FetchType.LAZY)
+	private SpbuMachineEntity spbuMachine;
 	@JoinColumn(name = "failure_mode_handling_id", referencedColumnName = "id", nullable = false)
-  @ManyToOne(optional = false, fetch = FetchType.LAZY)
-	private FailureModeHandlings failureModeHandlings;
+	@ManyToOne(optional = false, fetch = FetchType.LAZY)
+	private FailureModeHandlingEntity failureModeHandling;
 
-	public MachineHistories() {
+	public MachineHistoryEntity() {
 	}
 
-	public MachineHistories(Long id) {
+	public MachineHistoryEntity(Long id) {
 		this.id = id;
 	}
 
-	public MachineHistories(Long id, Date date) {
+	public MachineHistoryEntity(Long id, Date date) {
 		this.id = id;
 		this.date = date;
 	}
@@ -78,20 +76,20 @@ public class MachineHistories implements Serializable {
 		this.date = date;
 	}
 
-	public SpbuMachines getSpbuMachines() {
-		return spbuMachines;
+	public SpbuMachineEntity getSpbuMachine() {
+		return spbuMachine;
 	}
 
-	public void setSpbuMachines(SpbuMachines spbuMachines) {
-		this.spbuMachines = spbuMachines;
+	public void setSpbuMachine(SpbuMachineEntity spbuMachine) {
+		this.spbuMachine = spbuMachine;
 	}
 
-	public FailureModeHandlings getFailureModeHandlings() {
-		return failureModeHandlings;
+	public FailureModeHandlingEntity getFailureModeHandling() {
+		return failureModeHandling;
 	}
 
-	public void setFailureModeHandlings(FailureModeHandlings failureModeHandlings) {
-		this.failureModeHandlings = failureModeHandlings;
+	public void setFailureModeHandling(FailureModeHandlingEntity failureModeHandling) {
+		this.failureModeHandling = failureModeHandling;
 	}
 
 	@Override
@@ -104,10 +102,10 @@ public class MachineHistories implements Serializable {
 	@Override
 	public boolean equals(Object object) {
 		// TODO: Warning - this method won't work in the case the id fields are not set
-		if (!(object instanceof MachineHistories)) {
+		if (!(object instanceof MachineHistoryEntity)) {
 			return false;
 		}
-		MachineHistories other = (MachineHistories) object;
+		MachineHistoryEntity other = (MachineHistoryEntity) object;
 		if ((this.id == null && other.id != null) || (this.id != null && !this.id.equals(other.id))) {
 			return false;
 		}
@@ -116,7 +114,6 @@ public class MachineHistories implements Serializable {
 
 	@Override
 	public String toString() {
-		return "org.ithb.si.made.mtmgmt.core.persistence.entity.MachineHistories[ id=" + id + " ]";
+		return "MachineHistoryEntity{" + "id=" + id + ", date=" + date + ", spbuMachine=" + spbuMachine + ", failureModeHandling=" + failureModeHandling + '}';
 	}
-
 }
