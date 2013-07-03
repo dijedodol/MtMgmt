@@ -39,14 +39,14 @@ public class UserDaoImpl extends AbstractDaoImpl<UserEntity, Long> implements Us
 	@Override
 	public UserEntity getSpbuList(String loginId) {
 		final UserEntity ret = findByLoginId(loginId);
-		ret.getSpbuList();
+		ret.getSpbuList().size();
 		return ret;
 	}
 
 	@Override
 	public UserEntity getSpbuList(UserEntity dbUserEntity) {
 		final UserEntity ret = findByLoginId(dbUserEntity.getLoginId());
-		ret.getSpbuList();
+		ret.getSpbuList().size();
 		return ret;
 	}
 }
