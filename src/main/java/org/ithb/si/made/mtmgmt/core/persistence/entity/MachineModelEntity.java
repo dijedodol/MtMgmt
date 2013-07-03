@@ -12,13 +12,12 @@ import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.persistence.UniqueConstraint;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import org.slf4j.Logger;
@@ -29,14 +28,15 @@ import org.slf4j.LoggerFactory;
  * @author gde.satrigraha
  */
 @Entity
-@Table(name = "machine_parts")
+@Table(name = "machine_models", uniqueConstraints = {
+    @UniqueConstraint(columnNames = {"code"})})
 @NamedQueries({
-    @NamedQuery(name = "MachinePartEntity.findAll", query = "SELECT m FROM MachinePartEntity m")})
-public class MachinePartEntity implements Serializable {
+    @NamedQuery(name = "MachineModelEntity.findAll", query = "SELECT m FROM MachineModelEntity m")})
+public class MachineModelEntity implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Basic(optional = false)
+    @NotNull
     @Column(name = "id", nullable = false)
     private Long id;
     @Basic(optional = false)
@@ -49,21 +49,23 @@ public class MachinePartEntity implements Serializable {
     @Size(min = 1, max = 255)
     @Column(name = "name", nullable = false, length = 255)
     private String name;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "machinePartEntity", fetch = FetchType.EAGER)
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "machineModelEntity", fetch = FetchType.EAGER)
+    private List<MachineModelTotalizerEntity> machineModelTotalizerEntityList;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "machineModelEntity", fetch = FetchType.EAGER)
     private List<MachineModelPartEntity> machineModelPartEntityList;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "machinePartEntity", fetch = FetchType.EAGER)
-    private List<PartFailureModeEntity> partFailureModeEntityList;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "machineModelEntity", fetch = FetchType.EAGER)
+    private List<SpbuMachineEntity> spbuMachineEntityList;
 
-    private static final Logger LOG = LoggerFactory.getLogger(MachinePartEntity.class);
+    private static final Logger LOG = LoggerFactory.getLogger(MachineModelEntity.class);
 
-    public MachinePartEntity() {
+    public MachineModelEntity() {
     }
 
-    public MachinePartEntity(Long id) {
+    public MachineModelEntity(Long id) {
         this.id = id;
     }
 
-    public MachinePartEntity(Long id, String code, String name) {
+    public MachineModelEntity(Long id, String code, String name) {
         this.id = id;
         this.code = code;
         this.name = name;
@@ -93,6 +95,14 @@ public class MachinePartEntity implements Serializable {
         this.name = name;
     }
 
+    public List<MachineModelTotalizerEntity> getMachineModelTotalizerEntityList() {
+        return machineModelTotalizerEntityList;
+    }
+
+    public void setMachineModelTotalizerEntityList(List<MachineModelTotalizerEntity> machineModelTotalizerEntityList) {
+        this.machineModelTotalizerEntityList = machineModelTotalizerEntityList;
+    }
+
     public List<MachineModelPartEntity> getMachineModelPartEntityList() {
         return machineModelPartEntityList;
     }
@@ -101,12 +111,12 @@ public class MachinePartEntity implements Serializable {
         this.machineModelPartEntityList = machineModelPartEntityList;
     }
 
-    public List<PartFailureModeEntity> getPartFailureModeEntityList() {
-        return partFailureModeEntityList;
+    public List<SpbuMachineEntity> getSpbuMachineEntityList() {
+        return spbuMachineEntityList;
     }
 
-    public void setPartFailureModeEntityList(List<PartFailureModeEntity> partFailureModeEntityList) {
-        this.partFailureModeEntityList = partFailureModeEntityList;
+    public void setSpbuMachineEntityList(List<SpbuMachineEntity> spbuMachineEntityList) {
+        this.spbuMachineEntityList = spbuMachineEntityList;
     }
 
     @Override
@@ -119,10 +129,10 @@ public class MachinePartEntity implements Serializable {
     @Override
     public boolean equals(Object object) {
         // TODO: Warning - this method won't work in the case the id fields are not set
-        if (!(object instanceof MachinePartEntity)) {
+        if (!(object instanceof MachineModelEntity)) {
             return false;
         }
-        MachinePartEntity other = (MachinePartEntity) object;
+        MachineModelEntity other = (MachineModelEntity) object;
         if ((this.id == null && other.id != null) || (this.id != null && !this.id.equals(other.id))) {
             return false;
         }
@@ -131,6 +141,6 @@ public class MachinePartEntity implements Serializable {
 
     @Override
     public String toString() {
-        return "org.ithb.si.made.mtmgmt.core.persistence.entity.MachinePartEntity[ id=" + id + " ]";
+        return "org.ithb.si.made.mtmgmt.core.persistence.entity.MachineModelEntity[ id=" + id + " ]";
     }
 }
