@@ -5,8 +5,11 @@
 package org.ithb.si.made.mtmgmt.web.controller.common;
 
 import java.security.Principal;
+import java.sql.SQLException;
+import org.ithb.si.made.mtmgmt.core.persistence.dao.MachineModelDao;
 import org.ithb.si.made.mtmgmt.core.persistence.dao.SpbuDao;
 import org.ithb.si.made.mtmgmt.core.persistence.dao.UserDao;
+import org.ithb.si.made.mtmgmt.core.persistence.entity.MachineModelEntity;
 import org.ithb.si.made.mtmgmt.core.persistence.entity.SpbuEntity;
 import org.ithb.si.made.mtmgmt.core.persistence.entity.UserEntity;
 import org.slf4j.Logger;
@@ -30,26 +33,26 @@ public class InitializeSampleDataController {
 	private UserDao userDao;
 	@Autowired
 	private SpbuDao spbuDao;
+	@Autowired
+	private MachineModelDao machineModelDao;
 
 	@RequestMapping(method = RequestMethod.GET)
-	public String showResult(Principal principal, Model model) {
+	public String showResult(Principal principal, Model model) throws SQLException {
 		LOG.debug("showResult principal:[{}]", principal);
-
 		final UserEntity dbUserEntity = userDao.findByLoginId(principal.getName());
 		model.addAttribute("userEntity", dbUserEntity);
 
 		final SpbuEntity dbSpbuEntity1 = createSpbuIfNotExist(dbUserEntity, "0000");
 		final SpbuEntity dbSpbuEntity2 = createSpbuIfNotExist(dbUserEntity, "0001");
-		
+		final MachineModelEntity dbMachineModel1 = createMachineIfNotExist("MCH000");
+
 		model.addAttribute("spbuEntity1", dbSpbuEntity1);
 		model.addAttribute("spbuEntity2", dbSpbuEntity2);
-		
-		
-		
-		return "supervisor/home";
+		return "common/initialize_sample_data";
 	}
 
 	private SpbuEntity createSpbuIfNotExist(UserEntity supervisor, String code) {
+		LOG.debug("createSpbuIfNotExist supervisor:[{}]", supervisor);
 		final SpbuEntity ret;
 		final SpbuEntity tmpDbSpbuEntity = spbuDao.findByCode(code);
 		if (tmpDbSpbuEntity != null) {
@@ -61,6 +64,20 @@ public class InitializeSampleDataController {
 			tmpNewDbSpbuEntity.setPhone("Phone " + code);
 			tmpNewDbSpbuEntity.setSupervisor(supervisor);
 			ret = spbuDao.save(tmpNewDbSpbuEntity);
+		}
+		return ret;
+	}
+
+	private MachineModelEntity createMachineIfNotExist(String code) {
+		final MachineModelEntity ret;
+		final MachineModelEntity tmpDbMachineModelEntity = machineModelDao.findByCode(code);
+		if (tmpDbMachineModelEntity != null) {
+			ret = tmpDbMachineModelEntity;
+		} else {
+			final MachineModelEntity tmpNewDbMachineModelEntity = new MachineModelEntity();
+			tmpNewDbMachineModelEntity.setCode(code);
+			tmpNewDbMachineModelEntity.setName("Machine " + code);
+			ret = machineModelDao.save(tmpNewDbMachineModelEntity);
 		}
 		return ret;
 	}

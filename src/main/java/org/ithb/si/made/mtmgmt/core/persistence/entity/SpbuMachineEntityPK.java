@@ -19,67 +19,67 @@ import org.slf4j.LoggerFactory;
  */
 @Embeddable
 public class SpbuMachineEntityPK implements Serializable {
-    @Basic(optional = false)
+		@Basic(optional = false)
     @NotNull
     @Column(name = "spbu_id", nullable = false)
-    private long spbuId;
-    @Basic(optional = false)
+		private long spbuId;
+		@Basic(optional = false)
     @NotNull
     @Column(name = "machine_model_id", nullable = false)
-    private long machineModelId;
+		private long machineModelId;
 
     private static final Logger LOG = LoggerFactory.getLogger(SpbuMachineEntityPK.class);
 
-    public SpbuMachineEntityPK() {
-    }
+		public SpbuMachineEntityPK() {
+		}
 
-    public SpbuMachineEntityPK(long spbuId, long machineModelId) {
-        this.spbuId = spbuId;
-        this.machineModelId = machineModelId;
-    }
+		public SpbuMachineEntityPK(long spbuId, long machineModelId) {
+				this.spbuId = spbuId;
+				this.machineModelId = machineModelId;
+		}
 
-    public long getSpbuId() {
-        return spbuId;
-    }
+		public long getSpbuId() {
+				return spbuId;
+		}
 
-    public void setSpbuId(long spbuId) {
-        this.spbuId = spbuId;
-    }
+		public void setSpbuId(long spbuId) {
+				this.spbuId = spbuId;
+		}
 
-    public long getMachineModelId() {
-        return machineModelId;
-    }
+		public long getMachineModelId() {
+				return machineModelId;
+		}
 
-    public void setMachineModelId(long machineModelId) {
-        this.machineModelId = machineModelId;
-    }
+		public void setMachineModelId(long machineModelId) {
+				this.machineModelId = machineModelId;
+		}
 
-    @Override
-    public int hashCode() {
-        int hash = 0;
-        hash += (int) spbuId;
-        hash += (int) machineModelId;
-        return hash;
-    }
+		@Override
+		public int hashCode() {
+				int hash = 0;
+				hash += (int) spbuId;
+				hash += (int) machineModelId;
+				return hash;
+		}
 
-    @Override
-    public boolean equals(Object object) {
-        // TODO: Warning - this method won't work in the case the id fields are not set
-        if (!(object instanceof SpbuMachineEntityPK)) {
-            return false;
-        }
-        SpbuMachineEntityPK other = (SpbuMachineEntityPK) object;
-        if (this.spbuId != other.spbuId) {
-            return false;
-        }
-        if (this.machineModelId != other.machineModelId) {
-            return false;
-        }
-        return true;
-    }
+		@Override
+		public boolean equals(Object object) {
+				// TODO: Warning - this method won't work in the case the id fields are not set
+				if (!(object instanceof SpbuMachineEntityPK)) {
+						return false;
+				}
+				SpbuMachineEntityPK other = (SpbuMachineEntityPK) object;
+				if (this.spbuId != other.spbuId) {
+						return false;
+				}
+				if (this.machineModelId != other.machineModelId) {
+						return false;
+				}
+				return true;
+		}
 
-    @Override
-    public String toString() {
-        return "org.ithb.si.made.mtmgmt.core.persistence.entity.SpbuMachineEntityPK[ spbuId=" + spbuId + ", machineModelId=" + machineModelId + " ]";
-    }
+		@Override
+		public String toString() {
+				return "org.ithb.si.made.mtmgmt.core.persistence.entity.SpbuMachineEntityPK[ spbuId=" + spbuId + ", machineModelId=" + machineModelId + " ]";
+		}
 }

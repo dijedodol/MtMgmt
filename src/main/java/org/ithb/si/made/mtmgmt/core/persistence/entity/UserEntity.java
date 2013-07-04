@@ -24,101 +24,101 @@ import javax.persistence.Table;
 @Table(name = "users")
 public class UserEntity implements Serializable {
 
-    private static final long serialVersionUID = 1L;
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long id;
-    @Column(name = "login_id", unique = true, nullable = false)
-    private String loginId;
-    @Column(name = "password_hash", nullable = false)
-    private String passwordHash;
-    @Column(name = "full_name", nullable = false)
-    private String fullName;
-    @Column(name = "access_role", nullable = false)
-    private AccessRole accessRole;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "supervisor", fetch = FetchType.LAZY)
-    private List<SpbuEntity> spbuList;
+		private static final long serialVersionUID = 1L;
+		@Id
+		@GeneratedValue(strategy = GenerationType.IDENTITY)
+		private Long id;
+		@Column(name = "login_id", unique = true, nullable = false)
+		private String loginId;
+		@Column(name = "password_hash", nullable = false)
+		private String passwordHash;
+		@Column(name = "full_name", nullable = false)
+		private String fullName;
+		@Column(name = "access_role", nullable = false)
+		private AccessRole accessRole;
+		@OneToMany(cascade = CascadeType.ALL, mappedBy = "supervisor", fetch = FetchType.LAZY)
+		private List<SpbuEntity> spbuList;
 
-    public UserEntity() {
-    }
+		public UserEntity() {
+		}
 
-    public Long getId() {
-        return id;
-    }
+		public Long getId() {
+				return id;
+		}
 
-    public void setId(Long id) {
-        this.id = id;
-    }
+		public void setId(Long id) {
+				this.id = id;
+		}
 
-    public String getLoginId() {
-        return loginId;
-    }
+		public String getLoginId() {
+				return loginId;
+		}
 
-    public void setLoginId(String loginId) {
-        this.loginId = loginId;
-    }
+		public void setLoginId(String loginId) {
+				this.loginId = loginId;
+		}
 
-    public String getPasswordHash() {
-        return passwordHash;
-    }
+		public String getPasswordHash() {
+				return passwordHash;
+		}
 
-    public void setPasswordHash(String passwordHash) {
-        this.passwordHash = passwordHash;
-    }
+		public void setPasswordHash(String passwordHash) {
+				this.passwordHash = passwordHash;
+		}
 
-    public String getFullName() {
-        return fullName;
-    }
+		public String getFullName() {
+				return fullName;
+		}
 
-    public void setFullName(String fullName) {
-        this.fullName = fullName;
-    }
+		public void setFullName(String fullName) {
+				this.fullName = fullName;
+		}
 
-    public AccessRole getAccessRole() {
-        return accessRole;
-    }
+		public AccessRole getAccessRole() {
+				return accessRole;
+		}
 
-    public void setAccessRole(AccessRole accessRole) {
-        this.accessRole = accessRole;
-    }
+		public void setAccessRole(AccessRole accessRole) {
+				this.accessRole = accessRole;
+		}
 
-    public List<SpbuEntity> getSpbuList() {
-        return spbuList;
-    }
+		public List<SpbuEntity> getSpbuList() {
+				return spbuList;
+		}
 
-    public void setSpbuList(List<SpbuEntity> spbuList) {
-        this.spbuList = spbuList;
-    }
+		public void setSpbuList(List<SpbuEntity> spbuList) {
+				this.spbuList = spbuList;
+		}
 
-    @Override
-    public int hashCode() {
-        int hash = 0;
-        hash += (id != null ? id.hashCode() : 0);
-        return hash;
-    }
+		@Override
+		public int hashCode() {
+				int hash = 0;
+				hash += (id != null ? id.hashCode() : 0);
+				return hash;
+		}
 
-    @Override
-    public boolean equals(Object object) {
-        // TODO: Warning - this method won't work in the case the id fields are not set
-        if (!(object instanceof UserEntity)) {
-            return false;
-        }
-        UserEntity other = (UserEntity) object;
-        if ((this.id == null && other.id != null) || (this.id != null && !this.id.equals(other.id))) {
-            return false;
-        }
-        return true;
-    }
+		@Override
+		public boolean equals(Object object) {
+				// TODO: Warning - this method won't work in the case the id fields are not set
+				if (!(object instanceof UserEntity)) {
+						return false;
+				}
+				UserEntity other = (UserEntity) object;
+				if ((this.id == null && other.id != null) || (this.id != null && !this.id.equals(other.id))) {
+						return false;
+				}
+				return true;
+		}
 
-    @Override
-    public String toString() {
-        return "UserEntity{" + "id=" + id + ", loginId=" + loginId + ", passwordHash=" + passwordHash + ", fullName=" + fullName + ", accessRole=" + accessRole + '}';
-    }
+		@Override
+		public String toString() {
+				return "UserEntity{" + "id=" + id + ", loginId=" + loginId + ", passwordHash=" + passwordHash + ", fullName=" + fullName + ", accessRole=" + accessRole + '}';
+		}
 
-    public static enum AccessRole {
+		public static enum AccessRole {
 
-        ADMIN,
-        TECHNICIAN,
-        SUPERVISOR
-    }
+				ADMIN,
+				TECHNICIAN,
+				SUPERVISOR
+		}
 }

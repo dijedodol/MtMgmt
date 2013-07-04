@@ -26,16 +26,16 @@
 	</authentication-manager>
 	<beans:bean id="mtMgmtUserDetailsService" class="org.ithb.si.made.mtmgmt.core.security.MtMgmtUserDetailsService"/>
 	
-	<bean id="roleVoter" class="org.springframework.security.access.vote.RoleHierarchyVoter">
-		<constructor-arg ref="roleHierarchy" />
-	</bean>
+	<beans:bean id="roleVoter" class="org.springframework.security.access.vote.RoleHierarchyVoter">
+		<beans:constructor-arg ref="roleHierarchy" />
+	</beans:bean>
 	
-	<bean id="roleHierarchy" class="org.springframework.security.access.hierarchicalroles.RoleHierarchyImpl">
-		<property name="hierarchy">
-			<value>
+	<beans:bean id="roleHierarchy" class="org.springframework.security.access.hierarchicalroles.RoleHierarchyImpl">
+		<beans:property name="hierarchy">
+			<beans:value>
 				ADMIN > TECHNICIAN
 				ADMIN > SUPERVISOR
-			</value>
-		</property>
-	</bean>
+			</beans:value>
+		</beans:property>
+	</beans:bean>
 </beans:beans>

@@ -2,7 +2,6 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-
 package org.ithb.si.made.mtmgmt.core.persistence.entity;
 
 import java.io.Serializable;
@@ -33,93 +32,93 @@ import org.slf4j.LoggerFactory;
 @Entity
 @Table(name = "part_failure_modes")
 @NamedQueries({
-    @NamedQuery(name = "PartFailureModeEntity.findAll", query = "SELECT p FROM PartFailureModeEntity p")})
+	@NamedQuery(name = "PartFailureModeEntity.findAll", query = "SELECT p FROM PartFailureModeEntity p")})
 public class PartFailureModeEntity implements Serializable {
-    private static final long serialVersionUID = 1L;
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Basic(optional = false)
-    @Column(name = "id", nullable = false)
-    private Long id;
-    @Basic(optional = false)
-    @NotNull
-    @Size(min = 1, max = 255)
-    @Column(name = "name", nullable = false, length = 255)
-    private String name;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "partFailureModeEntity", fetch = FetchType.EAGER)
-    private List<FailureModeHandlingEntity> failureModeHandlingEntityList;
-    @JoinColumn(name = "part_id", referencedColumnName = "id", nullable = false)
-    @ManyToOne(optional = false, fetch = FetchType.EAGER)
-    private MachinePartEntity machinePartEntity;
 
-    private static final Logger LOG = LoggerFactory.getLogger(PartFailureModeEntity.class);
+	private static final long serialVersionUID = 1L;
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Basic(optional = false)
+	@Column(name = "id", nullable = false)
+	private Long id;
+	@Basic(optional = false)
+	@NotNull
+	@Size(min = 1, max = 255)
+	@Column(name = "name", nullable = false, length = 255)
+	private String name;
+	@OneToMany(cascade = CascadeType.ALL, mappedBy = "partFailureModeEntity", fetch = FetchType.LAZY)
+	private List<FailureModeHandlingEntity> failureModeHandlingEntityList;
+	@JoinColumn(name = "part_id", referencedColumnName = "id", nullable = false)
+	@ManyToOne(optional = false, fetch = FetchType.EAGER)
+	private MachinePartEntity machinePartEntity;
+	private static final Logger LOG = LoggerFactory.getLogger(PartFailureModeEntity.class);
 
-    public PartFailureModeEntity() {
-    }
+	public PartFailureModeEntity() {
+	}
 
-    public PartFailureModeEntity(Long id) {
-        this.id = id;
-    }
+	public PartFailureModeEntity(Long id) {
+		this.id = id;
+	}
 
-    public PartFailureModeEntity(Long id, String name) {
-        this.id = id;
-        this.name = name;
-    }
+	public PartFailureModeEntity(Long id, String name) {
+		this.id = id;
+		this.name = name;
+	}
 
-    public Long getId() {
-        return id;
-    }
+	public Long getId() {
+		return id;
+	}
 
-    public void setId(Long id) {
-        this.id = id;
-    }
+	public void setId(Long id) {
+		this.id = id;
+	}
 
-    public String getName() {
-        return name;
-    }
+	public String getName() {
+		return name;
+	}
 
-    public void setName(String name) {
-        this.name = name;
-    }
+	public void setName(String name) {
+		this.name = name;
+	}
 
-    public List<FailureModeHandlingEntity> getFailureModeHandlingEntityList() {
-        return failureModeHandlingEntityList;
-    }
+	public List<FailureModeHandlingEntity> getFailureModeHandlingEntityList() {
+		return failureModeHandlingEntityList;
+	}
 
-    public void setFailureModeHandlingEntityList(List<FailureModeHandlingEntity> failureModeHandlingEntityList) {
-        this.failureModeHandlingEntityList = failureModeHandlingEntityList;
-    }
+	public void setFailureModeHandlingEntityList(List<FailureModeHandlingEntity> failureModeHandlingEntityList) {
+		this.failureModeHandlingEntityList = failureModeHandlingEntityList;
+	}
 
-    public MachinePartEntity getMachinePartEntity() {
-        return machinePartEntity;
-    }
+	public MachinePartEntity getMachinePartEntity() {
+		return machinePartEntity;
+	}
 
-    public void setMachinePartEntity(MachinePartEntity machinePartEntity) {
-        this.machinePartEntity = machinePartEntity;
-    }
+	public void setMachinePartEntity(MachinePartEntity machinePartEntity) {
+		this.machinePartEntity = machinePartEntity;
+	}
 
-    @Override
-    public int hashCode() {
-        int hash = 0;
-        hash += (id != null ? id.hashCode() : 0);
-        return hash;
-    }
+	@Override
+	public int hashCode() {
+		int hash = 0;
+		hash += (id != null ? id.hashCode() : 0);
+		return hash;
+	}
 
-    @Override
-    public boolean equals(Object object) {
-        // TODO: Warning - this method won't work in the case the id fields are not set
-        if (!(object instanceof PartFailureModeEntity)) {
-            return false;
-        }
-        PartFailureModeEntity other = (PartFailureModeEntity) object;
-        if ((this.id == null && other.id != null) || (this.id != null && !this.id.equals(other.id))) {
-            return false;
-        }
-        return true;
-    }
+	@Override
+	public boolean equals(Object object) {
+		// TODO: Warning - this method won't work in the case the id fields are not set
+		if (!(object instanceof PartFailureModeEntity)) {
+			return false;
+		}
+		PartFailureModeEntity other = (PartFailureModeEntity) object;
+		if ((this.id == null && other.id != null) || (this.id != null && !this.id.equals(other.id))) {
+			return false;
+		}
+		return true;
+	}
 
-    @Override
-    public String toString() {
-        return "org.ithb.si.made.mtmgmt.core.persistence.entity.PartFailureModeEntity[ id=" + id + " ]";
-    }
+	@Override
+	public String toString() {
+		return "org.ithb.si.made.mtmgmt.core.persistence.entity.PartFailureModeEntity[ id=" + id + " ]";
+	}
 }

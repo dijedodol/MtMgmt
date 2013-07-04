@@ -18,9 +18,10 @@
           http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc.xsd">
 
 	<context:annotation-config />
-	<tx:annotation-driven transaction-manager="transactionManager"/>
+	<context:load-time-weaver aspectj-weaving="on"/>
+	<tx:annotation-driven transaction-manager="transactionManager" mode="aspectj"/>
 	<context:property-placeholder location="classpath:app-config.properties"/>
-	<context:component-scan base-package="org.ithb.si.made.mtmgmt.core" />
+	<context:component-scan base-package="org.ithb.si.made.mtmgmt.core"/>
 	<jpa:repositories base-package="org.ithb.si.made.mtmgmt.core"/>
 	<import resource="classpath:app-security-config.xml"/>
     
@@ -43,6 +44,7 @@
 		<property name="acquireIncrement" value="4"/>
 		<property name="statementsCacheSize" value="128"/>
 		<property name="releaseHelperThreads" value="2"/>
+		<property name="defaultAutoCommit" value="false"/>
 	</bean>
 	<!-- BoneCP configuration -->
 
@@ -57,19 +59,17 @@
 		  p:packagesToScan="org.ithb.si.made.mtmgmt.core.persistence.entity">
 		<property name="jpaProperties">
 			<props>
-				<prop key="hibernate.format_sql">${hibernate.format_sql}</prop>
-				<prop key="hibernate.hbm2ddl.auto">${hibernate.hbm2ddl.auto}</prop>
-				<prop key="hibernate.connection.autocommit">${hibernate.connection.autocommit}</prop>
-				<prop key="hibernate.connection.useUnicode">${hibernate.connection.useUnicode}</prop>
-				<prop key="hibernate.connection.characterEncoding">${hibernate.connection.characterEncoding}</prop>
-				<prop key="hibernate.connection.charSet">${hibernate.connection.charSet}</prop>
+				<!-- EclipseLink should create the database schema automatically -->
+				<prop key="eclipselink.ddl-generation">create-tables</prop>
+				<prop key="eclipselink.ddl-generation.output-mode">database</prop>
+				<prop key="eclipselink.logging.level">WARNING</prop>
 			</props>
 		</property>
 	</bean>
 
-	<bean id="jpaAdapter"
-		  class="org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter"
-		  p:database="${hibernate.database_type}"
-		  p:showSql="${hibernate.show_sql}"/>
+	<bean id="jpaAdapter" class="org.springframework.orm.jpa.vendor.EclipseLinkJpaVendorAdapter">
+		<property name="databasePlatform" value="MySQL"/>
+		<property name="showSql" value="true" />
+	</bean>
 	<!-- JPA configuration -->
 </beans>

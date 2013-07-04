@@ -7,6 +7,7 @@ package org.ithb.si.made.mtmgmt.web.controller.supervisor;
 import java.security.Principal;
 import javax.validation.Valid;
 import org.ithb.si.made.mtmgmt.core.persistence.dao.UserDao;
+import org.ithb.si.made.mtmgmt.core.persistence.entity.SpbuEntity;
 import org.ithb.si.made.mtmgmt.core.persistence.entity.UserEntity;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -28,12 +29,15 @@ public class InputTotalizerController {
 	private static final Logger LOG = LoggerFactory.getLogger(InputTotalizerController.class);
 	@Autowired
 	private UserDao userDao;
-	
+
 	@RequestMapping(method = RequestMethod.GET)
 	public String showInputTotalizer(Principal principal, Model model) {
 		LOG.debug("showInputTotalizer principal:[{}]", principal);
-		
-		final UserEntity dbUserEntity = userDao.findByLoginId(principal.getName());
+
+		final UserEntity dbUserEntity = userDao.getSpbuList(principal.getName());
+		for (final SpbuEntity spbuEntity : dbUserEntity.getSpbuList()) {
+			LOG.debug("showInputTotalizer spbuEntity:[{}]", spbuEntity);
+		}
 		model.addAttribute("userEntity", dbUserEntity);
 		return "supervisor/input_totalizer";
 	}
@@ -42,7 +46,7 @@ public class InputTotalizerController {
 		final String username = principal.getName();
 		return "supervisor/input_totalizer";
 	}
-	
+
 	public static class TotalizerFormData {
 
 		private long machineId;

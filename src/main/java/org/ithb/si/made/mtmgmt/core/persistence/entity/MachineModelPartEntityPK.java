@@ -19,67 +19,67 @@ import org.slf4j.LoggerFactory;
  */
 @Embeddable
 public class MachineModelPartEntityPK implements Serializable {
-    @Basic(optional = false)
+		@Basic(optional = false)
     @NotNull
     @Column(name = "machine_model_id", nullable = false)
-    private long machineModelId;
-    @Basic(optional = false)
+		private long machineModelId;
+		@Basic(optional = false)
     @NotNull
     @Column(name = "part_id", nullable = false)
-    private long partId;
+		private long partId;
 
     private static final Logger LOG = LoggerFactory.getLogger(MachineModelPartEntityPK.class);
 
-    public MachineModelPartEntityPK() {
-    }
+		public MachineModelPartEntityPK() {
+		}
 
-    public MachineModelPartEntityPK(long machineModelId, long partId) {
-        this.machineModelId = machineModelId;
-        this.partId = partId;
-    }
+		public MachineModelPartEntityPK(long machineModelId, long partId) {
+				this.machineModelId = machineModelId;
+				this.partId = partId;
+		}
 
-    public long getMachineModelId() {
-        return machineModelId;
-    }
+		public long getMachineModelId() {
+				return machineModelId;
+		}
 
-    public void setMachineModelId(long machineModelId) {
-        this.machineModelId = machineModelId;
-    }
+		public void setMachineModelId(long machineModelId) {
+				this.machineModelId = machineModelId;
+		}
 
-    public long getPartId() {
-        return partId;
-    }
+		public long getPartId() {
+				return partId;
+		}
 
-    public void setPartId(long partId) {
-        this.partId = partId;
-    }
+		public void setPartId(long partId) {
+				this.partId = partId;
+		}
 
-    @Override
-    public int hashCode() {
-        int hash = 0;
-        hash += (int) machineModelId;
-        hash += (int) partId;
-        return hash;
-    }
+		@Override
+		public int hashCode() {
+				int hash = 0;
+				hash += (int) machineModelId;
+				hash += (int) partId;
+				return hash;
+		}
 
-    @Override
-    public boolean equals(Object object) {
-        // TODO: Warning - this method won't work in the case the id fields are not set
-        if (!(object instanceof MachineModelPartEntityPK)) {
-            return false;
-        }
-        MachineModelPartEntityPK other = (MachineModelPartEntityPK) object;
-        if (this.machineModelId != other.machineModelId) {
-            return false;
-        }
-        if (this.partId != other.partId) {
-            return false;
-        }
-        return true;
-    }
+		@Override
+		public boolean equals(Object object) {
+				// TODO: Warning - this method won't work in the case the id fields are not set
+				if (!(object instanceof MachineModelPartEntityPK)) {
+						return false;
+				}
+				MachineModelPartEntityPK other = (MachineModelPartEntityPK) object;
+				if (this.machineModelId != other.machineModelId) {
+						return false;
+				}
+				if (this.partId != other.partId) {
+						return false;
+				}
+				return true;
+		}
 
-    @Override
-    public String toString() {
-        return "org.ithb.si.made.mtmgmt.core.persistence.entity.MachineModelPartEntityPK[ machineModelId=" + machineModelId + ", partId=" + partId + " ]";
-    }
+		@Override
+		public String toString() {
+				return "org.ithb.si.made.mtmgmt.core.persistence.entity.MachineModelPartEntityPK[ machineModelId=" + machineModelId + ", partId=" + partId + " ]";
+		}
 }

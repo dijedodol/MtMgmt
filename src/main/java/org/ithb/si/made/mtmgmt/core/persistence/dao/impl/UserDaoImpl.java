@@ -4,13 +4,13 @@
  */
 package org.ithb.si.made.mtmgmt.core.persistence.dao.impl;
 
-import javax.transaction.Transactional;
 import org.ithb.si.made.mtmgmt.core.persistence.repository.UserRepository;
 import org.ithb.si.made.mtmgmt.core.persistence.entity.UserEntity;
 import org.ithb.si.made.mtmgmt.core.persistence.dao.UserDao;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  *
