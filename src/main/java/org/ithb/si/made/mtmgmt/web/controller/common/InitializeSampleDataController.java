@@ -6,16 +6,22 @@ package org.ithb.si.made.mtmgmt.web.controller.common;
 
 import java.security.Principal;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import org.ithb.si.made.mtmgmt.core.persistence.dao.MachineModelDao;
+import org.ithb.si.made.mtmgmt.core.persistence.dao.MachineModelTotalizerDao;
+import org.ithb.si.made.mtmgmt.core.persistence.dao.MachineTotalizerDao;
 import org.ithb.si.made.mtmgmt.core.persistence.dao.SpbuDao;
 import org.ithb.si.made.mtmgmt.core.persistence.dao.UserDao;
 import org.ithb.si.made.mtmgmt.core.persistence.entity.MachineModelEntity;
+import org.ithb.si.made.mtmgmt.core.persistence.entity.MachineModelTotalizerEntity;
+import org.ithb.si.made.mtmgmt.core.persistence.entity.MachineTotalizerEntity;
 import org.ithb.si.made.mtmgmt.core.persistence.entity.SpbuEntity;
 import org.ithb.si.made.mtmgmt.core.persistence.entity.UserEntity;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -35,6 +41,10 @@ public class InitializeSampleDataController {
 	private SpbuDao spbuDao;
 	@Autowired
 	private MachineModelDao machineModelDao;
+	@Autowired
+	private MachineTotalizerDao machineTotalizerDao;
+	@Autowired
+	private MachineModelTotalizerDao machineModelTotalizerDao;
 
 	@RequestMapping(method = RequestMethod.GET)
 	public String showResult(Principal principal, Model model) throws SQLException {
@@ -42,12 +52,16 @@ public class InitializeSampleDataController {
 		final UserEntity dbUserEntity = userDao.findByLoginId(principal.getName());
 		model.addAttribute("userEntity", dbUserEntity);
 
-		final SpbuEntity dbSpbuEntity1 = createSpbuIfNotExist(dbUserEntity, "0000");
-		final SpbuEntity dbSpbuEntity2 = createSpbuIfNotExist(dbUserEntity, "0001");
-		final MachineModelEntity dbMachineModel1 = createMachineIfNotExist("MCH000");
+		try {
+			final SpbuEntity dbSpbuEntity = createSpbuIfNotExist(dbUserEntity, "54-801.21");
+			final MachineModelEntity dbMachineModel = createMachineIfNotExist("Encore S-300", 6);
+			LOG.debug("showResult dbMachineModel:[{}], totalizers:[{}]", dbMachineModel, dbMachineModel.getMachineModelTotalizerEntityList());
 
-		model.addAttribute("spbuEntity1", dbSpbuEntity1);
-		model.addAttribute("spbuEntity2", dbSpbuEntity2);
+			model.addAttribute("spbuEntity", dbSpbuEntity);
+			model.addAttribute("dbMachineModel", dbMachineModel);
+		} catch (javax.validation.ConstraintViolationException ex) {
+			LOG.error("Exception:[{}], violations:[{}]", ex.getMessage(), ex.getConstraintViolations(), ex);
+		}
 		return "common/initialize_sample_data";
 	}
 
@@ -60,15 +74,16 @@ public class InitializeSampleDataController {
 		} else {
 			final SpbuEntity tmpNewDbSpbuEntity = new SpbuEntity();
 			tmpNewDbSpbuEntity.setCode(code);
-			tmpNewDbSpbuEntity.setAddress("Address " + code);
-			tmpNewDbSpbuEntity.setPhone("Phone " + code);
+			tmpNewDbSpbuEntity.setAddress("Address_" + code);
+			tmpNewDbSpbuEntity.setPhone("Phone_" + code);
 			tmpNewDbSpbuEntity.setSupervisor(supervisor);
 			ret = spbuDao.save(tmpNewDbSpbuEntity);
 		}
 		return ret;
 	}
 
-	private MachineModelEntity createMachineIfNotExist(String code) {
+	@Transactional
+	private MachineModelEntity createMachineIfNotExist(String code, int totalizerCount) {
 		final MachineModelEntity ret;
 		final MachineModelEntity tmpDbMachineModelEntity = machineModelDao.findByCode(code);
 		if (tmpDbMachineModelEntity != null) {
@@ -76,8 +91,20 @@ public class InitializeSampleDataController {
 		} else {
 			final MachineModelEntity tmpNewDbMachineModelEntity = new MachineModelEntity();
 			tmpNewDbMachineModelEntity.setCode(code);
-			tmpNewDbMachineModelEntity.setName("Machine " + code);
+			tmpNewDbMachineModelEntity.setName("Machine_" + code);
+			tmpNewDbMachineModelEntity.setMachineModelTotalizerEntityList(new ArrayList<MachineModelTotalizerEntity>(totalizerCount));
 			ret = machineModelDao.save(tmpNewDbMachineModelEntity);
+
+			for (int i = 0; i < totalizerCount; i++) {
+				final MachineTotalizerEntity machineTotalizer = new MachineTotalizerEntity();
+				machineTotalizer.setName("Totalizer_" + (i + 1));
+				machineTotalizerDao.save(machineTotalizer);
+
+				final MachineModelTotalizerEntity machineModelTotalizer = new MachineModelTotalizerEntity();
+				machineModelTotalizer.setMachineModelEntity(ret);
+				machineModelTotalizer.setMachineTotalizerEntity(machineTotalizer);
+				machineModelTotalizerDao.save(machineModelTotalizer);
+			}
 		}
 		return ret;
 	}
