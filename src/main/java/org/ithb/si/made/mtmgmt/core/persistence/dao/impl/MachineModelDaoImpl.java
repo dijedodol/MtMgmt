@@ -8,6 +8,7 @@ import org.ithb.si.made.mtmgmt.core.persistence.dao.MachineModelDao;
 import org.ithb.si.made.mtmgmt.core.persistence.entity.MachineModelEntity;
 import org.ithb.si.made.mtmgmt.core.persistence.repository.MachineModelRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
@@ -27,7 +28,7 @@ public class MachineModelDaoImpl extends AbstractDaoImpl<MachineModelEntity, Lon
 	}
 
 	@Override
-	protected CrudRepository<MachineModelEntity, Long> getRepository() {
+	protected JpaRepository<MachineModelEntity, Long> getRepository() {
 		return machineModelRepository;
 	}
 

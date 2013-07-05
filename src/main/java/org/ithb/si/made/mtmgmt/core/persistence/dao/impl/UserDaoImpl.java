@@ -8,7 +8,7 @@ import org.ithb.si.made.mtmgmt.core.persistence.repository.UserRepository;
 import org.ithb.si.made.mtmgmt.core.persistence.entity.UserEntity;
 import org.ithb.si.made.mtmgmt.core.persistence.dao.UserDao;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.repository.CrudRepository;
+import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -27,26 +27,12 @@ public class UserDaoImpl extends AbstractDaoImpl<UserEntity, Long> implements Us
 	}
 
 	@Override
-	protected CrudRepository<UserEntity, Long> getRepository() {
+	protected JpaRepository<UserEntity, Long> getRepository() {
 		return userRepository;
 	}
 
 	@Override
 	public UserEntity findByLoginId(String loginId) {
 		return userRepository.findByLoginId(loginId);
-	}
-
-	@Override
-	public UserEntity getSpbuList(String loginId) {
-		final UserEntity ret = findByLoginId(loginId);
-		ret.getSpbuList().size();
-		return ret;
-	}
-
-	@Override
-	public UserEntity getSpbuList(UserEntity dbUserEntity) {
-		final UserEntity ret = findByLoginId(dbUserEntity.getLoginId());
-		ret.getSpbuList().size();
-		return ret;
 	}
 }

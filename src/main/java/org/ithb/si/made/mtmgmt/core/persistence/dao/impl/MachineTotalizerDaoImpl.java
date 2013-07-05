@@ -8,6 +8,7 @@ import org.ithb.si.made.mtmgmt.core.persistence.dao.MachineTotalizerDao;
 import org.ithb.si.made.mtmgmt.core.persistence.entity.MachineTotalizerEntity;
 import org.ithb.si.made.mtmgmt.core.persistence.repository.MachineTotalizerRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
@@ -24,7 +25,7 @@ public class MachineTotalizerDaoImpl extends AbstractDaoImpl<MachineTotalizerEnt
 	private MachineTotalizerRepository machineTotalizerRepository;
 
 	@Override
-	protected CrudRepository<MachineTotalizerEntity, Long> getRepository() {
+	protected JpaRepository<MachineTotalizerEntity, Long> getRepository() {
 		return machineTotalizerRepository;
 	}
 }

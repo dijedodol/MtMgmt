@@ -21,4 +21,6 @@ public interface AbstractDao<ENTITY extends Serializable, ID extends Serializabl
 	Iterable<ENTITY> findAll();
 
 	ENTITY findById(ID id);
+	
+	void flush();
 }

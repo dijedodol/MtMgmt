@@ -6,6 +6,7 @@ package org.ithb.si.made.mtmgmt.core.persistence.dao.impl;
 
 import java.io.Serializable;
 import org.ithb.si.made.mtmgmt.core.persistence.dao.AbstractDao;
+import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.repository.CrudRepository;
 
 /**
@@ -14,7 +15,7 @@ import org.springframework.data.repository.CrudRepository;
  */
 public abstract class AbstractDaoImpl<ENTITY extends Serializable, ID extends Serializable> implements AbstractDao<ENTITY, ID> {
 
-	protected abstract CrudRepository<ENTITY, ID> getRepository();
+	protected abstract JpaRepository<ENTITY, ID> getRepository();
 
 	@Override
 	public ENTITY save(ENTITY entity) {
@@ -39,5 +40,10 @@ public abstract class AbstractDaoImpl<ENTITY extends Serializable, ID extends Se
 	@Override
 	public ENTITY findById(ID id) {
 		return getRepository().findOne(id);
+	}
+
+	@Override
+	public void flush() {
+		getRepository().flush();
 	}
 }

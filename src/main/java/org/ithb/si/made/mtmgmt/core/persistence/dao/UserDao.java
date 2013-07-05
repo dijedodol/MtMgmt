@@ -13,8 +13,4 @@ import org.ithb.si.made.mtmgmt.core.persistence.entity.UserEntity;
 public interface UserDao extends AbstractDao<UserEntity, Long> {
 
 	UserEntity findByLoginId(String loginId);
-	
-	UserEntity getSpbuList(String loginId);
-	
-	UserEntity getSpbuList(UserEntity dbUserEntity);
 }

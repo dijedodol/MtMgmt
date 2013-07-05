@@ -11,9 +11,8 @@
 		<intercept-url pattern="/technician/*" access="hasRole('TECHNICIAN')" />
 		<intercept-url pattern="/supervisor/*" access="hasRole('SUPERVISOR')" />
 		<intercept-url pattern="/common/*" access="isAuthenticated()" />
-		
+		<intercept-url pattern="/anonymous/*" access="permitAll" />
 		<intercept-url pattern="/asset/*" access="permitAll" />
-		<intercept-url pattern="/login.htm" access="permitAll" />
 		<intercept-url pattern="/*" access="denyAll" />
 		
 		<!-- <form-login login-page="/login.htm"/> -->

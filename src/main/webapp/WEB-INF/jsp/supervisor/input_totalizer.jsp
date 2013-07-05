@@ -16,6 +16,8 @@
     </head>
     <body>
         <h1>Hello World!</h1>
-		${dbUserEntity.spbuList}<br/>
+		<sf:form >
+			<sf:select path="spbus" itemLabel=""/>
+		</sf:form>
     </body>
 </html>
