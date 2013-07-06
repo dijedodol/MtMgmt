@@ -1,0 +1,17 @@
+/* 
+    Document   : default
+    Created on : Jul 7, 2013, 3:37:32 AM
+    Author     : gde.satrigraha
+    Description:
+        Purpose of the stylesheet follows.
+*/
+#sidebar {float: left; width: 250px; background: #eee;}
+#content {overflow: hidden; background: #dad;}
+
+table {
+	border: solid black;
+}
+
+tr {
+	vertical-align: top;
+}

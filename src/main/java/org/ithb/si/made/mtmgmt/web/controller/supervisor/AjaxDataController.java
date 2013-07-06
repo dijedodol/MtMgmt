@@ -51,7 +51,7 @@ public class AjaxDataController {
 	private SpbuMachineTotalizerRepository spbuMachineTotalizerRepository;
 
 	@ResponseBody
-	@RequestMapping(value = "spbu", produces = "application/json", method = RequestMethod.POST)
+	@RequestMapping(value = "spbu", produces = "application/json", method = RequestMethod.GET)
 	public List<Map> supervisorListSpbu(Principal principal) {
 		final UserEntity dbUserEntity = userRepository.findByLoginId(principal.getName());
 		LOG.debug("supervisorListSpbu dbUserEntity:[{}]", dbUserEntity);
@@ -69,7 +69,7 @@ public class AjaxDataController {
 	}
 
 	@ResponseBody
-	@RequestMapping(value = "spbu/{spbuId}/machine", produces = "application/json", method = RequestMethod.POST)
+	@RequestMapping(value = "spbu/{spbuId}/machine", produces = "application/json", method = RequestMethod.GET)
 	public ResponseEntity<List<Map>> supervisorListSpbuMachine(Principal principal, @PathVariable long spbuId) {
 		final UserEntity dbUserEntity = userRepository.findByLoginId(principal.getName());
 		final SpbuEntity dbSpbuEntity = spbuRepository.findOne(spbuId);
@@ -80,8 +80,8 @@ public class AjaxDataController {
 			for (final SpbuMachineEntity spbuMachineEntity : dbSpbuEntity.getSpbuMachineEntityList()) {
 				final Map<String, Object> tmp = new HashMap<>();
 				tmp.put("identifier", spbuMachineEntity.getSpbuMachineEntityPK().getIdentifier());
-				tmp.put("machine_model_id", spbuMachineEntity.getMachineModelEntity().getId());
-				tmp.put("machine_entity", new MapBuilder<>(new HashMap<String, Object>())
+				tmp.put("machineModelId", spbuMachineEntity.getMachineModelEntity().getId());
+				tmp.put("machineEntity", new MapBuilder<>(new HashMap<String, Object>())
 								.put("id", spbuMachineEntity.getMachineModelEntity().getId())
 								.put("code", spbuMachineEntity.getMachineModelEntity().getCode())
 								.put("name", spbuMachineEntity.getMachineModelEntity().getName())
@@ -97,7 +97,7 @@ public class AjaxDataController {
 	}
 
 	@ResponseBody
-	@RequestMapping(value = "spbu/{spbuId}/machine/{identifier}/totalizer", produces = "application/json", method = RequestMethod.POST)
+	@RequestMapping(value = "spbu/{spbuId}/machine/{identifier}/totalizer", produces = "application/json", method = RequestMethod.GET)
 	public ResponseEntity<List<Map>> supervisorListSpbuMachineTotalizer(Principal principal, @PathVariable("spbuId") long spbuId, @PathVariable("identifier") String spbuMachineIdentifier) {
 		final UserEntity dbUserEntity = userRepository.findByLoginId(principal.getName());
 		final SpbuMachineEntity dbSpbuMachineEntity = spbuMachineRepository.findOne(new SpbuMachineEntityPK(spbuId, spbuMachineIdentifier));
@@ -119,8 +119,9 @@ public class AjaxDataController {
 				final SpbuMachineTotalizerEntity spbuMachineTotalizerEntity = spbuMachineTotalizerRepository.findOne(new SpbuMachineTotalizerEntityPK(spbuId, spbuMachineIdentifier, machineModelTotalizerEntity.getMachineTotalizerEntity().getId()));
 				final MapBuilder<String, Object> mapBuilder = new MapBuilder(new HashMap<>());
 
-				respEntity.add(mapBuilder.put("machine_totalizer_id", machineModelTotalizerEntity.getMachineTotalizerEntity().getId())
+				respEntity.add(mapBuilder.put("machineTotalizerId", machineModelTotalizerEntity.getMachineTotalizerEntity().getId())
 								.put("counter", spbuMachineTotalizerEntity == null ? 0 : spbuMachineTotalizerEntity.getCounter())
+								.put("machineTotalizerName", machineModelTotalizerEntity.getMachineTotalizerEntity().getName())
 								.getMap());
 			}
 			ret = new ResponseEntity(respEntity, HttpStatus.OK);

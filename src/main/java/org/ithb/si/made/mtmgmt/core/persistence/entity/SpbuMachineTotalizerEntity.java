@@ -34,7 +34,7 @@ public class SpbuMachineTotalizerEntity implements Serializable {
 	@Basic(optional = false)
   @NotNull
   @Column(name = "counter", nullable = false)
-	private long counter;
+	private double counter;
 	@JoinColumns({
   	@JoinColumn(name = "spbu_id", referencedColumnName = "spbu_id", nullable = false, insertable = false, updatable = false),
   	@JoinColumn(name = "identifier", referencedColumnName = "identifier", nullable = false, insertable = false, updatable = false)})
@@ -68,11 +68,11 @@ public class SpbuMachineTotalizerEntity implements Serializable {
 		this.spbuMachineTotalizerEntityPK = spbuMachineTotalizerEntityPK;
 	}
 
-	public long getCounter() {
+	public double getCounter() {
 		return counter;
 	}
 
-	public void setCounter(long counter) {
+	public void setCounter(double counter) {
 		this.counter = counter;
 	}
 

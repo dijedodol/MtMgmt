@@ -10,14 +10,18 @@
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <!DOCTYPE html>
 <html>
-    <head>
-        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-        <title>Supervisor - Home</title>
-    </head>
-    <body>
-			<ul>
-				<li><a href="list_failure.htm"><s:message code="label.menu.list.failure"/></a></li>
-				<li><a href="input_totalizer.htm"><s:message code="label.menu.input.totalizer"/></a></li>
-			</ul>
-    </body>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+		<title>Supervisor - Home</title>
+		<link rel="stylesheet" href="../asset/css/default.css">
+	</head>
+	<body>
+		<div id="sidebar">
+				<ul>
+					<li><a href="list_failure.htm"><s:message code="supervisor.home.list.failure"/></a></li>
+					<li><a href="input_totalizer.htm"><s:message code="supervisor.home.input.totalizer"/></a></li>
+				</ul>
+		</div>
+		<div id="content"></div>
+	</body>
 </html>

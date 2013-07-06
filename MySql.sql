@@ -1,6 +1,3 @@
-drop database mtmgmt;
-create database mtmgmt;
-use mtmgmt;
 
 -- 
 -- TABLE: failure_mode_handlings 
@@ -35,9 +32,9 @@ CREATE TABLE machine_model_part_totalizers(
 --
 
 CREATE TABLE machine_model_parts(
-    machine_model_id    BIGINT    NOT NULL,
     machine_part_id     BIGINT    NOT NULL,
-    PRIMARY KEY (machine_model_id, machine_part_id)
+    machine_model_id    BIGINT    NOT NULL,
+    PRIMARY KEY (machine_part_id, machine_model_id)
 )ENGINE=INNODB
 ;
 
@@ -48,9 +45,9 @@ CREATE TABLE machine_model_parts(
 --
 
 CREATE TABLE machine_model_totalizers(
-    machine_model_id        BIGINT    NOT NULL,
     machine_totalizer_id    BIGINT    NOT NULL,
-    PRIMARY KEY (machine_model_id, machine_totalizer_id)
+    machine_model_id        BIGINT    NOT NULL,
+    PRIMARY KEY (machine_totalizer_id, machine_model_id)
 )ENGINE=INNODB
 ;
 
@@ -112,15 +109,48 @@ CREATE TABLE part_failure_modes(
 
 
 -- 
+-- TABLE: service_report_spbu_machine_totalizers 
+--
+
+CREATE TABLE service_report_spbu_machine_totalizers(
+    service_report_id       CHAR(10)         NOT NULL,
+    spbu_id                 BIGINT           NOT NULL,
+    machine_identifier      VARCHAR(20)      NOT NULL,
+    machine_totalizer_id    BIGINT           NOT NULL,
+    counter                 DOUBLE(18, 0)    NOT NULL,
+    PRIMARY KEY (service_report_id, spbu_id, machine_identifier, machine_totalizer_id)
+)ENGINE=INNODB
+;
+
+
+
+-- 
+-- TABLE: service_reports 
+--
+
+CREATE TABLE service_reports(
+    id                          CHAR(10)       NOT NULL,
+    date                        CHAR(10),
+    spbu_id                     BIGINT         NOT NULL,
+    machine_identifier          VARCHAR(20)    NOT NULL,
+    failure_mode_handling_id    BIGINT         NOT NULL,
+    technician_id               BIGINT         NOT NULL,
+    PRIMARY KEY (id)
+)ENGINE=INNODB
+;
+
+
+
+-- 
 -- TABLE: spbu_machine_totalizers 
 --
 
 CREATE TABLE spbu_machine_totalizers(
-    spbu_id                 BIGINT         NOT NULL,
-    identifier              VARCHAR(20)    NOT NULL,
-    machine_totalizer_id    BIGINT         NOT NULL,
-    counter                 BIGINT         NOT NULL,
-    PRIMARY KEY (spbu_id, identifier, machine_totalizer_id)
+    machine_totalizer_id    BIGINT           NOT NULL,
+    spbu_id                 BIGINT           NOT NULL,
+    machine_identifier      VARCHAR(20)      NOT NULL,
+    counter                 DOUBLE(18, 0)    NOT NULL,
+    PRIMARY KEY (machine_totalizer_id, spbu_id, machine_identifier)
 )ENGINE=INNODB
 ;
 
@@ -131,10 +161,10 @@ CREATE TABLE spbu_machine_totalizers(
 --
 
 CREATE TABLE spbu_machines(
-    spbu_id             BIGINT         NOT NULL,
-    identifier          VARCHAR(20)    NOT NULL,
-    machine_model_id    BIGINT,
-    PRIMARY KEY (spbu_id, identifier)
+    spbu_id               BIGINT         NOT NULL,
+    machine_identifier    VARCHAR(20)    NOT NULL,
+    machine_model_id      BIGINT,
+    PRIMARY KEY (spbu_id, machine_identifier)
 )ENGINE=INNODB
 ;
 
@@ -179,28 +209,28 @@ CREATE TABLE users(
 CREATE INDEX FK_failure_mode_handlings_failure_mode_id ON failure_mode_handlings(failure_mode_id)
 ;
 -- 
--- INDEX: FK_machine_model_part_totalizers_machine_model_id 
---
-
-CREATE INDEX FK_machine_model_part_totalizers_machine_model_id ON machine_model_part_totalizers(machine_part_id, machine_model_id)
-;
--- 
 -- INDEX: machine_model_part_totalizers_machine_totalizer_id 
 --
 
-CREATE INDEX machine_model_part_totalizers_machine_totalizer_id ON machine_model_part_totalizers(machine_model_id, machine_totalizer_id)
+CREATE INDEX machine_model_part_totalizers_machine_totalizer_id ON machine_model_part_totalizers(machine_totalizer_id, machine_model_id)
 ;
 -- 
--- INDEX: FK_machine_model_parts_part_id 
+-- INDEX: FK_machine_model_part_totalizers_machine_part_id 
 --
 
-CREATE INDEX FK_machine_model_parts_part_id ON machine_model_parts(machine_part_id)
+CREATE INDEX FK_machine_model_part_totalizers_machine_part_id ON machine_model_part_totalizers(machine_part_id, machine_model_id)
 ;
 -- 
 -- INDEX: FK_machine_model_parts_machine_model_id 
 --
 
 CREATE INDEX FK_machine_model_parts_machine_model_id ON machine_model_parts(machine_model_id)
+;
+-- 
+-- INDEX: FK_machine_model_parts_machine_part_id 
+--
+
+CREATE INDEX FK_machine_model_parts_machine_part_id ON machine_model_parts(machine_part_id)
 ;
 -- 
 -- INDEX: FK_machine_model_totalizers_machine_model_id 
@@ -227,28 +257,58 @@ CREATE UNIQUE INDEX UNQ_machine_models_0 ON machine_models(code)
 CREATE INDEX FK_part_failure_modes_part_id ON part_failure_modes(part_id)
 ;
 -- 
--- INDEX: Ref1013 
+-- INDEX: Ref1314 
 --
 
-CREATE INDEX Ref1013 ON spbu_machine_totalizers(spbu_id, identifier)
+CREATE INDEX Ref1314 ON service_report_spbu_machine_totalizers(service_report_id)
 ;
 -- 
--- INDEX: Ref714 
+-- INDEX: Ref1116 
 --
 
-CREATE INDEX Ref714 ON spbu_machine_totalizers(machine_totalizer_id)
+CREATE INDEX Ref1116 ON service_report_spbu_machine_totalizers(machine_totalizer_id, spbu_id, machine_identifier)
 ;
 -- 
--- INDEX: FK_spbu_machines_spbu_id 
+-- INDEX: Ref1017 
 --
 
-CREATE INDEX FK_spbu_machines_spbu_id ON spbu_machines(spbu_id)
+CREATE INDEX Ref1017 ON service_reports(spbu_id, machine_identifier)
+;
+-- 
+-- INDEX: Ref118 
+--
+
+CREATE INDEX Ref118 ON service_reports(failure_mode_handling_id)
+;
+-- 
+-- INDEX: Ref1219 
+--
+
+CREATE INDEX Ref1219 ON service_reports(technician_id)
+;
+-- 
+-- INDEX: FK_spbu_machine_totalizers_spbu_id 
+--
+
+CREATE INDEX FK_spbu_machine_totalizers_spbu_id ON spbu_machine_totalizers(spbu_id, machine_identifier)
+;
+-- 
+-- INDEX: FK_spbu_machine_totalizers_machine_totalizer_id 
+--
+
+CREATE INDEX FK_spbu_machine_totalizers_machine_totalizer_id ON spbu_machine_totalizers(machine_totalizer_id)
 ;
 -- 
 -- INDEX: FK_spbu_machines_machine_model_id 
 --
 
 CREATE INDEX FK_spbu_machines_machine_model_id ON spbu_machines(machine_model_id)
+;
+-- 
+-- INDEX: FK_spbu_machines_spbu_id 
+--
+
+CREATE INDEX FK_spbu_machines_spbu_id ON spbu_machines(spbu_id)
 ;
 -- 
 -- INDEX: UNQ_spbus_0 
@@ -282,14 +342,14 @@ ALTER TABLE failure_mode_handlings ADD CONSTRAINT FK_failure_mode_handlings_fail
 -- TABLE: machine_model_part_totalizers 
 --
 
-ALTER TABLE machine_model_part_totalizers ADD CONSTRAINT FK_machine_model_part_totalizers_machine_model_id 
+ALTER TABLE machine_model_part_totalizers ADD CONSTRAINT FK_machine_model_part_totalizers_machine_part_id 
     FOREIGN KEY (machine_model_id, machine_part_id)
-    REFERENCES machine_model_parts(machine_model_id, machine_part_id)
+    REFERENCES machine_model_parts(machine_part_id, machine_model_id)
 ;
 
 ALTER TABLE machine_model_part_totalizers ADD CONSTRAINT machine_model_part_totalizers_machine_totalizer_id 
     FOREIGN KEY (machine_model_id, machine_totalizer_id)
-    REFERENCES machine_model_totalizers(machine_model_id, machine_totalizer_id)
+    REFERENCES machine_model_totalizers(machine_totalizer_id, machine_model_id)
 ;
 
 
@@ -302,7 +362,7 @@ ALTER TABLE machine_model_parts ADD CONSTRAINT FK_machine_model_parts_machine_mo
     REFERENCES machine_models(id)
 ;
 
-ALTER TABLE machine_model_parts ADD CONSTRAINT FK_machine_model_parts_part_id 
+ALTER TABLE machine_model_parts ADD CONSTRAINT FK_machine_model_parts_machine_part_id 
     FOREIGN KEY (machine_part_id)
     REFERENCES machine_parts(id)
 ;
@@ -334,17 +394,52 @@ ALTER TABLE part_failure_modes ADD CONSTRAINT FK_part_failure_modes_part_id
 
 
 -- 
+-- TABLE: service_report_spbu_machine_totalizers 
+--
+
+ALTER TABLE service_report_spbu_machine_totalizers ADD CONSTRAINT Refservice_reports14 
+    FOREIGN KEY (service_report_id)
+    REFERENCES service_reports(id)
+;
+
+ALTER TABLE service_report_spbu_machine_totalizers ADD CONSTRAINT Refspbu_machine_totalizers16 
+    FOREIGN KEY (spbu_id, machine_identifier, machine_totalizer_id)
+    REFERENCES spbu_machine_totalizers(machine_totalizer_id, spbu_id, machine_identifier)
+;
+
+
+-- 
+-- TABLE: service_reports 
+--
+
+ALTER TABLE service_reports ADD CONSTRAINT Refspbu_machines17 
+    FOREIGN KEY (spbu_id, machine_identifier)
+    REFERENCES spbu_machines(spbu_id, machine_identifier)
+;
+
+ALTER TABLE service_reports ADD CONSTRAINT Reffailure_mode_handlings18 
+    FOREIGN KEY (failure_mode_handling_id)
+    REFERENCES failure_mode_handlings(id)
+;
+
+ALTER TABLE service_reports ADD CONSTRAINT Refusers19 
+    FOREIGN KEY (technician_id)
+    REFERENCES users(ID)
+;
+
+
+-- 
 -- TABLE: spbu_machine_totalizers 
 --
 
-ALTER TABLE spbu_machine_totalizers ADD CONSTRAINT Refspbu_machines13 
-    FOREIGN KEY (spbu_id, identifier)
-    REFERENCES spbu_machines(spbu_id, identifier)
-;
-
-ALTER TABLE spbu_machine_totalizers ADD CONSTRAINT Refmachine_totalizers14 
+ALTER TABLE spbu_machine_totalizers ADD CONSTRAINT FK_spbu_machine_totalizers_machine_totalizer_id 
     FOREIGN KEY (machine_totalizer_id)
     REFERENCES machine_totalizers(id)
+;
+
+ALTER TABLE spbu_machine_totalizers ADD CONSTRAINT FK_spbu_machine_totalizers_spbu_id 
+    FOREIGN KEY (spbu_id, machine_identifier)
+    REFERENCES spbu_machines(spbu_id, machine_identifier)
 ;
 
 
