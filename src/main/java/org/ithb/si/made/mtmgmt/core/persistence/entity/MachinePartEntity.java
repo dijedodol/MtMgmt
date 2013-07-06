@@ -2,6 +2,7 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
+
 package org.ithb.si.made.mtmgmt.core.persistence.entity;
 
 import java.io.Serializable;
@@ -20,40 +21,36 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  *
- * @author gde.satrigraha
+ * @author Uyeee
  */
 @Entity
 @Table(name = "machine_parts")
 @NamedQueries({
 	@NamedQuery(name = "MachinePartEntity.findAll", query = "SELECT m FROM MachinePartEntity m")})
 public class MachinePartEntity implements Serializable {
-
 	private static final long serialVersionUID = 1L;
 	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Basic(optional = false)
-	@Column(name = "id", nullable = false)
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  @Basic(optional = false)
+  @Column(name = "id", nullable = false)
 	private Long id;
 	@Basic(optional = false)
-	@NotNull
-	@Size(min = 1, max = 20)
-	@Column(name = "code", nullable = false, length = 20)
+  @NotNull
+  @Size(min = 1, max = 20)
+  @Column(name = "code", nullable = false, length = 20)
 	private String code;
 	@Basic(optional = false)
-	@NotNull
-	@Size(min = 1, max = 255)
-	@Column(name = "name", nullable = false, length = 255)
+  @NotNull
+  @Size(min = 1, max = 255)
+  @Column(name = "name", nullable = false, length = 255)
 	private String name;
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "machinePartEntity", fetch = FetchType.LAZY)
 	private List<MachineModelPartEntity> machineModelPartEntityList;
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "machinePartEntity", fetch = FetchType.LAZY)
 	private List<PartFailureModeEntity> partFailureModeEntityList;
-	private static final Logger LOG = LoggerFactory.getLogger(MachinePartEntity.class);
 
 	public MachinePartEntity() {
 	}
@@ -132,4 +129,5 @@ public class MachinePartEntity implements Serializable {
 	public String toString() {
 		return "org.ithb.si.made.mtmgmt.core.persistence.entity.MachinePartEntity[ id=" + id + " ]";
 	}
+
 }

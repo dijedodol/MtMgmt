@@ -2,6 +2,7 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
+
 package org.ithb.si.made.mtmgmt.core.persistence.entity;
 
 import java.io.Serializable;
@@ -20,33 +21,31 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  *
- * @author gde.satrigraha
+ * @author Uyeee
  */
 @Entity
 @Table(name = "machine_totalizers")
 @NamedQueries({
 	@NamedQuery(name = "MachineTotalizerEntity.findAll", query = "SELECT m FROM MachineTotalizerEntity m")})
 public class MachineTotalizerEntity implements Serializable {
-
 	private static final long serialVersionUID = 1L;
 	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Basic(optional = false)
-	@Column(name = "id", nullable = false)
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  @Basic(optional = false)
+  @Column(name = "id", nullable = false)
 	private Long id;
 	@Basic(optional = false)
-	@NotNull
-	@Size(min = 1, max = 20)
-	@Column(name = "name", nullable = false, length = 20)
+  @NotNull
+  @Size(min = 1, max = 20)
+  @Column(name = "name", nullable = false, length = 20)
 	private String name;
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "machineTotalizerEntity", fetch = FetchType.LAZY)
 	private List<MachineModelTotalizerEntity> machineModelTotalizerEntityList;
-	private static final Logger LOG = LoggerFactory.getLogger(MachineTotalizerEntity.class);
+	@OneToMany(cascade = CascadeType.ALL, mappedBy = "machineTotalizerEntity", fetch = FetchType.LAZY)
+	private List<SpbuMachineTotalizerEntity> spbuMachineTotalizerEntityList;
 
 	public MachineTotalizerEntity() {
 	}
@@ -84,6 +83,14 @@ public class MachineTotalizerEntity implements Serializable {
 		this.machineModelTotalizerEntityList = machineModelTotalizerEntityList;
 	}
 
+	public List<SpbuMachineTotalizerEntity> getSpbuMachineTotalizerEntityList() {
+		return spbuMachineTotalizerEntityList;
+	}
+
+	public void setSpbuMachineTotalizerEntityList(List<SpbuMachineTotalizerEntity> spbuMachineTotalizerEntityList) {
+		this.spbuMachineTotalizerEntityList = spbuMachineTotalizerEntityList;
+	}
+
 	@Override
 	public int hashCode() {
 		int hash = 0;
@@ -108,4 +115,5 @@ public class MachineTotalizerEntity implements Serializable {
 	public String toString() {
 		return "org.ithb.si.made.mtmgmt.core.persistence.entity.MachineTotalizerEntity[ id=" + id + " ]";
 	}
+
 }

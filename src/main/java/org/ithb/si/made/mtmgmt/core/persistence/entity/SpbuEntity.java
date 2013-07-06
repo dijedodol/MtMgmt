@@ -2,6 +2,7 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
+
 package org.ithb.si.made.mtmgmt.core.persistence.entity;
 
 import java.io.Serializable;
@@ -23,12 +24,10 @@ import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  *
- * @author gde.satrigraha
+ * @author Uyeee
  */
 @Entity
 @Table(name = "spbus", uniqueConstraints = {
@@ -36,35 +35,33 @@ import org.slf4j.LoggerFactory;
 @NamedQueries({
 	@NamedQuery(name = "SpbuEntity.findAll", query = "SELECT s FROM SpbuEntity s")})
 public class SpbuEntity implements Serializable {
-
 	private static final long serialVersionUID = 1L;
 	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Basic(optional = false)
-	@Column(name = "id", nullable = false)
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  @Basic(optional = false)
+  @Column(name = "id", nullable = false)
 	private Long id;
 	@Basic(optional = false)
-	@NotNull
-	@Size(min = 1, max = 20)
-	@Column(name = "code", nullable = false, length = 20)
-	private String code;
-	@Basic(optional = false)
-	@NotNull
-	@Size(min = 1, max = 255)
-	@Column(name = "address", nullable = false, length = 255)
+  @NotNull
+  @Size(min = 1, max = 255)
+  @Column(name = "address", nullable = false, length = 255)
 	private String address;
+	@Basic(optional = false)
+  @NotNull
+  @Size(min = 1, max = 20)
+  @Column(name = "code", nullable = false, length = 20)
+	private String code;
 	// @Pattern(regexp="^\\(?(\\d{3})\\)?[- ]?(\\d{3})[- ]?(\\d{4})$", message="Invalid phone/fax format, should be as xxx-xxx-xxxx")//if the field contains phone or fax number consider using this annotation to enforce field validation
 	@Basic(optional = false)
-	@NotNull
-	@Size(min = 1, max = 20)
-	@Column(name = "phone", nullable = false, length = 20)
+  @NotNull
+  @Size(min = 1, max = 20)
+  @Column(name = "phone", nullable = false, length = 20)
 	private String phone;
 	@JoinColumn(name = "supervisor_id", referencedColumnName = "id", nullable = false)
-	@ManyToOne(optional = false, fetch = FetchType.EAGER)
+  @ManyToOne(optional = false, fetch = FetchType.EAGER)
 	private UserEntity supervisor;
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "spbuEntity", fetch = FetchType.LAZY)
 	private List<SpbuMachineEntity> spbuMachineEntityList;
-	private static final Logger LOG = LoggerFactory.getLogger(SpbuEntity.class);
 
 	public SpbuEntity() {
 	}
@@ -73,10 +70,10 @@ public class SpbuEntity implements Serializable {
 		this.id = id;
 	}
 
-	public SpbuEntity(Long id, String code, String address, String phone) {
+	public SpbuEntity(Long id, String address, String code, String phone) {
 		this.id = id;
-		this.code = code;
 		this.address = address;
+		this.code = code;
 		this.phone = phone;
 	}
 
@@ -88,20 +85,20 @@ public class SpbuEntity implements Serializable {
 		this.id = id;
 	}
 
-	public String getCode() {
-		return code;
-	}
-
-	public void setCode(String code) {
-		this.code = code;
-	}
-
 	public String getAddress() {
 		return address;
 	}
 
 	public void setAddress(String address) {
 		this.address = address;
+	}
+
+	public String getCode() {
+		return code;
+	}
+
+	public void setCode(String code) {
+		this.code = code;
 	}
 
 	public String getPhone() {
@@ -152,4 +149,5 @@ public class SpbuEntity implements Serializable {
 	public String toString() {
 		return "org.ithb.si.made.mtmgmt.core.persistence.entity.SpbuEntity[ id=" + id + " ]";
 	}
+
 }

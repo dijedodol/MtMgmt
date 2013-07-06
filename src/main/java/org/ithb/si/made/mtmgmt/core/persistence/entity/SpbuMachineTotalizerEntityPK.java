@@ -17,7 +17,7 @@ import javax.validation.constraints.Size;
  * @author Uyeee
  */
 @Embeddable
-public class SpbuMachineEntityPK implements Serializable {
+public class SpbuMachineTotalizerEntityPK implements Serializable {
 	@Basic(optional = false)
   @NotNull
   @Column(name = "spbu_id", nullable = false)
@@ -27,13 +27,18 @@ public class SpbuMachineEntityPK implements Serializable {
   @Size(min = 1, max = 20)
   @Column(name = "identifier", nullable = false, length = 20)
 	private String identifier;
+	@Basic(optional = false)
+  @NotNull
+  @Column(name = "machine_totalizer_id", nullable = false)
+	private long machineTotalizerId;
 
-	public SpbuMachineEntityPK() {
+	public SpbuMachineTotalizerEntityPK() {
 	}
 
-	public SpbuMachineEntityPK(long spbuId, String identifier) {
+	public SpbuMachineTotalizerEntityPK(long spbuId, String identifier, long machineTotalizerId) {
 		this.spbuId = spbuId;
 		this.identifier = identifier;
+		this.machineTotalizerId = machineTotalizerId;
 	}
 
 	public long getSpbuId() {
@@ -52,25 +57,37 @@ public class SpbuMachineEntityPK implements Serializable {
 		this.identifier = identifier;
 	}
 
+	public long getMachineTotalizerId() {
+		return machineTotalizerId;
+	}
+
+	public void setMachineTotalizerId(long machineTotalizerId) {
+		this.machineTotalizerId = machineTotalizerId;
+	}
+
 	@Override
 	public int hashCode() {
 		int hash = 0;
 		hash += (int) spbuId;
 		hash += (identifier != null ? identifier.hashCode() : 0);
+		hash += (int) machineTotalizerId;
 		return hash;
 	}
 
 	@Override
 	public boolean equals(Object object) {
 		// TODO: Warning - this method won't work in the case the id fields are not set
-		if (!(object instanceof SpbuMachineEntityPK)) {
+		if (!(object instanceof SpbuMachineTotalizerEntityPK)) {
 			return false;
 		}
-		SpbuMachineEntityPK other = (SpbuMachineEntityPK) object;
+		SpbuMachineTotalizerEntityPK other = (SpbuMachineTotalizerEntityPK) object;
 		if (this.spbuId != other.spbuId) {
 			return false;
 		}
 		if ((this.identifier == null && other.identifier != null) || (this.identifier != null && !this.identifier.equals(other.identifier))) {
+			return false;
+		}
+		if (this.machineTotalizerId != other.machineTotalizerId) {
 			return false;
 		}
 		return true;
@@ -78,7 +95,7 @@ public class SpbuMachineEntityPK implements Serializable {
 
 	@Override
 	public String toString() {
-		return "org.ithb.si.made.mtmgmt.core.persistence.entity.SpbuMachineEntityPK[ spbuId=" + spbuId + ", identifier=" + identifier + " ]";
+		return "org.ithb.si.made.mtmgmt.core.persistence.entity.SpbuMachineTotalizerEntityPK[ spbuId=" + spbuId + ", identifier=" + identifier + ", machineTotalizerId=" + machineTotalizerId + " ]";
 	}
 
 }

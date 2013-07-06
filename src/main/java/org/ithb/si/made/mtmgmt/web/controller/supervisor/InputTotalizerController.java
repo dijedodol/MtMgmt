@@ -8,11 +8,11 @@ import java.security.Principal;
 import java.util.LinkedList;
 import java.util.List;
 import javax.validation.Valid;
-import org.ithb.si.made.mtmgmt.core.persistence.dao.SpbuDao;
-import org.ithb.si.made.mtmgmt.core.persistence.dao.UserDao;
 import org.ithb.si.made.mtmgmt.core.persistence.entity.SpbuEntity;
 import org.ithb.si.made.mtmgmt.core.persistence.entity.SpbuMachineEntity;
 import org.ithb.si.made.mtmgmt.core.persistence.entity.UserEntity;
+import org.ithb.si.made.mtmgmt.core.persistence.repository.SpbuRepository;
+import org.ithb.si.made.mtmgmt.core.persistence.repository.UserRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,16 +33,20 @@ public class InputTotalizerController {
 
 	private static final Logger LOG = LoggerFactory.getLogger(InputTotalizerController.class);
 	@Autowired
-	private UserDao userDao;
+	private UserRepository userRepository;
 	@Autowired
-	private SpbuDao spbuDao;
+	private SpbuRepository spbuRepository;
+
+	public InputTotalizerController() {
+		LOG.debug("InputTotalizerController <init>");
+	}
 
 	@Transactional
 	@RequestMapping(method = RequestMethod.GET)
 	public String showInputTotalizer(Principal principal, Model model) {
 		LOG.debug("showInputTotalizer principal:[{}]", principal);
 
-		final UserEntity dbUserEntity = userDao.findByLoginId(principal.getName());
+		final UserEntity dbUserEntity = userRepository.findByLoginId(principal.getName());
 		for (final SpbuEntity spbuEntity : dbUserEntity.getSpbuList()) {
 			LOG.debug("showInputTotalizer spbuEntity:[{}]", spbuEntity);
 		}
@@ -58,8 +62,8 @@ public class InputTotalizerController {
 	@RequestMapping("{spbu_id}/machines")
 	public List<SpbuMachineEntity> spbuList(Principal principal, long spbuId) {
 		final List<SpbuMachineEntity> ret = new LinkedList<>();
-		final UserEntity dbUserEntity = userDao.findByLoginId(principal.getName());
-		final SpbuEntity dbSpbuEntity = spbuDao.findById(spbuId);
+		final UserEntity dbUserEntity = userRepository.findByLoginId(principal.getName());
+		final SpbuEntity dbSpbuEntity = spbuRepository.findOne(spbuId);
 
 		if (dbUserEntity != null && dbSpbuEntity != null) {
 			if (dbUserEntity.equals(dbSpbuEntity.getSupervisor())) {

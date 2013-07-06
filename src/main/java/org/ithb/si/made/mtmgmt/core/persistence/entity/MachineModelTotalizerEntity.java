@@ -2,6 +2,7 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
+
 package org.ithb.si.made.mtmgmt.core.persistence.entity;
 
 import java.io.Serializable;
@@ -16,43 +17,32 @@ import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  *
- * @author gde.satrigraha
+ * @author Uyeee
  */
 @Entity
 @Table(name = "machine_model_totalizers")
 @NamedQueries({
 	@NamedQuery(name = "MachineModelTotalizerEntity.findAll", query = "SELECT m FROM MachineModelTotalizerEntity m")})
 public class MachineModelTotalizerEntity implements Serializable {
-
 	private static final long serialVersionUID = 1L;
 	@EmbeddedId
 	protected MachineModelTotalizerEntityPK machineModelTotalizerEntityPK;
 	@JoinTable(name = "machine_model_part_totalizers", joinColumns = {
-		@JoinColumn(name = "machine_model_id", referencedColumnName = "machine_model_id", nullable = false),
-		@JoinColumn(name = "machine_totalizer_id", referencedColumnName = "machine_totalizer_id", nullable = false)}, inverseJoinColumns = {
-		@JoinColumn(name = "machine_model_id", referencedColumnName = "machine_model_id", nullable = false),
-		@JoinColumn(name = "part_id", referencedColumnName = "part_id", nullable = false)})
-	@ManyToMany(fetch = FetchType.LAZY)
+  	@JoinColumn(name = "machine_model_id", referencedColumnName = "machine_model_id", nullable = false),
+  	@JoinColumn(name = "machine_totalizer_id", referencedColumnName = "machine_totalizer_id", nullable = false)}, inverseJoinColumns = {
+  	@JoinColumn(name = "machine_model_id", referencedColumnName = "machine_model_id", nullable = false),
+  	@JoinColumn(name = "machine_part_id", referencedColumnName = "machine_part_id", nullable = false)})
+  @ManyToMany(fetch = FetchType.LAZY)
 	private List<MachineModelPartEntity> machineModelPartEntityList;
-	@JoinTable(name = "spbu_machine_totalizers", joinColumns = {
-		@JoinColumn(name = "machine_model_id", referencedColumnName = "machine_model_id", nullable = false),
-		@JoinColumn(name = "machine_totalizer_id", referencedColumnName = "machine_totalizer_id", nullable = false)}, inverseJoinColumns = {
-		@JoinColumn(name = "spbu_id", referencedColumnName = "spbu_id", nullable = false),
-		@JoinColumn(name = "machine_model_id", referencedColumnName = "machine_model_id", nullable = false)})
-	@ManyToMany(fetch = FetchType.LAZY)
-	private List<SpbuMachineEntity> spbuMachineEntityList;
 	@JoinColumn(name = "machine_model_id", referencedColumnName = "id", nullable = false, insertable = false, updatable = false)
-	@ManyToOne(optional = false, fetch = FetchType.EAGER)
+  @ManyToOne(optional = false, fetch = FetchType.EAGER)
 	private MachineModelEntity machineModelEntity;
 	@JoinColumn(name = "machine_totalizer_id", referencedColumnName = "id", nullable = false, insertable = false, updatable = false)
-	@ManyToOne(optional = false, fetch = FetchType.EAGER)
+  @ManyToOne(optional = false, fetch = FetchType.EAGER)
 	private MachineTotalizerEntity machineTotalizerEntity;
-	private static final Logger LOG = LoggerFactory.getLogger(MachineModelTotalizerEntity.class);
 
 	public MachineModelTotalizerEntity() {
 	}
@@ -79,14 +69,6 @@ public class MachineModelTotalizerEntity implements Serializable {
 
 	public void setMachineModelPartEntityList(List<MachineModelPartEntity> machineModelPartEntityList) {
 		this.machineModelPartEntityList = machineModelPartEntityList;
-	}
-
-	public List<SpbuMachineEntity> getSpbuMachineEntityList() {
-		return spbuMachineEntityList;
-	}
-
-	public void setSpbuMachineEntityList(List<SpbuMachineEntity> spbuMachineEntityList) {
-		this.spbuMachineEntityList = spbuMachineEntityList;
 	}
 
 	public MachineModelEntity getMachineModelEntity() {
@@ -129,4 +111,5 @@ public class MachineModelTotalizerEntity implements Serializable {
 	public String toString() {
 		return "org.ithb.si.made.mtmgmt.core.persistence.entity.MachineModelTotalizerEntity[ machineModelTotalizerEntityPK=" + machineModelTotalizerEntityPK + " ]";
 	}
+
 }

@@ -2,6 +2,7 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
+
 package org.ithb.si.made.mtmgmt.core.persistence.entity;
 
 import java.io.Serializable;
@@ -22,36 +23,32 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  *
- * @author gde.satrigraha
+ * @author Uyeee
  */
 @Entity
 @Table(name = "part_failure_modes")
 @NamedQueries({
 	@NamedQuery(name = "PartFailureModeEntity.findAll", query = "SELECT p FROM PartFailureModeEntity p")})
 public class PartFailureModeEntity implements Serializable {
-
 	private static final long serialVersionUID = 1L;
 	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Basic(optional = false)
-	@Column(name = "id", nullable = false)
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  @Basic(optional = false)
+  @Column(name = "id", nullable = false)
 	private Long id;
 	@Basic(optional = false)
-	@NotNull
-	@Size(min = 1, max = 255)
-	@Column(name = "name", nullable = false, length = 255)
+  @NotNull
+  @Size(min = 1, max = 255)
+  @Column(name = "name", nullable = false, length = 255)
 	private String name;
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "partFailureModeEntity", fetch = FetchType.LAZY)
 	private List<FailureModeHandlingEntity> failureModeHandlingEntityList;
 	@JoinColumn(name = "part_id", referencedColumnName = "id", nullable = false)
-	@ManyToOne(optional = false, fetch = FetchType.EAGER)
+  @ManyToOne(optional = false, fetch = FetchType.EAGER)
 	private MachinePartEntity machinePartEntity;
-	private static final Logger LOG = LoggerFactory.getLogger(PartFailureModeEntity.class);
 
 	public PartFailureModeEntity() {
 	}
@@ -121,4 +118,5 @@ public class PartFailureModeEntity implements Serializable {
 	public String toString() {
 		return "org.ithb.si.made.mtmgmt.core.persistence.entity.PartFailureModeEntity[ id=" + id + " ]";
 	}
+
 }

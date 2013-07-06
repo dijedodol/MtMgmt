@@ -2,6 +2,7 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
+
 package org.ithb.si.made.mtmgmt.core.persistence.entity;
 
 import java.io.Serializable;
@@ -19,34 +20,30 @@ import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  *
- * @author gde.satrigraha
+ * @author Uyeee
  */
 @Entity
 @Table(name = "failure_mode_handlings")
 @NamedQueries({
 	@NamedQuery(name = "FailureModeHandlingEntity.findAll", query = "SELECT f FROM FailureModeHandlingEntity f")})
 public class FailureModeHandlingEntity implements Serializable {
-
 	private static final long serialVersionUID = 1L;
 	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Basic(optional = false)
-	@Column(name = "id", nullable = false)
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  @Basic(optional = false)
+  @Column(name = "id", nullable = false)
 	private Long id;
 	@Basic(optional = false)
-	@NotNull
-	@Size(min = 1, max = 255)
-	@Column(name = "name", nullable = false, length = 255)
+  @NotNull
+  @Size(min = 1, max = 255)
+  @Column(name = "name", nullable = false, length = 255)
 	private String name;
 	@JoinColumn(name = "failure_mode_id", referencedColumnName = "id", nullable = false)
-	@ManyToOne(optional = false, fetch = FetchType.EAGER)
+  @ManyToOne(optional = false, fetch = FetchType.EAGER)
 	private PartFailureModeEntity partFailureModeEntity;
-	private static final Logger LOG = LoggerFactory.getLogger(FailureModeHandlingEntity.class);
 
 	public FailureModeHandlingEntity() {
 	}
@@ -108,4 +105,5 @@ public class FailureModeHandlingEntity implements Serializable {
 	public String toString() {
 		return "org.ithb.si.made.mtmgmt.core.persistence.entity.FailureModeHandlingEntity[ id=" + id + " ]";
 	}
+
 }

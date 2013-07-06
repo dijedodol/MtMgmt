@@ -5,8 +5,8 @@
 package org.ithb.si.made.mtmgmt.core.security;
 
 import java.util.Collections;
-import org.ithb.si.made.mtmgmt.core.persistence.dao.UserDao;
 import org.ithb.si.made.mtmgmt.core.persistence.entity.UserEntity;
+import org.ithb.si.made.mtmgmt.core.persistence.repository.UserRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +16,7 @@ import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  *
@@ -25,15 +26,16 @@ public class MtMgmtUserDetailsService implements UserDetailsService {
 
 	private static final Logger LOG = LoggerFactory.getLogger(MtMgmtUserDetailsService.class);
 	@Autowired
-	private UserDao userDao;
+	private UserRepository userRepository;
 
 	public MtMgmtUserDetailsService() {
 	}
 	
 	@Override
+	@Transactional
 	public UserDetails loadUserByUsername(final String username) throws UsernameNotFoundException {
 		LOG.debug("loadUserByUsername username:[{}]", username);
-		final UserEntity dbUserEntity = userDao.findByLoginId(username);
+		final UserEntity dbUserEntity = userRepository.findByLoginId(username);
 		if (dbUserEntity == null) {
 			throw new UsernameNotFoundException(username);
 		}
