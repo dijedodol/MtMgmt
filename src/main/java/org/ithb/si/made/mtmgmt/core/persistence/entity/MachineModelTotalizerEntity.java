@@ -31,17 +31,17 @@ public class MachineModelTotalizerEntity implements Serializable {
 	@EmbeddedId
 	protected MachineModelTotalizerEntityPK machineModelTotalizerEntityPK;
 	@JoinTable(name = "machine_model_part_totalizers", joinColumns = {
-  	@JoinColumn(name = "machine_model_id", referencedColumnName = "machine_model_id", nullable = false),
-  	@JoinColumn(name = "machine_totalizer_id", referencedColumnName = "machine_totalizer_id", nullable = false)}, inverseJoinColumns = {
-  	@JoinColumn(name = "machine_model_id", referencedColumnName = "machine_model_id", nullable = false),
-  	@JoinColumn(name = "machine_part_id", referencedColumnName = "machine_part_id", nullable = false)})
+  	@JoinColumn(name = "machine_model_id", referencedColumnName = "machine_totalizer_id", nullable = false),
+  	@JoinColumn(name = "machine_totalizer_id", referencedColumnName = "machine_model_id", nullable = false)}, inverseJoinColumns = {
+  	@JoinColumn(name = "machine_model_id", referencedColumnName = "machine_part_id", nullable = false),
+  	@JoinColumn(name = "machine_part_id", referencedColumnName = "machine_model_id", nullable = false)})
   @ManyToMany(fetch = FetchType.LAZY)
 	private List<MachineModelPartEntity> machineModelPartEntityList;
 	@JoinColumn(name = "machine_model_id", referencedColumnName = "id", nullable = false, insertable = false, updatable = false)
-  @ManyToOne(optional = false, fetch = FetchType.EAGER)
+  @ManyToOne(optional = false, fetch = FetchType.LAZY)
 	private MachineModelEntity machineModelEntity;
 	@JoinColumn(name = "machine_totalizer_id", referencedColumnName = "id", nullable = false, insertable = false, updatable = false)
-  @ManyToOne(optional = false, fetch = FetchType.EAGER)
+  @ManyToOne(optional = false, fetch = FetchType.LAZY)
 	private MachineTotalizerEntity machineTotalizerEntity;
 
 	public MachineModelTotalizerEntity() {
@@ -51,8 +51,8 @@ public class MachineModelTotalizerEntity implements Serializable {
 		this.machineModelTotalizerEntityPK = machineModelTotalizerEntityPK;
 	}
 
-	public MachineModelTotalizerEntity(long machineModelId, long machineTotalizerId) {
-		this.machineModelTotalizerEntityPK = new MachineModelTotalizerEntityPK(machineModelId, machineTotalizerId);
+	public MachineModelTotalizerEntity(long machineTotalizerId, long machineModelId) {
+		this.machineModelTotalizerEntityPK = new MachineModelTotalizerEntityPK(machineTotalizerId, machineModelId);
 	}
 
 	public MachineModelTotalizerEntityPK getMachineModelTotalizerEntityPK() {

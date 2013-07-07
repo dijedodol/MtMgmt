@@ -19,26 +19,18 @@ import javax.validation.constraints.NotNull;
 public class MachineModelTotalizerEntityPK implements Serializable {
 	@Basic(optional = false)
   @NotNull
-  @Column(name = "machine_model_id", nullable = false)
-	private long machineModelId;
-	@Basic(optional = false)
-  @NotNull
   @Column(name = "machine_totalizer_id", nullable = false)
 	private long machineTotalizerId;
+	@Basic(optional = false)
+  @NotNull
+  @Column(name = "machine_model_id", nullable = false)
+	private long machineModelId;
 
 	public MachineModelTotalizerEntityPK() {
 	}
 
-	public MachineModelTotalizerEntityPK(long machineModelId, long machineTotalizerId) {
-		this.machineModelId = machineModelId;
+	public MachineModelTotalizerEntityPK(long machineTotalizerId, long machineModelId) {
 		this.machineTotalizerId = machineTotalizerId;
-	}
-
-	public long getMachineModelId() {
-		return machineModelId;
-	}
-
-	public void setMachineModelId(long machineModelId) {
 		this.machineModelId = machineModelId;
 	}
 
@@ -50,11 +42,19 @@ public class MachineModelTotalizerEntityPK implements Serializable {
 		this.machineTotalizerId = machineTotalizerId;
 	}
 
+	public long getMachineModelId() {
+		return machineModelId;
+	}
+
+	public void setMachineModelId(long machineModelId) {
+		this.machineModelId = machineModelId;
+	}
+
 	@Override
 	public int hashCode() {
 		int hash = 0;
-		hash += (int) machineModelId;
 		hash += (int) machineTotalizerId;
+		hash += (int) machineModelId;
 		return hash;
 	}
 
@@ -65,10 +65,10 @@ public class MachineModelTotalizerEntityPK implements Serializable {
 			return false;
 		}
 		MachineModelTotalizerEntityPK other = (MachineModelTotalizerEntityPK) object;
-		if (this.machineModelId != other.machineModelId) {
+		if (this.machineTotalizerId != other.machineTotalizerId) {
 			return false;
 		}
-		if (this.machineTotalizerId != other.machineTotalizerId) {
+		if (this.machineModelId != other.machineModelId) {
 			return false;
 		}
 		return true;
@@ -76,7 +76,7 @@ public class MachineModelTotalizerEntityPK implements Serializable {
 
 	@Override
 	public String toString() {
-		return "org.ithb.si.made.mtmgmt.core.persistence.entity.MachineModelTotalizerEntityPK[ machineModelId=" + machineModelId + ", machineTotalizerId=" + machineTotalizerId + " ]";
+		return "org.ithb.si.made.mtmgmt.core.persistence.entity.MachineModelTotalizerEntityPK[ machineTotalizerId=" + machineTotalizerId + ", machineModelId=" + machineModelId + " ]";
 	}
 
 }

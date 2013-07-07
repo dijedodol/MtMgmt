@@ -30,11 +30,13 @@ public class SpbuMachineEntity implements Serializable {
 	private static final long serialVersionUID = 1L;
 	@EmbeddedId
 	protected SpbuMachineEntityPK spbuMachineEntityPK;
+	@OneToMany(cascade = CascadeType.ALL, mappedBy = "spbuMachineEntity", fetch = FetchType.LAZY)
+	private List<ServiceReportEntity> serviceReportEntityList;
 	@JoinColumn(name = "machine_model_id", referencedColumnName = "id")
-  @ManyToOne(fetch = FetchType.EAGER)
+  @ManyToOne(fetch = FetchType.LAZY)
 	private MachineModelEntity machineModelEntity;
 	@JoinColumn(name = "spbu_id", referencedColumnName = "id", nullable = false, insertable = false, updatable = false)
-  @ManyToOne(optional = false, fetch = FetchType.EAGER)
+  @ManyToOne(optional = false, fetch = FetchType.LAZY)
 	private SpbuEntity spbuEntity;
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "spbuMachineEntity", fetch = FetchType.LAZY)
 	private List<SpbuMachineTotalizerEntity> spbuMachineTotalizerEntityList;
@@ -46,8 +48,8 @@ public class SpbuMachineEntity implements Serializable {
 		this.spbuMachineEntityPK = spbuMachineEntityPK;
 	}
 
-	public SpbuMachineEntity(long spbuId, String identifier) {
-		this.spbuMachineEntityPK = new SpbuMachineEntityPK(spbuId, identifier);
+	public SpbuMachineEntity(long spbuId, String machineIdentifier) {
+		this.spbuMachineEntityPK = new SpbuMachineEntityPK(spbuId, machineIdentifier);
 	}
 
 	public SpbuMachineEntityPK getSpbuMachineEntityPK() {
@@ -56,6 +58,14 @@ public class SpbuMachineEntity implements Serializable {
 
 	public void setSpbuMachineEntityPK(SpbuMachineEntityPK spbuMachineEntityPK) {
 		this.spbuMachineEntityPK = spbuMachineEntityPK;
+	}
+
+	public List<ServiceReportEntity> getServiceReportEntityList() {
+		return serviceReportEntityList;
+	}
+
+	public void setServiceReportEntityList(List<ServiceReportEntity> serviceReportEntityList) {
+		this.serviceReportEntityList = serviceReportEntityList;
 	}
 
 	public MachineModelEntity getMachineModelEntity() {

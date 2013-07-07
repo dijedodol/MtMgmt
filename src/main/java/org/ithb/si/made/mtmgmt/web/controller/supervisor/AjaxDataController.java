@@ -55,9 +55,9 @@ public class AjaxDataController {
 	public List<Map> supervisorListSpbu(Principal principal) {
 		final UserEntity dbUserEntity = userRepository.findByLoginId(principal.getName());
 		LOG.debug("supervisorListSpbu dbUserEntity:[{}]", dbUserEntity);
-		LOG.debug("supervisorListSpbu dbUserEntity.getSpbuList:[{}]", dbUserEntity.getSpbuList());
-		final List<Map> ret = new ArrayList<>(dbUserEntity.getSpbuList().size());
-		for (final SpbuEntity spbuEntity : dbUserEntity.getSpbuList()) {
+		LOG.debug("supervisorListSpbu dbUserEntity.getSpbuList:[{}]", dbUserEntity.getSpbuEntityList());
+		final List<Map> ret = new ArrayList<>(dbUserEntity.getSpbuEntityList().size());
+		for (final SpbuEntity spbuEntity : dbUserEntity.getSpbuEntityList()) {
 			final Map<String, Object> tmp = new HashMap<>();
 			tmp.put("id", spbuEntity.getId());
 			tmp.put("code", spbuEntity.getCode());
@@ -75,11 +75,11 @@ public class AjaxDataController {
 		final SpbuEntity dbSpbuEntity = spbuRepository.findOne(spbuId);
 		final ResponseEntity<List<Map>> ret;
 
-		if (dbUserEntity != null && dbSpbuEntity != null && dbUserEntity.getId() == dbSpbuEntity.getSupervisor().getId()) {
+		if (dbUserEntity != null && dbSpbuEntity != null && dbUserEntity.getId() == dbSpbuEntity.getSupervisorEntity().getId()) {
 			final List<Map> respEntity = new ArrayList<>(dbSpbuEntity.getSpbuMachineEntityList().size());
 			for (final SpbuMachineEntity spbuMachineEntity : dbSpbuEntity.getSpbuMachineEntityList()) {
 				final Map<String, Object> tmp = new HashMap<>();
-				tmp.put("identifier", spbuMachineEntity.getSpbuMachineEntityPK().getIdentifier());
+				tmp.put("machineIdentifier", spbuMachineEntity.getSpbuMachineEntityPK().getMachineIdentifier());
 				tmp.put("machineModelId", spbuMachineEntity.getMachineModelEntity().getId());
 				tmp.put("machineEntity", new MapBuilder<>(new HashMap<String, Object>())
 								.put("id", spbuMachineEntity.getMachineModelEntity().getId())
@@ -109,7 +109,7 @@ public class AjaxDataController {
 						spbuMachineIdentifier,
 						dbSpbuMachineEntity);
 
-		if (dbUserEntity != null && dbSpbuMachineEntity != null && dbUserEntity.getId() == dbSpbuMachineEntity.getSpbuEntity().getSupervisor().getId()) {
+		if (dbUserEntity != null && dbSpbuMachineEntity != null && dbUserEntity.getId() == dbSpbuMachineEntity.getSpbuEntity().getSupervisorEntity().getId()) {
 			final List<Map> respEntity = new ArrayList<>(dbSpbuMachineEntity.getSpbuMachineTotalizerEntityList().size());
 			LOG.debug("supervisorListSpbuMachineTotalizer dbSpbuMachineEntity.getSpbuMachineTotalizerEntityList:[{}]", dbSpbuMachineEntity.getSpbuMachineTotalizerEntityList());
 

@@ -14,12 +14,11 @@ import org.ithb.si.made.mtmgmt.core.persistence.entity.SpbuMachineEntityPK;
 import org.ithb.si.made.mtmgmt.core.persistence.entity.SpbuMachineTotalizerEntity;
 import org.ithb.si.made.mtmgmt.core.persistence.entity.UserEntity;
 import org.ithb.si.made.mtmgmt.core.persistence.repository.MachineModelRepository;
-import org.ithb.si.made.mtmgmt.core.persistence.repository.MachineModelTotalizerRepository;
 import org.ithb.si.made.mtmgmt.core.persistence.repository.MachineTotalizerRepository;
 import org.ithb.si.made.mtmgmt.core.persistence.repository.SpbuMachineRepository;
-import org.ithb.si.made.mtmgmt.core.persistence.repository.SpbuMachineTotalizerRepository;
 import org.ithb.si.made.mtmgmt.core.persistence.repository.SpbuRepository;
 import org.ithb.si.made.mtmgmt.core.persistence.repository.UserRepository;
+import org.ithb.si.made.mtmgmt.core.security.AccessRole;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -60,9 +59,9 @@ public class InitializeDataController {
 
 	@Transactional
 	public String doShowResult(Model model) {
-		final UserEntity dbUserEntityAdm = createUserIfNotExist("adm", UserEntity.AccessRole.ADMIN);
-		final UserEntity dbUserEntityTch = createUserIfNotExist("tch", UserEntity.AccessRole.TECHNICIAN);
-		final UserEntity dbUserEntitySpv = createUserIfNotExist("spv", UserEntity.AccessRole.SUPERVISOR);
+		final UserEntity dbUserEntityAdm = createUserIfNotExist("adm", AccessRole.ADMIN);
+		final UserEntity dbUserEntityTch = createUserIfNotExist("tch", AccessRole.TECHNICIAN);
+		final UserEntity dbUserEntitySpv = createUserIfNotExist("spv", AccessRole.SUPERVISOR);
 		model.addAttribute("dbUserEntityAdm", dbUserEntityAdm);
 		model.addAttribute("dbUserEntityTch", dbUserEntityTch);
 		model.addAttribute("dbUserEntitySpv", dbUserEntitySpv);
@@ -92,7 +91,7 @@ public class InitializeDataController {
 		return "anonymous/initialize_data";
 	}
 
-	private UserEntity createUserIfNotExist(String loginId, UserEntity.AccessRole accessRole) {
+	private UserEntity createUserIfNotExist(String loginId, AccessRole accessRole) {
 		UserEntity ret = userRepository.findByLoginId(loginId);
 		if (ret == null) {
 			ret = new UserEntity();
@@ -113,7 +112,7 @@ public class InitializeDataController {
 			ret.setCode(code);
 			ret.setAddress("Address_" + code);
 			ret.setPhone("Phone_" + code);
-			ret.setSupervisor(supervisor);
+			ret.setSupervisorEntity(supervisor);
 			ret = spbuRepository.saveAndFlush(ret);
 		}
 		return ret;

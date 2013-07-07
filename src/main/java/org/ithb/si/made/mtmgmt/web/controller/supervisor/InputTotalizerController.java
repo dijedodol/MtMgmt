@@ -75,7 +75,7 @@ public class InputTotalizerController {
 	private void _doInputTotalizer(Principal principal, @Valid TotalizerFormData formData, BindingResult bindingResult) {
 		final UserEntity dbUserEntity = userRepository.findByLoginId(principal.getName());
 		final SpbuMachineEntity dbSpbuMachineEntity = spbuMachineRepository.findOne(new SpbuMachineEntityPK(formData.getSpbuId(), formData.getMachineIdentifier()));
-		if (dbUserEntity != null && dbSpbuMachineEntity != null && dbUserEntity.getId() == dbSpbuMachineEntity.getSpbuEntity().getSupervisor().getId()) {
+		if (dbUserEntity != null && dbSpbuMachineEntity != null && dbUserEntity.getId() == dbSpbuMachineEntity.getSpbuEntity().getSupervisorEntity().getId()) {
 			for (int i = 0; i < formData.getTotalizerIds().size(); i++) {
 				long totalizerId = formData.getTotalizerIds().get(i);
 				double totalizerValue = formData.getTotalizerValues().get(i);

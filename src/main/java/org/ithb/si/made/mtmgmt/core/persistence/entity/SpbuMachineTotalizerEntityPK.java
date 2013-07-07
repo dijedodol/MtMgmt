@@ -25,8 +25,8 @@ public class SpbuMachineTotalizerEntityPK implements Serializable {
 	@Basic(optional = false)
   @NotNull
   @Size(min = 1, max = 20)
-  @Column(name = "identifier", nullable = false, length = 20)
-	private String identifier;
+  @Column(name = "machine_identifier", nullable = false, length = 20)
+	private String machineIdentifier;
 	@Basic(optional = false)
   @NotNull
   @Column(name = "machine_totalizer_id", nullable = false)
@@ -35,9 +35,9 @@ public class SpbuMachineTotalizerEntityPK implements Serializable {
 	public SpbuMachineTotalizerEntityPK() {
 	}
 
-	public SpbuMachineTotalizerEntityPK(long spbuId, String identifier, long machineTotalizerId) {
+	public SpbuMachineTotalizerEntityPK(long spbuId, String machineIdentifier, long machineTotalizerId) {
 		this.spbuId = spbuId;
-		this.identifier = identifier;
+		this.machineIdentifier = machineIdentifier;
 		this.machineTotalizerId = machineTotalizerId;
 	}
 
@@ -49,12 +49,12 @@ public class SpbuMachineTotalizerEntityPK implements Serializable {
 		this.spbuId = spbuId;
 	}
 
-	public String getIdentifier() {
-		return identifier;
+	public String getMachineIdentifier() {
+		return machineIdentifier;
 	}
 
-	public void setIdentifier(String identifier) {
-		this.identifier = identifier;
+	public void setMachineIdentifier(String machineIdentifier) {
+		this.machineIdentifier = machineIdentifier;
 	}
 
 	public long getMachineTotalizerId() {
@@ -69,7 +69,7 @@ public class SpbuMachineTotalizerEntityPK implements Serializable {
 	public int hashCode() {
 		int hash = 0;
 		hash += (int) spbuId;
-		hash += (identifier != null ? identifier.hashCode() : 0);
+		hash += (machineIdentifier != null ? machineIdentifier.hashCode() : 0);
 		hash += (int) machineTotalizerId;
 		return hash;
 	}
@@ -84,7 +84,7 @@ public class SpbuMachineTotalizerEntityPK implements Serializable {
 		if (this.spbuId != other.spbuId) {
 			return false;
 		}
-		if ((this.identifier == null && other.identifier != null) || (this.identifier != null && !this.identifier.equals(other.identifier))) {
+		if ((this.machineIdentifier == null && other.machineIdentifier != null) || (this.machineIdentifier != null && !this.machineIdentifier.equals(other.machineIdentifier))) {
 			return false;
 		}
 		if (this.machineTotalizerId != other.machineTotalizerId) {
@@ -95,7 +95,7 @@ public class SpbuMachineTotalizerEntityPK implements Serializable {
 
 	@Override
 	public String toString() {
-		return "org.ithb.si.made.mtmgmt.core.persistence.entity.SpbuMachineTotalizerEntityPK[ spbuId=" + spbuId + ", identifier=" + identifier + ", machineTotalizerId=" + machineTotalizerId + " ]";
+		return "org.ithb.si.made.mtmgmt.core.persistence.entity.SpbuMachineTotalizerEntityPK[ spbuId=" + spbuId + ", machineIdentifier=" + machineIdentifier + ", machineTotalizerId=" + machineTotalizerId + " ]";
 	}
 
 }

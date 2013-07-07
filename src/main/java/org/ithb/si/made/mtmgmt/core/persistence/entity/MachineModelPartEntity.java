@@ -32,10 +32,10 @@ public class MachineModelPartEntity implements Serializable {
 	@ManyToMany(mappedBy = "machineModelPartEntityList", fetch = FetchType.LAZY)
 	private List<MachineModelTotalizerEntity> machineModelTotalizerEntityList;
 	@JoinColumn(name = "machine_model_id", referencedColumnName = "id", nullable = false, insertable = false, updatable = false)
-  @ManyToOne(optional = false, fetch = FetchType.EAGER)
+  @ManyToOne(optional = false, fetch = FetchType.LAZY)
 	private MachineModelEntity machineModelEntity;
 	@JoinColumn(name = "machine_part_id", referencedColumnName = "id", nullable = false, insertable = false, updatable = false)
-  @ManyToOne(optional = false, fetch = FetchType.EAGER)
+  @ManyToOne(optional = false, fetch = FetchType.LAZY)
 	private MachinePartEntity machinePartEntity;
 
 	public MachineModelPartEntity() {
@@ -45,8 +45,8 @@ public class MachineModelPartEntity implements Serializable {
 		this.machineModelPartEntityPK = machineModelPartEntityPK;
 	}
 
-	public MachineModelPartEntity(long machineModelId, long machinePartId) {
-		this.machineModelPartEntityPK = new MachineModelPartEntityPK(machineModelId, machinePartId);
+	public MachineModelPartEntity(long machinePartId, long machineModelId) {
+		this.machineModelPartEntityPK = new MachineModelPartEntityPK(machinePartId, machineModelId);
 	}
 
 	public MachineModelPartEntityPK getMachineModelPartEntityPK() {

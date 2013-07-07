@@ -19,26 +19,18 @@ import javax.validation.constraints.NotNull;
 public class MachineModelPartEntityPK implements Serializable {
 	@Basic(optional = false)
   @NotNull
-  @Column(name = "machine_model_id", nullable = false)
-	private long machineModelId;
-	@Basic(optional = false)
-  @NotNull
   @Column(name = "machine_part_id", nullable = false)
 	private long machinePartId;
+	@Basic(optional = false)
+  @NotNull
+  @Column(name = "machine_model_id", nullable = false)
+	private long machineModelId;
 
 	public MachineModelPartEntityPK() {
 	}
 
-	public MachineModelPartEntityPK(long machineModelId, long machinePartId) {
-		this.machineModelId = machineModelId;
+	public MachineModelPartEntityPK(long machinePartId, long machineModelId) {
 		this.machinePartId = machinePartId;
-	}
-
-	public long getMachineModelId() {
-		return machineModelId;
-	}
-
-	public void setMachineModelId(long machineModelId) {
 		this.machineModelId = machineModelId;
 	}
 
@@ -50,11 +42,19 @@ public class MachineModelPartEntityPK implements Serializable {
 		this.machinePartId = machinePartId;
 	}
 
+	public long getMachineModelId() {
+		return machineModelId;
+	}
+
+	public void setMachineModelId(long machineModelId) {
+		this.machineModelId = machineModelId;
+	}
+
 	@Override
 	public int hashCode() {
 		int hash = 0;
-		hash += (int) machineModelId;
 		hash += (int) machinePartId;
+		hash += (int) machineModelId;
 		return hash;
 	}
 
@@ -65,10 +65,10 @@ public class MachineModelPartEntityPK implements Serializable {
 			return false;
 		}
 		MachineModelPartEntityPK other = (MachineModelPartEntityPK) object;
-		if (this.machineModelId != other.machineModelId) {
+		if (this.machinePartId != other.machinePartId) {
 			return false;
 		}
-		if (this.machinePartId != other.machinePartId) {
+		if (this.machineModelId != other.machineModelId) {
 			return false;
 		}
 		return true;
@@ -76,7 +76,7 @@ public class MachineModelPartEntityPK implements Serializable {
 
 	@Override
 	public String toString() {
-		return "org.ithb.si.made.mtmgmt.core.persistence.entity.MachineModelPartEntityPK[ machineModelId=" + machineModelId + ", machinePartId=" + machinePartId + " ]";
+		return "org.ithb.si.made.mtmgmt.core.persistence.entity.MachineModelPartEntityPK[ machinePartId=" + machinePartId + ", machineModelId=" + machineModelId + " ]";
 	}
 
 }

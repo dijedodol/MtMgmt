@@ -108,9 +108,9 @@
 							$.each(data, function(index, spbuMachine) {
 								console.log("spbuMachine: " + JSON.stringify(spbuMachine));
 								if (index === 0) {
-									$("#machineIdentifier").append(new Option(spbuMachine.identifier, spbuMachine.identifier, true, true));
+									$("#machineIdentifier").append(new Option(spbuMachine.machineIdentifier, spbuMachine.machineIdentifier, true, true));
 								} else {
-									$("#machineIdentifier").append(new Option(spbuMachine.identifier, spbuMachine.identifier, false, false));
+									$("#machineIdentifier").append(new Option(spbuMachine.machineIdentifier, spbuMachine.machineIdentifier, false, false));
 								}
 							});
 							loadTotalizers();
