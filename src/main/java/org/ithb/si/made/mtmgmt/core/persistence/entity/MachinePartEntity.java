@@ -19,6 +19,7 @@ import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.persistence.UniqueConstraint;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
@@ -27,7 +28,8 @@ import javax.validation.constraints.Size;
  * @author Uyeee
  */
 @Entity
-@Table(name = "machine_parts")
+@Table(name = "machine_parts", uniqueConstraints = {
+	@UniqueConstraint(columnNames = {"code"})})
 @NamedQueries({
 	@NamedQuery(name = "MachinePartEntity.findAll", query = "SELECT m FROM MachinePartEntity m")})
 public class MachinePartEntity implements Serializable {

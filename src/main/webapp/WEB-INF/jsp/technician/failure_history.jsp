@@ -1,6 +1,6 @@
 <%-- 
     Document   : failure_history
-    Created on : Jul 7, 2013, 1:33:08 PM
+    Created on : Jul 7, 2013, 6:20:17 PM
     Author     : Uyeee
 --%>
 
@@ -12,7 +12,7 @@
 <html>
 	<head>
 		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-		<title>Supervisor - Machine Failure History</title>
+		<title>Technician - Machine Failure History</title>
 		<link rel="stylesheet" href="../asset/css/default.css"/>
 		<script type="text/javascript" src="../asset/js/jquery.js"></script>
 	</head>

@@ -29,7 +29,7 @@ public class FailureHistoryController {
 	@RequestMapping(method = RequestMethod.GET)
 	public String showFailureHistory(Principal principal, Model model) {
 		LOG.debug("showFailureHistory principal:[{}]", principal);
-		model.addAttribute("formData", new InputTotalizerController.TotalizerFormData());
+		model.addAttribute("formData", new InputTotalizerController.FormData());
 		return "supervisor/failure_history";
 	}
 

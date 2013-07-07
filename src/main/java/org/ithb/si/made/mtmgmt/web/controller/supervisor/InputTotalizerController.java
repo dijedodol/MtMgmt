@@ -56,12 +56,12 @@ public class InputTotalizerController {
 	@RequestMapping(method = RequestMethod.GET)
 	public String showInputTotalizer(Principal principal, Model model) {
 		LOG.debug("showInputTotalizer principal:[{}]", principal);
-		model.addAttribute("formData", new TotalizerFormData());
+		model.addAttribute("formData", new FormData());
 		return "supervisor/input_totalizer";
 	}
 
 	@RequestMapping(method = RequestMethod.POST)
-	public String doInputTotalizer(Principal principal, @Valid TotalizerFormData formData, BindingResult bindingResult, Model model) {
+	public String doInputTotalizer(Principal principal, @Valid FormData formData, BindingResult bindingResult, Model model) {
 		LOG.debug("doInputTotalizer formData:[{}]", formData);
 		try {
 			_doInputTotalizer(principal, formData, bindingResult);
@@ -73,7 +73,7 @@ public class InputTotalizerController {
 	}
 
 	@Transactional
-	private void _doInputTotalizer(Principal principal, @Valid TotalizerFormData formData, BindingResult bindingResult) {
+	private void _doInputTotalizer(Principal principal, @Valid FormData formData, BindingResult bindingResult) {
 		final UserEntity dbUserEntity = userRepository.findByLoginId(principal.getName());
 		final SpbuMachineEntity dbSpbuMachineEntity = spbuMachineRepository.findOne(new SpbuMachineEntityPK(formData.getSpbuId(), formData.getMachineIdentifier()));
 		if (dbUserEntity != null && dbSpbuMachineEntity != null && dbUserEntity.getId() == dbSpbuMachineEntity.getSpbuEntity().getSupervisorEntity().getId()) {
@@ -83,7 +83,7 @@ public class InputTotalizerController {
 
 				final MachineTotalizerEntity machineTotalizerEntity = machineTotalizerRepository.findOne(totalizerId);
 				if (machineTotalizerEntity == null) {
-					bindingResult.reject("supervisor.error.invalidData");
+					bindingResult.reject("common.error.invalidData");
 					throw new InvalidDataException("Invalid totalizer: " + totalizerId);
 				}
 
@@ -96,7 +96,7 @@ public class InputTotalizerController {
 				}
 
 				if (totalizerValue < spbuMachineTotalizerEntity.getCounter()) {
-					bindingResult.reject("supervisor.error.invalidData");
+					bindingResult.reject("common.error.invalidData");
 					throw new InvalidDataException("Input totalizer less than current totalizer: " + totalizerValue + " < " + spbuMachineTotalizerEntity.getCounter());
 				}
 				
@@ -109,14 +109,14 @@ public class InputTotalizerController {
 		}
 	}
 
-	public static class TotalizerFormData {
+	public static class FormData {
 
 		private long spbuId;
 		private String machineIdentifier;
 		private List<Long> totalizerIds;
 		private List<Double> totalizerValues;
 
-		public TotalizerFormData() {
+		public FormData() {
 		}
 
 		@Override

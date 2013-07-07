@@ -1,6 +1,6 @@
 <%-- 
     Document   : home
-    Created on : Jul 1, 2013, 1:32:56 AM
+    Created on : Jul 7, 2013, 6:19:52 PM
     Author     : Uyeee
 --%>
 
@@ -12,14 +12,14 @@
 <html>
 	<head>
 		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-		<title>Supervisor - Home</title>
+		<title>Technician - Home</title>
 		<link rel="stylesheet" href="../asset/css/default.css"/>
 	</head>
 	<body>
 		<div id="sidebar">
 				<ul>
-					<li><a href="failure_history.htm"><s:message code="supervisor.home.list.failure"/></a></li>
-					<li><a href="input_totalizer.htm"><s:message code="supervisor.home.input.totalizer"/></a></li>
+					<li><a href="failure_history.htm"><s:message code="technician.home.list.failure"/></a></li>
+					<li><a href="input_service_report.htm"><s:message code="technician.home.input.service_report"/></a></li>
 				</ul>
 		</div>
 		<div id="content"></div>
