@@ -41,12 +41,12 @@ public class SpbuMachineTotalizerEntity implements Serializable {
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "spbuMachineTotalizerEntity", fetch = FetchType.LAZY)
 	private List<ServiceReportSpbuMachineTotalizerEntity> serviceReportSpbuMachineTotalizerEntityList;
 	@JoinColumn(name = "machine_totalizer_id", referencedColumnName = "id", nullable = false, insertable = false, updatable = false)
-  @ManyToOne(optional = false, fetch = FetchType.LAZY)
+  @ManyToOne(optional = false, fetch = FetchType.EAGER)
 	private MachineTotalizerEntity machineTotalizerEntity;
 	@JoinColumns({
   	@JoinColumn(name = "spbu_id", referencedColumnName = "spbu_id", nullable = false, insertable = false, updatable = false),
   	@JoinColumn(name = "machine_identifier", referencedColumnName = "machine_identifier", nullable = false, insertable = false, updatable = false)})
-  @ManyToOne(optional = false, fetch = FetchType.LAZY)
+  @ManyToOne(optional = false, fetch = FetchType.EAGER)
 	private SpbuMachineEntity spbuMachineEntity;
 
 	public SpbuMachineTotalizerEntity() {

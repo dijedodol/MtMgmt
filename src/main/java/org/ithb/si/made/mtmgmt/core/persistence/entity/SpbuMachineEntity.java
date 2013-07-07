@@ -32,11 +32,11 @@ public class SpbuMachineEntity implements Serializable {
 	protected SpbuMachineEntityPK spbuMachineEntityPK;
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "spbuMachineEntity", fetch = FetchType.LAZY)
 	private List<ServiceReportEntity> serviceReportEntityList;
-	@JoinColumn(name = "machine_model_id", referencedColumnName = "id")
-  @ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "machine_model_id", referencedColumnName = "id", nullable = false)
+  @ManyToOne(fetch = FetchType.EAGER)
 	private MachineModelEntity machineModelEntity;
 	@JoinColumn(name = "spbu_id", referencedColumnName = "id", nullable = false, insertable = false, updatable = false)
-  @ManyToOne(optional = false, fetch = FetchType.LAZY)
+  @ManyToOne(optional = false, fetch = FetchType.EAGER)
 	private SpbuEntity spbuEntity;
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "spbuMachineEntity", fetch = FetchType.LAZY)
 	private List<SpbuMachineTotalizerEntity> spbuMachineTotalizerEntityList;

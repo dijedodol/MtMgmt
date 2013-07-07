@@ -56,18 +56,19 @@ public class InputTotalizerController {
 	@RequestMapping(method = RequestMethod.GET)
 	public String showInputTotalizer(Principal principal, Model model) {
 		LOG.debug("showInputTotalizer principal:[{}]", principal);
-		model.addAttribute("totalizerFormData", new TotalizerFormData());
+		model.addAttribute("formData", new TotalizerFormData());
 		return "supervisor/input_totalizer";
 	}
 
 	@RequestMapping(method = RequestMethod.POST)
-	public String doInputTotalizer(Principal principal, @Valid TotalizerFormData formData, BindingResult bindingResult) {
+	public String doInputTotalizer(Principal principal, @Valid TotalizerFormData formData, BindingResult bindingResult, Model model) {
 		LOG.debug("doInputTotalizer formData:[{}]", formData);
 		try {
 			_doInputTotalizer(principal, formData, bindingResult);
 		} catch (InvalidDataException ex) {
 			LOG.error("doInputTotalizer Exception:[{}]", ex.getMessage(), ex);
 		}
+		model.addAttribute("formData", formData);
 		return "supervisor/input_totalizer";
 	}
 

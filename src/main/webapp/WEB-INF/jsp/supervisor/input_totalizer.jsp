@@ -13,18 +13,18 @@
 	<head>
 		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 		<title>Supervisor - Input Machine Totalizer</title>
-		<link rel="stylesheet" href="../asset/css/default.css">
+		<link rel="stylesheet" href="../asset/css/default.css"/>
 		<script type="text/javascript" src="../asset/js/jquery.js"></script>
 	</head>
 	<body>
 		<div id="sidebar">
 			<ul>
-				<li><a href="list_failure.htm"><s:message code="supervisor.home.list.failure"/></a></li>
+				<li><a href="failure_history.htm"><s:message code="supervisor.home.list.failure"/></a></li>
 				<li><a href="input_totalizer.htm"><s:message code="supervisor.home.input.totalizer"/></a></li>
 			</ul>
 		</div>
 		<div id="content">
-			<sf:form commandName="totalizerFormData" method="post" id="formTotalizer">
+			<sf:form commandName="formData" method="post" id="formTotalizer">
 				<sf:errors/>
 				<table>
 					<tr>
@@ -32,9 +32,11 @@
 						<td><sf:select path="spbuId" id="spbuId"/></td>
 						<td><sf:errors path="spbuId"/></td>
 					</tr>
-					<td><sf:label path="machineIdentifier"><s:message code="supervisor.input.totalizer.machineIdentifier"/>:</sf:label></td>
-					<td><sf:select path="machineIdentifier" id="machineIdentifier"/></td>
-					<td><sf:errors path="machineIdentifier"/></td>
+					<tr>
+						<td><sf:label path="machineIdentifier"><s:message code="supervisor.input.totalizer.machineIdentifier"/>:</sf:label></td>
+						<td><sf:select path="machineIdentifier" id="machineIdentifier"/></td>
+						<td><sf:errors path="machineIdentifier"/></td>
+					</tr>
 					<tr>
 						<td><s:message code="supervisor.input.totalizer.totalizers"/>:</td>
 						<td colspan="2">
@@ -79,6 +81,8 @@
 						dataType: "json",
 						success: function(data, textStatus, jqXHR) {
 							console.log("ajax/spbu.json: " + JSON.stringify(data));
+							$("#spbuId").children().remove();
+
 							$.each(data, function(index, spbu) {
 								console.log("spbu: " + JSON.stringify(spbu));
 								if (index === 0) {
@@ -105,6 +109,8 @@
 						dataType: "json",
 						success: function(data, textStatus, jqXHR) {
 							console.log(url + ": " + JSON.stringify(data));
+							$("#machineIdentifier").children().remove();
+
 							$.each(data, function(index, spbuMachine) {
 								console.log("spbuMachine: " + JSON.stringify(spbuMachine));
 								if (index === 0) {

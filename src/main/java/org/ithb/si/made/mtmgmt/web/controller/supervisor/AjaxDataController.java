@@ -7,15 +7,18 @@ package org.ithb.si.made.mtmgmt.web.controller.supervisor;
 import java.security.Principal;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import org.ithb.si.made.mtmgmt.core.persistence.entity.MachineModelTotalizerEntity;
+import org.ithb.si.made.mtmgmt.core.persistence.entity.ServiceReportEntity;
 import org.ithb.si.made.mtmgmt.core.persistence.entity.SpbuEntity;
 import org.ithb.si.made.mtmgmt.core.persistence.entity.SpbuMachineEntity;
 import org.ithb.si.made.mtmgmt.core.persistence.entity.SpbuMachineEntityPK;
 import org.ithb.si.made.mtmgmt.core.persistence.entity.SpbuMachineTotalizerEntity;
 import org.ithb.si.made.mtmgmt.core.persistence.entity.SpbuMachineTotalizerEntityPK;
 import org.ithb.si.made.mtmgmt.core.persistence.entity.UserEntity;
+import org.ithb.si.made.mtmgmt.core.persistence.repository.ServiceReportRepository;
 import org.ithb.si.made.mtmgmt.core.persistence.repository.SpbuMachineRepository;
 import org.ithb.si.made.mtmgmt.core.persistence.repository.SpbuMachineTotalizerRepository;
 import org.ithb.si.made.mtmgmt.core.persistence.repository.SpbuRepository;
@@ -27,6 +30,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -42,6 +46,8 @@ public class AjaxDataController {
 
 	private static final Logger LOG = LoggerFactory.getLogger(AjaxDataController.class);
 	@Autowired
+	private ServiceReportRepository serviceReportRepository;
+	@Autowired
 	private UserRepository userRepository;
 	@Autowired
 	private SpbuRepository spbuRepository;
@@ -50,6 +56,7 @@ public class AjaxDataController {
 	@Autowired
 	private SpbuMachineTotalizerRepository spbuMachineTotalizerRepository;
 
+	@Transactional
 	@ResponseBody
 	@RequestMapping(value = "spbu", produces = "application/json", method = RequestMethod.GET)
 	public List<Map> supervisorListSpbu(Principal principal) {
@@ -68,6 +75,7 @@ public class AjaxDataController {
 		return ret;
 	}
 
+	@Transactional
 	@ResponseBody
 	@RequestMapping(value = "spbu/{spbuId}/machine", produces = "application/json", method = RequestMethod.GET)
 	public ResponseEntity<List<Map>> supervisorListSpbuMachine(Principal principal, @PathVariable long spbuId) {
@@ -96,6 +104,7 @@ public class AjaxDataController {
 		return ret;
 	}
 
+	@Transactional
 	@ResponseBody
 	@RequestMapping(value = "spbu/{spbuId}/machine/{identifier}/totalizer", produces = "application/json", method = RequestMethod.GET)
 	public ResponseEntity<List<Map>> supervisorListSpbuMachineTotalizer(Principal principal, @PathVariable("spbuId") long spbuId, @PathVariable("identifier") String spbuMachineIdentifier) {
@@ -123,6 +132,37 @@ public class AjaxDataController {
 								.put("counter", spbuMachineTotalizerEntity == null ? 0 : spbuMachineTotalizerEntity.getCounter())
 								.put("machineTotalizerName", machineModelTotalizerEntity.getMachineTotalizerEntity().getName())
 								.getMap());
+			}
+			ret = new ResponseEntity(respEntity, HttpStatus.OK);
+		} else {
+			ret = new ResponseEntity(HttpStatus.FORBIDDEN);
+		}
+
+		return ret;
+	}
+
+	@Transactional
+	@ResponseBody
+	@RequestMapping(value = "spbu/{spbuId}/service_report", produces = "application/json", method = RequestMethod.GET)
+	public ResponseEntity<List<Map>> supervisorListServiceReport(Principal principal, @PathVariable long spbuId) {
+		final UserEntity dbUserEntity = userRepository.findByLoginId(principal.getName());
+		final SpbuEntity dbSpbuEntity = spbuRepository.findOne(spbuId);
+		final ResponseEntity<List<Map>> ret;
+
+		if (dbUserEntity != null && dbSpbuEntity != null && dbUserEntity.getId() == dbSpbuEntity.getSupervisorEntity().getId()) {
+			final List<Map> respEntity = new LinkedList<>();
+			final List<ServiceReportEntity> serviceReports = serviceReportRepository.findBySpbuMachineEntity_SpbuEntity_IdOrderByDateDesc(dbSpbuEntity.getId());
+
+			for (final ServiceReportEntity serviceReportEntity : serviceReports) {
+				final Map<String, Object> tmp = new MapBuilder<>(new HashMap<String, Object>())
+								.put("date", serviceReportEntity.getDate())
+								.put("machineIdentifier", serviceReportEntity.getSpbuMachineEntity().getSpbuMachineEntityPK().getMachineIdentifier())
+								.put("machinePart", serviceReportEntity.getFailureModeHandlingEntity().getPartFailureModeEntity().getMachinePartEntity().getName())
+								.put("failureMode", serviceReportEntity.getFailureModeHandlingEntity().getPartFailureModeEntity().getName())
+								.put("failureModeHandling", serviceReportEntity.getFailureModeHandlingEntity().getName())
+								.put("technician", serviceReportEntity.getTechnicianEntity().getFullName())
+								.getMap();
+				respEntity.add(tmp);
 			}
 			ret = new ResponseEntity(respEntity, HttpStatus.OK);
 		} else {

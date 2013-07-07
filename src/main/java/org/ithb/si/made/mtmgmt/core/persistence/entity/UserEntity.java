@@ -59,7 +59,7 @@ public class UserEntity implements Serializable {
   @Size(min = 1, max = 255)
   @Column(name = "password_hash", nullable = false, length = 255)
 	private String passwordHash;
-	@OneToMany(cascade = CascadeType.ALL, mappedBy = "userEntity", fetch = FetchType.LAZY)
+	@OneToMany(cascade = CascadeType.ALL, mappedBy = "technicianEntity", fetch = FetchType.LAZY)
 	private List<ServiceReportEntity> serviceReportEntityList;
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "supervisorEntity", fetch = FetchType.LAZY)
 	private List<SpbuEntity> spbuEntityList;

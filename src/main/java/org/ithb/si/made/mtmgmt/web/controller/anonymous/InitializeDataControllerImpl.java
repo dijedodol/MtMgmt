@@ -4,6 +4,8 @@
  */
 package org.ithb.si.made.mtmgmt.web.controller.anonymous;
 
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 import org.ithb.si.made.mtmgmt.core.persistence.entity.MachineModelEntity;
 import org.ithb.si.made.mtmgmt.core.persistence.entity.MachineModelTotalizerEntity;
 import org.ithb.si.made.mtmgmt.core.persistence.entity.MachineModelTotalizerEntityPK;
@@ -12,10 +14,13 @@ import org.ithb.si.made.mtmgmt.core.persistence.entity.SpbuEntity;
 import org.ithb.si.made.mtmgmt.core.persistence.entity.SpbuMachineEntity;
 import org.ithb.si.made.mtmgmt.core.persistence.entity.SpbuMachineEntityPK;
 import org.ithb.si.made.mtmgmt.core.persistence.entity.SpbuMachineTotalizerEntity;
+import org.ithb.si.made.mtmgmt.core.persistence.entity.SpbuMachineTotalizerEntityPK;
 import org.ithb.si.made.mtmgmt.core.persistence.entity.UserEntity;
 import org.ithb.si.made.mtmgmt.core.persistence.repository.MachineModelRepository;
+import org.ithb.si.made.mtmgmt.core.persistence.repository.MachineModelTotalizerRepository;
 import org.ithb.si.made.mtmgmt.core.persistence.repository.MachineTotalizerRepository;
 import org.ithb.si.made.mtmgmt.core.persistence.repository.SpbuMachineRepository;
+import org.ithb.si.made.mtmgmt.core.persistence.repository.SpbuMachineTotalizerRepository;
 import org.ithb.si.made.mtmgmt.core.persistence.repository.SpbuRepository;
 import org.ithb.si.made.mtmgmt.core.persistence.repository.UserRepository;
 import org.ithb.si.made.mtmgmt.core.security.AccessRole;
@@ -34,9 +39,9 @@ import org.springframework.web.bind.annotation.RequestMethod;
  */
 @Controller("anonymousInitializeDataController")
 @RequestMapping("/anonymous/initialize_data")
-public class InitializeDataController {
+public class InitializeDataControllerImpl {
 
-	private static final Logger LOG = LoggerFactory.getLogger(InitializeDataController.class);
+	private static final Logger LOG = LoggerFactory.getLogger(InitializeDataControllerImpl.class);
 	@Autowired
 	private UserRepository userRepository;
 	@Autowired
@@ -44,21 +49,23 @@ public class InitializeDataController {
 	@Autowired
 	private MachineModelRepository machineModelRepository;
 	@Autowired
+	private MachineModelTotalizerRepository machineModelTotalizerRepository;
+	@Autowired
 	private MachineTotalizerRepository machineTotalizerRepository;
 	@Autowired
 	private SpbuMachineRepository spbuMachineRepository;
+	@Autowired
+	private SpbuMachineTotalizerRepository spbuMachineTotalizerRepository;
+	@PersistenceContext
+	private EntityManager em;
 
-	public InitializeDataController() {
+	public InitializeDataControllerImpl() {
 		LOG.debug("InitializeDataController <init>");
 	}
 
+	@Transactional
 	@RequestMapping(method = RequestMethod.GET)
 	public String showResult(Model model) {
-		return doShowResult(model);
-	}
-
-	@Transactional
-	public String doShowResult(Model model) {
 		final UserEntity dbUserEntityAdm = createUserIfNotExist("adm", AccessRole.ADMIN);
 		final UserEntity dbUserEntityTch = createUserIfNotExist("tch", AccessRole.TECHNICIAN);
 		final UserEntity dbUserEntitySpv = createUserIfNotExist("spv", AccessRole.SUPERVISOR);
@@ -85,6 +92,17 @@ public class InitializeDataController {
 			model.addAttribute("dbSpbuMachine2", dbSpbuMachine2);
 			model.addAttribute("dbSpbuMachine3", dbSpbuMachine3);
 			model.addAttribute("dbSpbuMachine4", dbSpbuMachine4);
+
+			em.refresh(dbUserEntityAdm);
+			em.refresh(dbUserEntityTch);
+			em.refresh(dbUserEntitySpv);
+			em.refresh(dbSpbuEntity);
+			em.refresh(dbMachineModel);
+			em.refresh(dbMachineMode2);
+			em.refresh(dbSpbuMachine1);
+			em.refresh(dbSpbuMachine2);
+			em.refresh(dbSpbuMachine3);
+			em.refresh(dbSpbuMachine4);
 		} catch (javax.validation.ConstraintViolationException ex) {
 			LOG.error("Exception:[{}], violations:[{}]", ex.getMessage(), ex.getConstraintViolations(), ex);
 		}
@@ -113,8 +131,8 @@ public class InitializeDataController {
 			ret.setAddress("Address_" + code);
 			ret.setPhone("Phone_" + code);
 			ret.setSupervisorEntity(supervisor);
-			ret = spbuRepository.saveAndFlush(ret);
 		}
+		supervisor.getSpbuEntityList().add(ret);
 		return ret;
 	}
 
@@ -131,36 +149,41 @@ public class InitializeDataController {
 				machineTotalizer.setName("Totalizer_" + (i + 1));
 				machineTotalizer = machineTotalizerRepository.saveAndFlush(machineTotalizer);
 
-				final MachineModelTotalizerEntity machineModelTotalizer = new MachineModelTotalizerEntity(new MachineModelTotalizerEntityPK(ret.getId(), machineTotalizer.getId()));
-				machineModelTotalizer.setMachineModelEntity(ret);
-				machineModelTotalizer.setMachineTotalizerEntity(machineTotalizer);
-				ret.getMachineModelTotalizerEntityList().add(machineModelTotalizer);
+				final MachineModelTotalizerEntityPK machineModelTotalizerPk = new MachineModelTotalizerEntityPK();
+				machineModelTotalizerPk.setMachineModelId(ret.getId());
+				machineModelTotalizerPk.setMachineTotalizerId(machineTotalizer.getId());
+
+				final MachineModelTotalizerEntity machineModelTotalizer = new MachineModelTotalizerEntity(machineModelTotalizerPk);
+				machineModelTotalizerRepository.save(machineModelTotalizer);
 			}
-			ret = machineModelRepository.saveAndFlush(ret);
+			machineModelTotalizerRepository.flush();
 		}
 		return ret;
 	}
 
-	private SpbuMachineEntity createSpbuMachineIfNotExist(SpbuEntity spbuEntity, String identifier, MachineModelEntity machineModelEntity) {
-		LOG.debug("createSpbuMachineIfNotExist spbuEntity:[{}], identifier:[{}], machineModelEntity:[{}]", spbuEntity, identifier, machineModelEntity);
-		SpbuMachineEntity ret = spbuMachineRepository.findOne(new SpbuMachineEntityPK(spbuEntity.getId(), identifier));
+	private SpbuMachineEntity createSpbuMachineIfNotExist(SpbuEntity spbuEntity, String machineIdentifier, MachineModelEntity machineModelEntity) {
+		LOG.debug("createSpbuMachineIfNotExist spbuEntity:[{}], identifier:[{}], machineModelEntity:[{}]", spbuEntity, machineIdentifier, machineModelEntity);
+		SpbuMachineEntity ret = spbuMachineRepository.findOne(new SpbuMachineEntityPK(spbuEntity.getId(), machineIdentifier));
 		if (ret == null) {
-			ret = new SpbuMachineEntity(new SpbuMachineEntityPK(spbuEntity.getId(), identifier));
+			ret = new SpbuMachineEntity(new SpbuMachineEntityPK(spbuEntity.getId(), machineIdentifier));
 			ret.setMachineModelEntity(machineModelEntity);
-			ret.setSpbuEntity(spbuEntity);
-			spbuMachineRepository.saveAndFlush(ret);
+			ret = spbuMachineRepository.saveAndFlush(ret);
 
 			LOG.debug("createSpbuMachineIfNotExist machineModelEntity.getMachineModelTotalizerEntityList:[{}]", machineModelEntity.getMachineModelTotalizerEntityList());
 			for (final MachineModelTotalizerEntity machineModelTotalizerEntity : machineModelEntity.getMachineModelTotalizerEntityList()) {
 				LOG.info("createSpbuMachineIfNotExist machineModelEmachineModelTotalizerEntity:[{}]", machineModelTotalizerEntity);
 				LOG.info("createSpbuMachineIfNotExist machineModelTotalizerEntity.getMachineTotalizerEntity:[{}]", machineModelTotalizerEntity.getMachineTotalizerEntity());
-				final SpbuMachineTotalizerEntity tmp = new SpbuMachineTotalizerEntity(spbuEntity.getId(), identifier, machineModelTotalizerEntity.getMachineModelTotalizerEntityPK().getMachineTotalizerId());
+
+				final SpbuMachineTotalizerEntityPK tmpPk = new SpbuMachineTotalizerEntityPK();
+				tmpPk.setSpbuId(spbuEntity.getId());
+				tmpPk.setMachineIdentifier(ret.getSpbuMachineEntityPK().getMachineIdentifier());
+				tmpPk.setMachineTotalizerId(machineModelTotalizerEntity.getMachineTotalizerEntity().getId());
+
+				SpbuMachineTotalizerEntity tmp = new SpbuMachineTotalizerEntity(tmpPk);
 				tmp.setCounter(0);
-				tmp.setMachineTotalizerEntity(machineModelTotalizerEntity.getMachineTotalizerEntity());
-				tmp.setSpbuMachineEntity(ret);
-				ret.getSpbuMachineTotalizerEntityList().add(tmp);
+				spbuMachineTotalizerRepository.save(tmp);
 			}
-			ret = spbuMachineRepository.saveAndFlush(ret);
+			spbuMachineTotalizerRepository.flush();
 		}
 		return ret;
 	}

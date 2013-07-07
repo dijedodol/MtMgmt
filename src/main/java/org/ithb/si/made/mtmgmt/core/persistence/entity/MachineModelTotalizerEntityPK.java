@@ -2,7 +2,6 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-
 package org.ithb.si.made.mtmgmt.core.persistence.entity;
 
 import java.io.Serializable;
@@ -17,28 +16,21 @@ import javax.validation.constraints.NotNull;
  */
 @Embeddable
 public class MachineModelTotalizerEntityPK implements Serializable {
+
 	@Basic(optional = false)
-  @NotNull
-  @Column(name = "machine_totalizer_id", nullable = false)
-	private long machineTotalizerId;
-	@Basic(optional = false)
-  @NotNull
-  @Column(name = "machine_model_id", nullable = false)
+	@NotNull
+	@Column(name = "machine_model_id", nullable = false)
 	private long machineModelId;
+	@Basic(optional = false)
+	@NotNull
+	@Column(name = "machine_totalizer_id", nullable = false)
+	private long machineTotalizerId;
 
 	public MachineModelTotalizerEntityPK() {
 	}
 
-	public MachineModelTotalizerEntityPK(long machineTotalizerId, long machineModelId) {
-		this.machineTotalizerId = machineTotalizerId;
+	public MachineModelTotalizerEntityPK(long machineModelId, long machineTotalizerId) {
 		this.machineModelId = machineModelId;
-	}
-
-	public long getMachineTotalizerId() {
-		return machineTotalizerId;
-	}
-
-	public void setMachineTotalizerId(long machineTotalizerId) {
 		this.machineTotalizerId = machineTotalizerId;
 	}
 
@@ -50,11 +42,19 @@ public class MachineModelTotalizerEntityPK implements Serializable {
 		this.machineModelId = machineModelId;
 	}
 
+	public long getMachineTotalizerId() {
+		return machineTotalizerId;
+	}
+
+	public void setMachineTotalizerId(long machineTotalizerId) {
+		this.machineTotalizerId = machineTotalizerId;
+	}
+
 	@Override
 	public int hashCode() {
 		int hash = 0;
-		hash += (int) machineTotalizerId;
 		hash += (int) machineModelId;
+		hash += (int) machineTotalizerId;
 		return hash;
 	}
 
@@ -65,10 +65,10 @@ public class MachineModelTotalizerEntityPK implements Serializable {
 			return false;
 		}
 		MachineModelTotalizerEntityPK other = (MachineModelTotalizerEntityPK) object;
-		if (this.machineTotalizerId != other.machineTotalizerId) {
+		if (this.machineModelId != other.machineModelId) {
 			return false;
 		}
-		if (this.machineModelId != other.machineModelId) {
+		if (this.machineTotalizerId != other.machineTotalizerId) {
 			return false;
 		}
 		return true;
@@ -78,5 +78,4 @@ public class MachineModelTotalizerEntityPK implements Serializable {
 	public String toString() {
 		return "org.ithb.si.made.mtmgmt.core.persistence.entity.MachineModelTotalizerEntityPK[ machineTotalizerId=" + machineTotalizerId + ", machineModelId=" + machineModelId + " ]";
 	}
-
 }

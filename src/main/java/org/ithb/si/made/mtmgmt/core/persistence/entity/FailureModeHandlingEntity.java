@@ -45,7 +45,7 @@ public class FailureModeHandlingEntity implements Serializable {
   @Column(name = "name", nullable = false, length = 255)
 	private String name;
 	@JoinColumn(name = "failure_mode_id", referencedColumnName = "id", nullable = false)
-  @ManyToOne(optional = false, fetch = FetchType.LAZY)
+  @ManyToOne(optional = false, fetch = FetchType.EAGER)
 	private PartFailureModeEntity partFailureModeEntity;
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "failureModeHandlingEntity", fetch = FetchType.LAZY)
 	private List<ServiceReportEntity> serviceReportEntityList;

@@ -36,13 +36,13 @@ public class ServiceReportSpbuMachineTotalizerEntity implements Serializable {
   @Column(name = "counter", nullable = false)
 	private double counter;
 	@JoinColumn(name = "service_report_id", referencedColumnName = "id", nullable = false, insertable = false, updatable = false)
-  @ManyToOne(optional = false, fetch = FetchType.LAZY)
+  @ManyToOne(optional = false, fetch = FetchType.EAGER)
 	private ServiceReportEntity serviceReportEntity;
 	@JoinColumns({
   	@JoinColumn(name = "spbu_id", referencedColumnName = "spbu_id", nullable = false, insertable = false, updatable = false),
   	@JoinColumn(name = "machine_identifier", referencedColumnName = "machine_identifier", nullable = false, insertable = false, updatable = false),
   	@JoinColumn(name = "machine_totalizer_id", referencedColumnName = "machine_totalizer_id", nullable = false, insertable = false, updatable = false)})
-  @ManyToOne(optional = false, fetch = FetchType.LAZY)
+  @ManyToOne(optional = false, fetch = FetchType.EAGER)
 	private SpbuMachineTotalizerEntity spbuMachineTotalizerEntity;
 
 	public ServiceReportSpbuMachineTotalizerEntity() {

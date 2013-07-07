@@ -18,7 +18,7 @@
 	<body>
 		<div id="sidebar">
 				<ul>
-					<li><a href="list_failure.htm"><s:message code="supervisor.home.list.failure"/></a></li>
+					<li><a href="failure_history.htm"><s:message code="supervisor.home.list.failure"/></a></li>
 					<li><a href="input_totalizer.htm"><s:message code="supervisor.home.input.totalizer"/></a></li>
 				</ul>
 		</div>
