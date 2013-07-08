@@ -4,7 +4,7 @@
 -- Project :      database2.DM1
 -- Author :       MSCI
 --
--- Date Created : Monday, July 08, 2013 19:14:51
+-- Date Created : Monday, July 08, 2013 21:22:54
 -- Target DBMS : MySQL 5.x
 --
 
@@ -120,12 +120,10 @@ CREATE TABLE `part_failure_modes`(
 
 CREATE TABLE `service_report_spbu_machine_totalizers`(
     `service_report_id`  BIGINT           NOT NULL,
-    `spbu_id`            BIGINT           NOT NULL,
     `model_id`           VARCHAR(40)      NOT NULL,
-    `serial_number`      VARCHAR(40)      NOT NULL,
     `totalizer_id`       VARCHAR(40)      NOT NULL,
     `counter`            DOUBLE(18, 0)    NOT NULL,
-    PRIMARY KEY (`service_report_id`, `spbu_id`, `model_id`, `serial_number`, `totalizer_id`)
+    PRIMARY KEY (`service_report_id`, `model_id`, `totalizer_id`)
 )ENGINE=INNODB
 ;
 
@@ -137,16 +135,16 @@ CREATE TABLE `service_report_spbu_machine_totalizers`(
 
 CREATE TABLE `service_reports`(
     `id`                             BIGINT         AUTO_INCREMENT,
+    `date`                           DATE           NOT NULL,
     `spbu_id`                        BIGINT         NOT NULL,
     `model_id`                       VARCHAR(40)    NOT NULL,
     `serial_number`                  VARCHAR(40)    NOT NULL,
-    `date`                           DATE           NOT NULL,
     `part_id`                        VARCHAR(40)    NOT NULL,
     `machine_model_part_identifier`  VARCHAR(40)    NOT NULL,
     `failure_mode_code`              VARCHAR(40)    NOT NULL,
     `failure_mode_handling_code`     VARCHAR(40)    NOT NULL,
     `technician_id`                  BIGINT         NOT NULL,
-    PRIMARY KEY (`id`, `spbu_id`, `model_id`, `serial_number`)
+    PRIMARY KEY (`id`)
 )ENGINE=INNODB
 ;
 
@@ -280,25 +278,13 @@ CREATE INDEX `Ref329` ON `part_failure_modes`(`part_id`)
 -- INDEX: `Ref1327` 
 --
 
-CREATE INDEX `Ref1327` ON `service_report_spbu_machine_totalizers`(`model_id`, `spbu_id`, `service_report_id`, `serial_number`)
+CREATE INDEX `Ref1327` ON `service_report_spbu_machine_totalizers`(`service_report_id`)
 ;
 -- 
--- INDEX: `Ref1128` 
+-- INDEX: `Ref735` 
 --
 
-CREATE INDEX `Ref1128` ON `service_report_spbu_machine_totalizers`(`spbu_id`, `model_id`, `totalizer_id`, `serial_number`)
-;
--- 
--- INDEX: `Ref524` 
---
-
-CREATE INDEX `Ref524` ON `service_reports`(`serial_number`, `model_id`, `spbu_id`)
-;
--- 
--- INDEX: `Ref625` 
---
-
-CREATE INDEX `Ref625` ON `service_reports`(`machine_model_part_identifier`, `part_id`, `model_id`)
+CREATE INDEX `Ref735` ON `service_report_spbu_machine_totalizers`(`model_id`, `totalizer_id`)
 ;
 -- 
 -- INDEX: `Ref126` 
@@ -307,10 +293,22 @@ CREATE INDEX `Ref625` ON `service_reports`(`machine_model_part_identifier`, `par
 CREATE INDEX `Ref126` ON `service_reports`(`technician_id`)
 ;
 -- 
--- INDEX: `Ref1631` 
+-- INDEX: `Ref532` 
 --
 
-CREATE INDEX `Ref1631` ON `service_reports`(`part_id`, `failure_mode_handling_code`, `failure_mode_code`)
+CREATE INDEX `Ref532` ON `service_reports`(`spbu_id`, `model_id`, `serial_number`)
+;
+-- 
+-- INDEX: `Ref633` 
+--
+
+CREATE INDEX `Ref633` ON `service_reports`(`model_id`, `part_id`, `machine_model_part_identifier`)
+;
+-- 
+-- INDEX: `Ref1634` 
+--
+
+CREATE INDEX `Ref1634` ON `service_reports`(`part_id`, `failure_mode_code`, `failure_mode_handling_code`)
 ;
 -- 
 -- INDEX: `Ref516` 
@@ -431,19 +429,24 @@ ALTER TABLE `part_failure_modes` ADD
 --
 
 ALTER TABLE `service_report_spbu_machine_totalizers` ADD 
-    FOREIGN KEY (`service_report_id`, `spbu_id`, `model_id`, `serial_number`)
-    REFERENCES `service_reports`(`id`, `spbu_id`, `model_id`, `serial_number`)
+    FOREIGN KEY (`service_report_id`)
+    REFERENCES `service_reports`(`id`)
 ;
 
 ALTER TABLE `service_report_spbu_machine_totalizers` ADD 
-    FOREIGN KEY (`spbu_id`, `model_id`, `serial_number`, `totalizer_id`)
-    REFERENCES `spbu_machine_totalizers`(`spbu_id`, `model_id`, `serial_number`, `totalizer_id`)
+    FOREIGN KEY (`model_id`, `totalizer_id`)
+    REFERENCES `machine_model_totalizers`(`model_id`, `totalizer_id`)
 ;
 
 
 -- 
 -- TABLE: `service_reports` 
 --
+
+ALTER TABLE `service_reports` ADD 
+    FOREIGN KEY (`technician_id`)
+    REFERENCES `users`(`id`)
+;
 
 ALTER TABLE `service_reports` ADD 
     FOREIGN KEY (`spbu_id`, `model_id`, `serial_number`)
@@ -453,11 +456,6 @@ ALTER TABLE `service_reports` ADD
 ALTER TABLE `service_reports` ADD 
     FOREIGN KEY (`model_id`, `part_id`, `machine_model_part_identifier`)
     REFERENCES `machine_model_parts`(`model_id`, `part_id`, `machine_model_part_identifier`)
-;
-
-ALTER TABLE `service_reports` ADD 
-    FOREIGN KEY (`technician_id`)
-    REFERENCES `users`(`id`)
 ;
 
 ALTER TABLE `service_reports` ADD 

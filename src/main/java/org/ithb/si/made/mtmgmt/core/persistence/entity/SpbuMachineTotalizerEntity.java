@@ -6,9 +6,7 @@
 package org.ithb.si.made.mtmgmt.core.persistence.entity;
 
 import java.io.Serializable;
-import java.util.List;
 import javax.persistence.Basic;
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
@@ -18,7 +16,6 @@ import javax.persistence.JoinColumns;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
-import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
@@ -37,31 +34,24 @@ public class SpbuMachineTotalizerEntity implements Serializable {
 	protected SpbuMachineTotalizerEntityPK spbuMachineTotalizerEntityPK;
 	@Basic(optional = false)
   @NotNull
-  @Size(min = 1, max = 20)
-  @Column(name = "alias", nullable = false, length = 20)
+  @Size(min = 1, max = 40)
+  @Column(name = "alias", nullable = false, length = 40)
 	private String alias;
 	@Basic(optional = false)
   @NotNull
   @Column(name = "counter", nullable = false)
 	private double counter;
-	@Basic(optional = false)
-  @NotNull
-  @Column(name = "mttf", nullable = false)
-	private double mttf;
-	@Basic(optional = false)
-  @NotNull
-  @Column(name = "mttf_threshold", nullable = false)
-	private double mttfThreshold;
-	@OneToMany(cascade = CascadeType.ALL, mappedBy = "spbuMachineTotalizerEntity", fetch = FetchType.LAZY)
-	private List<ServiceReportSpbuMachineTotalizerEntity> serviceReportSpbuMachineTotalizerEntityList;
 	@JoinColumns({
   	@JoinColumn(name = "spbu_id", referencedColumnName = "spbu_id", nullable = false, insertable = false, updatable = false),
-  	@JoinColumn(name = "machine_identifier", referencedColumnName = "machine_identifier", nullable = false, insertable = false, updatable = false)})
+  	@JoinColumn(name = "model_id", referencedColumnName = "model_id", nullable = false, insertable = false, updatable = false),
+  	@JoinColumn(name = "serial_number", referencedColumnName = "serial_number", nullable = false, insertable = false, updatable = false)})
   @ManyToOne(optional = false, fetch = FetchType.LAZY)
 	private SpbuMachineEntity spbuMachineEntity;
-	@JoinColumn(name = "machine_totalizer_id", referencedColumnName = "id", nullable = false, insertable = false, updatable = false)
+	@JoinColumns({
+  	@JoinColumn(name = "model_id", referencedColumnName = "model_id", nullable = false, insertable = false, updatable = false),
+  	@JoinColumn(name = "totalizer_id", referencedColumnName = "totalizer_id", nullable = false, insertable = false, updatable = false)})
   @ManyToOne(optional = false, fetch = FetchType.LAZY)
-	private MachineTotalizerEntity machineTotalizerEntity;
+	private MachineModelTotalizerEntity machineModelTotalizerEntity;
 
 	public SpbuMachineTotalizerEntity() {
 	}
@@ -70,16 +60,14 @@ public class SpbuMachineTotalizerEntity implements Serializable {
 		this.spbuMachineTotalizerEntityPK = spbuMachineTotalizerEntityPK;
 	}
 
-	public SpbuMachineTotalizerEntity(SpbuMachineTotalizerEntityPK spbuMachineTotalizerEntityPK, String alias, double counter, double mttf, double mttfThreshold) {
+	public SpbuMachineTotalizerEntity(SpbuMachineTotalizerEntityPK spbuMachineTotalizerEntityPK, String alias, double counter) {
 		this.spbuMachineTotalizerEntityPK = spbuMachineTotalizerEntityPK;
 		this.alias = alias;
 		this.counter = counter;
-		this.mttf = mttf;
-		this.mttfThreshold = mttfThreshold;
 	}
 
-	public SpbuMachineTotalizerEntity(long spbuId, String machineIdentifier, long machineTotalizerId) {
-		this.spbuMachineTotalizerEntityPK = new SpbuMachineTotalizerEntityPK(spbuId, machineIdentifier, machineTotalizerId);
+	public SpbuMachineTotalizerEntity(long spbuId, String modelId, String serialNumber, String totalizerId) {
+		this.spbuMachineTotalizerEntityPK = new SpbuMachineTotalizerEntityPK(spbuId, modelId, serialNumber, totalizerId);
 	}
 
 	public SpbuMachineTotalizerEntityPK getSpbuMachineTotalizerEntityPK() {
@@ -106,30 +94,6 @@ public class SpbuMachineTotalizerEntity implements Serializable {
 		this.counter = counter;
 	}
 
-	public double getMttf() {
-		return mttf;
-	}
-
-	public void setMttf(double mttf) {
-		this.mttf = mttf;
-	}
-
-	public double getMttfThreshold() {
-		return mttfThreshold;
-	}
-
-	public void setMttfThreshold(double mttfThreshold) {
-		this.mttfThreshold = mttfThreshold;
-	}
-
-	public List<ServiceReportSpbuMachineTotalizerEntity> getServiceReportSpbuMachineTotalizerEntityList() {
-		return serviceReportSpbuMachineTotalizerEntityList;
-	}
-
-	public void setServiceReportSpbuMachineTotalizerEntityList(List<ServiceReportSpbuMachineTotalizerEntity> serviceReportSpbuMachineTotalizerEntityList) {
-		this.serviceReportSpbuMachineTotalizerEntityList = serviceReportSpbuMachineTotalizerEntityList;
-	}
-
 	public SpbuMachineEntity getSpbuMachineEntity() {
 		return spbuMachineEntity;
 	}
@@ -138,12 +102,12 @@ public class SpbuMachineTotalizerEntity implements Serializable {
 		this.spbuMachineEntity = spbuMachineEntity;
 	}
 
-	public MachineTotalizerEntity getMachineTotalizerEntity() {
-		return machineTotalizerEntity;
+	public MachineModelTotalizerEntity getMachineModelTotalizerEntity() {
+		return machineModelTotalizerEntity;
 	}
 
-	public void setMachineTotalizerEntity(MachineTotalizerEntity machineTotalizerEntity) {
-		this.machineTotalizerEntity = machineTotalizerEntity;
+	public void setMachineModelTotalizerEntity(MachineModelTotalizerEntity machineModelTotalizerEntity) {
+		this.machineModelTotalizerEntity = machineModelTotalizerEntity;
 	}
 
 	@Override

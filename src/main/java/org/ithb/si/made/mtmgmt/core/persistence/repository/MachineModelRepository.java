@@ -11,7 +11,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
  *
  * @author gde
  */
-public interface MachineModelRepository extends JpaRepository<MachineModelEntity, Long> {
-	
-	MachineModelEntity findByCode(String code);
+public interface MachineModelRepository extends JpaRepository<MachineModelEntity, String> {
 }

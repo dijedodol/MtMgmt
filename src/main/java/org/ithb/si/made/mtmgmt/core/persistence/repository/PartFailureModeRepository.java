@@ -5,11 +5,12 @@
 package org.ithb.si.made.mtmgmt.core.persistence.repository;
 
 import org.ithb.si.made.mtmgmt.core.persistence.entity.PartFailureModeEntity;
+import org.ithb.si.made.mtmgmt.core.persistence.entity.PartFailureModeEntityPK;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 /**
  *
  * @author Uyeee
  */
-public interface PartFailureModeRepository extends JpaRepository<PartFailureModeEntity, Long> {
+public interface PartFailureModeRepository extends JpaRepository<PartFailureModeEntity, PartFailureModeEntityPK> {
 }

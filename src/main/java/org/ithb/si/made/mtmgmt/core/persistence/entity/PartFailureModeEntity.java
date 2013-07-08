@@ -10,12 +10,11 @@ import java.util.List;
 import javax.persistence.Basic;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
+import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
@@ -34,40 +33,48 @@ import javax.validation.constraints.Size;
 	@NamedQuery(name = "PartFailureModeEntity.findAll", query = "SELECT p FROM PartFailureModeEntity p")})
 public class PartFailureModeEntity implements Serializable {
 	private static final long serialVersionUID = 1L;
-	@Id
-  @GeneratedValue(strategy = GenerationType.IDENTITY)
-  @Basic(optional = false)
-  @Column(name = "id", nullable = false)
-	private Long id;
+	@EmbeddedId
+	protected PartFailureModeEntityPK partFailureModeEntityPK;
 	@Basic(optional = false)
   @NotNull
   @Size(min = 1, max = 255)
   @Column(name = "name", nullable = false, length = 255)
 	private String name;
+	@Basic(optional = false)
+  @NotNull
+  @Lob
+  @Size(min = 1, max = 65535)
+  @Column(name = "description", nullable = false, length = 65535)
+	private String description;
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "partFailureModeEntity", fetch = FetchType.LAZY)
 	private List<FailureModeHandlingEntity> failureModeHandlingEntityList;
-	@JoinColumn(name = "part_id", referencedColumnName = "id", nullable = false)
+	@JoinColumn(name = "part_id", referencedColumnName = "part_id", nullable = false, insertable = false, updatable = false)
   @ManyToOne(optional = false, fetch = FetchType.LAZY)
-	private MachinePartEntity machinePartEntity;
+	private MachinePartTypeEntity machinePartTypeEntity;
 
 	public PartFailureModeEntity() {
 	}
 
-	public PartFailureModeEntity(Long id) {
-		this.id = id;
+	public PartFailureModeEntity(PartFailureModeEntityPK partFailureModeEntityPK) {
+		this.partFailureModeEntityPK = partFailureModeEntityPK;
 	}
 
-	public PartFailureModeEntity(Long id, String name) {
-		this.id = id;
+	public PartFailureModeEntity(PartFailureModeEntityPK partFailureModeEntityPK, String name, String description) {
+		this.partFailureModeEntityPK = partFailureModeEntityPK;
 		this.name = name;
+		this.description = description;
 	}
 
-	public Long getId() {
-		return id;
+	public PartFailureModeEntity(String partId, String failureModeCode) {
+		this.partFailureModeEntityPK = new PartFailureModeEntityPK(partId, failureModeCode);
 	}
 
-	public void setId(Long id) {
-		this.id = id;
+	public PartFailureModeEntityPK getPartFailureModeEntityPK() {
+		return partFailureModeEntityPK;
+	}
+
+	public void setPartFailureModeEntityPK(PartFailureModeEntityPK partFailureModeEntityPK) {
+		this.partFailureModeEntityPK = partFailureModeEntityPK;
 	}
 
 	public String getName() {
@@ -78,6 +85,14 @@ public class PartFailureModeEntity implements Serializable {
 		this.name = name;
 	}
 
+	public String getDescription() {
+		return description;
+	}
+
+	public void setDescription(String description) {
+		this.description = description;
+	}
+
 	public List<FailureModeHandlingEntity> getFailureModeHandlingEntityList() {
 		return failureModeHandlingEntityList;
 	}
@@ -86,18 +101,18 @@ public class PartFailureModeEntity implements Serializable {
 		this.failureModeHandlingEntityList = failureModeHandlingEntityList;
 	}
 
-	public MachinePartEntity getMachinePartEntity() {
-		return machinePartEntity;
+	public MachinePartTypeEntity getMachinePartTypeEntity() {
+		return machinePartTypeEntity;
 	}
 
-	public void setMachinePartEntity(MachinePartEntity machinePartEntity) {
-		this.machinePartEntity = machinePartEntity;
+	public void setMachinePartTypeEntity(MachinePartTypeEntity machinePartTypeEntity) {
+		this.machinePartTypeEntity = machinePartTypeEntity;
 	}
 
 	@Override
 	public int hashCode() {
 		int hash = 0;
-		hash += (id != null ? id.hashCode() : 0);
+		hash += (partFailureModeEntityPK != null ? partFailureModeEntityPK.hashCode() : 0);
 		return hash;
 	}
 
@@ -108,7 +123,7 @@ public class PartFailureModeEntity implements Serializable {
 			return false;
 		}
 		PartFailureModeEntity other = (PartFailureModeEntity) object;
-		if ((this.id == null && other.id != null) || (this.id != null && !this.id.equals(other.id))) {
+		if ((this.partFailureModeEntityPK == null && other.partFailureModeEntityPK != null) || (this.partFailureModeEntityPK != null && !this.partFailureModeEntityPK.equals(other.partFailureModeEntityPK))) {
 			return false;
 		}
 		return true;
@@ -116,7 +131,7 @@ public class PartFailureModeEntity implements Serializable {
 
 	@Override
 	public String toString() {
-		return "org.ithb.si.made.mtmgmt.core.persistence.entity.PartFailureModeEntity[ id=" + id + " ]";
+		return "org.ithb.si.made.mtmgmt.core.persistence.entity.PartFailureModeEntity[ partFailureModeEntityPK=" + partFailureModeEntityPK + " ]";
 	}
 
 }

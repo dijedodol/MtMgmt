@@ -24,16 +24,22 @@ public class SpbuMachineEntityPK implements Serializable {
 	private long spbuId;
 	@Basic(optional = false)
   @NotNull
-  @Size(min = 1, max = 20)
-  @Column(name = "machine_identifier", nullable = false, length = 20)
-	private String machineIdentifier;
+  @Size(min = 1, max = 40)
+  @Column(name = "model_id", nullable = false, length = 40)
+	private String modelId;
+	@Basic(optional = false)
+  @NotNull
+  @Size(min = 1, max = 40)
+  @Column(name = "serial_number", nullable = false, length = 40)
+	private String serialNumber;
 
 	public SpbuMachineEntityPK() {
 	}
 
-	public SpbuMachineEntityPK(long spbuId, String machineIdentifier) {
+	public SpbuMachineEntityPK(long spbuId, String modelId, String serialNumber) {
 		this.spbuId = spbuId;
-		this.machineIdentifier = machineIdentifier;
+		this.modelId = modelId;
+		this.serialNumber = serialNumber;
 	}
 
 	public long getSpbuId() {
@@ -44,19 +50,28 @@ public class SpbuMachineEntityPK implements Serializable {
 		this.spbuId = spbuId;
 	}
 
-	public String getMachineIdentifier() {
-		return machineIdentifier;
+	public String getModelId() {
+		return modelId;
 	}
 
-	public void setMachineIdentifier(String machineIdentifier) {
-		this.machineIdentifier = machineIdentifier;
+	public void setModelId(String modelId) {
+		this.modelId = modelId;
+	}
+
+	public String getSerialNumber() {
+		return serialNumber;
+	}
+
+	public void setSerialNumber(String serialNumber) {
+		this.serialNumber = serialNumber;
 	}
 
 	@Override
 	public int hashCode() {
 		int hash = 0;
 		hash += (int) spbuId;
-		hash += (machineIdentifier != null ? machineIdentifier.hashCode() : 0);
+		hash += (modelId != null ? modelId.hashCode() : 0);
+		hash += (serialNumber != null ? serialNumber.hashCode() : 0);
 		return hash;
 	}
 
@@ -70,7 +85,10 @@ public class SpbuMachineEntityPK implements Serializable {
 		if (this.spbuId != other.spbuId) {
 			return false;
 		}
-		if ((this.machineIdentifier == null && other.machineIdentifier != null) || (this.machineIdentifier != null && !this.machineIdentifier.equals(other.machineIdentifier))) {
+		if ((this.modelId == null && other.modelId != null) || (this.modelId != null && !this.modelId.equals(other.modelId))) {
+			return false;
+		}
+		if ((this.serialNumber == null && other.serialNumber != null) || (this.serialNumber != null && !this.serialNumber.equals(other.serialNumber))) {
 			return false;
 		}
 		return true;
@@ -78,7 +96,7 @@ public class SpbuMachineEntityPK implements Serializable {
 
 	@Override
 	public String toString() {
-		return "org.ithb.si.made.mtmgmt.core.persistence.entity.SpbuMachineEntityPK[ spbuId=" + spbuId + ", machineIdentifier=" + machineIdentifier + " ]";
+		return "org.ithb.si.made.mtmgmt.core.persistence.entity.SpbuMachineEntityPK[ spbuId=" + spbuId + ", modelId=" + modelId + ", serialNumber=" + serialNumber + " ]";
 	}
 
 }

@@ -43,19 +43,19 @@ public class SpbuEntity implements Serializable {
 	private Long id;
 	@Basic(optional = false)
   @NotNull
-  @Size(min = 1, max = 255)
-  @Column(name = "address", nullable = false, length = 255)
-	private String address;
-	@Basic(optional = false)
-  @NotNull
   @Size(min = 1, max = 20)
   @Column(name = "code", nullable = false, length = 20)
 	private String code;
+	@Basic(optional = false)
+  @NotNull
+  @Size(min = 1, max = 255)
+  @Column(name = "address", nullable = false, length = 255)
+	private String address;
 	// @Pattern(regexp="^\\(?(\\d{3})\\)?[- ]?(\\d{3})[- ]?(\\d{4})$", message="Invalid phone/fax format, should be as xxx-xxx-xxxx")//if the field contains phone or fax number consider using this annotation to enforce field validation
 	@Basic(optional = false)
   @NotNull
-  @Size(min = 1, max = 20)
-  @Column(name = "phone", nullable = false, length = 20)
+  @Size(min = 1, max = 40)
+  @Column(name = "phone", nullable = false, length = 40)
 	private String phone;
 	@JoinColumn(name = "supervisor_id", referencedColumnName = "id", nullable = false)
   @ManyToOne(optional = false, fetch = FetchType.LAZY)
@@ -70,10 +70,10 @@ public class SpbuEntity implements Serializable {
 		this.id = id;
 	}
 
-	public SpbuEntity(Long id, String address, String code, String phone) {
+	public SpbuEntity(Long id, String code, String address, String phone) {
 		this.id = id;
-		this.address = address;
 		this.code = code;
+		this.address = address;
 		this.phone = phone;
 	}
 
@@ -85,20 +85,20 @@ public class SpbuEntity implements Serializable {
 		this.id = id;
 	}
 
-	public String getAddress() {
-		return address;
-	}
-
-	public void setAddress(String address) {
-		this.address = address;
-	}
-
 	public String getCode() {
 		return code;
 	}
 
 	public void setCode(String code) {
 		this.code = code;
+	}
+
+	public String getAddress() {
+		return address;
+	}
+
+	public void setAddress(String address) {
+		this.address = address;
 	}
 
 	public String getPhone() {

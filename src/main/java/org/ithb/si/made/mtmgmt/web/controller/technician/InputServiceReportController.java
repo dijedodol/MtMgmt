@@ -19,7 +19,7 @@ import org.ithb.si.made.mtmgmt.core.persistence.entity.SpbuMachineEntityPK;
 import org.ithb.si.made.mtmgmt.core.persistence.entity.SpbuMachineTotalizerEntity;
 import org.ithb.si.made.mtmgmt.core.persistence.entity.UserEntity;
 import org.ithb.si.made.mtmgmt.core.persistence.repository.FailureModeHandlingRepository;
-import org.ithb.si.made.mtmgmt.core.persistence.repository.MachineTotalizerRepository;
+import org.ithb.si.made.mtmgmt.core.persistence.repository.MachineModelTotalizerRepository;
 import org.ithb.si.made.mtmgmt.core.persistence.repository.ServiceReportRepository;
 import org.ithb.si.made.mtmgmt.core.persistence.repository.SpbuMachineRepository;
 import org.ithb.si.made.mtmgmt.core.persistence.repository.SpbuMachineTotalizerRepository;
@@ -54,7 +54,7 @@ public class InputServiceReportController {
 	@Autowired
 	private SpbuMachineTotalizerRepository spbuMachineTotalizerRepository;
 	@Autowired
-	private MachineTotalizerRepository machineTotalizerRepository;
+	private MachineModelTotalizerRepository machineTotalizerRepository;
 	@Autowired
 	private FailureModeHandlingRepository failureModeHandlingRepository;
 	@Autowired

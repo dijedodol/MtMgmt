@@ -10,12 +10,12 @@ import java.util.List;
 import javax.persistence.Basic;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
+import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.JoinColumns;
+import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
@@ -34,17 +34,22 @@ import javax.validation.constraints.Size;
 	@NamedQuery(name = "FailureModeHandlingEntity.findAll", query = "SELECT f FROM FailureModeHandlingEntity f")})
 public class FailureModeHandlingEntity implements Serializable {
 	private static final long serialVersionUID = 1L;
-	@Id
-  @GeneratedValue(strategy = GenerationType.IDENTITY)
-  @Basic(optional = false)
-  @Column(name = "id", nullable = false)
-	private Long id;
+	@EmbeddedId
+	protected FailureModeHandlingEntityPK failureModeHandlingEntityPK;
 	@Basic(optional = false)
   @NotNull
   @Size(min = 1, max = 255)
   @Column(name = "name", nullable = false, length = 255)
 	private String name;
-	@JoinColumn(name = "failure_mode_id", referencedColumnName = "id", nullable = false)
+	@Basic(optional = false)
+  @NotNull
+  @Lob
+  @Size(min = 1, max = 65535)
+  @Column(name = "description", nullable = false, length = 65535)
+	private String description;
+	@JoinColumns({
+  	@JoinColumn(name = "part_id", referencedColumnName = "part_id", nullable = false, insertable = false, updatable = false),
+  	@JoinColumn(name = "failure_mode_code", referencedColumnName = "failure_mode_code", nullable = false, insertable = false, updatable = false)})
   @ManyToOne(optional = false, fetch = FetchType.LAZY)
 	private PartFailureModeEntity partFailureModeEntity;
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "failureModeHandlingEntity", fetch = FetchType.LAZY)
@@ -53,21 +58,26 @@ public class FailureModeHandlingEntity implements Serializable {
 	public FailureModeHandlingEntity() {
 	}
 
-	public FailureModeHandlingEntity(Long id) {
-		this.id = id;
+	public FailureModeHandlingEntity(FailureModeHandlingEntityPK failureModeHandlingEntityPK) {
+		this.failureModeHandlingEntityPK = failureModeHandlingEntityPK;
 	}
 
-	public FailureModeHandlingEntity(Long id, String name) {
-		this.id = id;
+	public FailureModeHandlingEntity(FailureModeHandlingEntityPK failureModeHandlingEntityPK, String name, String description) {
+		this.failureModeHandlingEntityPK = failureModeHandlingEntityPK;
 		this.name = name;
+		this.description = description;
 	}
 
-	public Long getId() {
-		return id;
+	public FailureModeHandlingEntity(String partId, String failureModeCode, String failureModeHandlingCode) {
+		this.failureModeHandlingEntityPK = new FailureModeHandlingEntityPK(partId, failureModeCode, failureModeHandlingCode);
 	}
 
-	public void setId(Long id) {
-		this.id = id;
+	public FailureModeHandlingEntityPK getFailureModeHandlingEntityPK() {
+		return failureModeHandlingEntityPK;
+	}
+
+	public void setFailureModeHandlingEntityPK(FailureModeHandlingEntityPK failureModeHandlingEntityPK) {
+		this.failureModeHandlingEntityPK = failureModeHandlingEntityPK;
 	}
 
 	public String getName() {
@@ -76,6 +86,14 @@ public class FailureModeHandlingEntity implements Serializable {
 
 	public void setName(String name) {
 		this.name = name;
+	}
+
+	public String getDescription() {
+		return description;
+	}
+
+	public void setDescription(String description) {
+		this.description = description;
 	}
 
 	public PartFailureModeEntity getPartFailureModeEntity() {
@@ -97,7 +115,7 @@ public class FailureModeHandlingEntity implements Serializable {
 	@Override
 	public int hashCode() {
 		int hash = 0;
-		hash += (id != null ? id.hashCode() : 0);
+		hash += (failureModeHandlingEntityPK != null ? failureModeHandlingEntityPK.hashCode() : 0);
 		return hash;
 	}
 
@@ -108,7 +126,7 @@ public class FailureModeHandlingEntity implements Serializable {
 			return false;
 		}
 		FailureModeHandlingEntity other = (FailureModeHandlingEntity) object;
-		if ((this.id == null && other.id != null) || (this.id != null && !this.id.equals(other.id))) {
+		if ((this.failureModeHandlingEntityPK == null && other.failureModeHandlingEntityPK != null) || (this.failureModeHandlingEntityPK != null && !this.failureModeHandlingEntityPK.equals(other.failureModeHandlingEntityPK))) {
 			return false;
 		}
 		return true;
@@ -116,7 +134,7 @@ public class FailureModeHandlingEntity implements Serializable {
 
 	@Override
 	public String toString() {
-		return "org.ithb.si.made.mtmgmt.core.persistence.entity.FailureModeHandlingEntity[ id=" + id + " ]";
+		return "org.ithb.si.made.mtmgmt.core.persistence.entity.FailureModeHandlingEntity[ failureModeHandlingEntityPK=" + failureModeHandlingEntityPK + " ]";
 	}
 
 }

@@ -4,12 +4,12 @@
  */
 package org.ithb.si.made.mtmgmt.core.persistence.repository;
 
-import org.ithb.si.made.mtmgmt.core.persistence.entity.MachineTotalizerEntity;
+import org.ithb.si.made.mtmgmt.core.persistence.entity.MachinePartTypeEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 /**
  *
  * @author Uyeee
  */
-public interface MachineTotalizerRepository extends JpaRepository<MachineTotalizerEntity, Long> {
+public interface MachinePartTypeRepository extends JpaRepository<MachinePartTypeEntity, String> {
 }

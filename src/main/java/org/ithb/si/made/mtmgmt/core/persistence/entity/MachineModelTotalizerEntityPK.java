@@ -17,11 +17,7 @@ import javax.validation.constraints.Size;
  * @author Uyeee
  */
 @Embeddable
-public class ServiceReportSpbuMachineTotalizerEntityPK implements Serializable {
-	@Basic(optional = false)
-  @NotNull
-  @Column(name = "service_report_id", nullable = false)
-	private long serviceReportId;
+public class MachineModelTotalizerEntityPK implements Serializable {
 	@Basic(optional = false)
   @NotNull
   @Size(min = 1, max = 40)
@@ -33,21 +29,12 @@ public class ServiceReportSpbuMachineTotalizerEntityPK implements Serializable {
   @Column(name = "totalizer_id", nullable = false, length = 40)
 	private String totalizerId;
 
-	public ServiceReportSpbuMachineTotalizerEntityPK() {
+	public MachineModelTotalizerEntityPK() {
 	}
 
-	public ServiceReportSpbuMachineTotalizerEntityPK(long serviceReportId, String modelId, String totalizerId) {
-		this.serviceReportId = serviceReportId;
+	public MachineModelTotalizerEntityPK(String modelId, String totalizerId) {
 		this.modelId = modelId;
 		this.totalizerId = totalizerId;
-	}
-
-	public long getServiceReportId() {
-		return serviceReportId;
-	}
-
-	public void setServiceReportId(long serviceReportId) {
-		this.serviceReportId = serviceReportId;
 	}
 
 	public String getModelId() {
@@ -69,7 +56,6 @@ public class ServiceReportSpbuMachineTotalizerEntityPK implements Serializable {
 	@Override
 	public int hashCode() {
 		int hash = 0;
-		hash += (int) serviceReportId;
 		hash += (modelId != null ? modelId.hashCode() : 0);
 		hash += (totalizerId != null ? totalizerId.hashCode() : 0);
 		return hash;
@@ -78,13 +64,10 @@ public class ServiceReportSpbuMachineTotalizerEntityPK implements Serializable {
 	@Override
 	public boolean equals(Object object) {
 		// TODO: Warning - this method won't work in the case the id fields are not set
-		if (!(object instanceof ServiceReportSpbuMachineTotalizerEntityPK)) {
+		if (!(object instanceof MachineModelTotalizerEntityPK)) {
 			return false;
 		}
-		ServiceReportSpbuMachineTotalizerEntityPK other = (ServiceReportSpbuMachineTotalizerEntityPK) object;
-		if (this.serviceReportId != other.serviceReportId) {
-			return false;
-		}
+		MachineModelTotalizerEntityPK other = (MachineModelTotalizerEntityPK) object;
 		if ((this.modelId == null && other.modelId != null) || (this.modelId != null && !this.modelId.equals(other.modelId))) {
 			return false;
 		}
@@ -96,7 +79,7 @@ public class ServiceReportSpbuMachineTotalizerEntityPK implements Serializable {
 
 	@Override
 	public String toString() {
-		return "org.ithb.si.made.mtmgmt.core.persistence.entity.ServiceReportSpbuMachineTotalizerEntityPK[ serviceReportId=" + serviceReportId + ", modelId=" + modelId + ", totalizerId=" + totalizerId + " ]";
+		return "org.ithb.si.made.mtmgmt.core.persistence.entity.MachineModelTotalizerEntityPK[ modelId=" + modelId + ", totalizerId=" + totalizerId + " ]";
 	}
 
 }

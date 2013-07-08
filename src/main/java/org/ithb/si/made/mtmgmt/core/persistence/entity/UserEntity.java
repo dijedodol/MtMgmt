@@ -42,22 +42,18 @@ public class UserEntity implements Serializable {
 	private Long id;
 	@Basic(optional = false)
   @NotNull
-  @Column(name = "access_role", nullable = false)
-	private AccessRole accessRole;
-	@Basic(optional = false)
-  @NotNull
-  @Size(min = 1, max = 255)
-  @Column(name = "full_name", nullable = false, length = 255)
+  @Size(min = 1, max = 40)
+  @Column(name = "full_name", nullable = false, length = 40)
 	private String fullName;
 	@Basic(optional = false)
   @NotNull
-  @Size(min = 1, max = 255)
-  @Column(name = "login_id", nullable = false, length = 255)
+  @Column(name = "access_role", nullable = false)
+	private AccessRole accessRole;
+	@Size(max = 255)
+  @Column(name = "login_id", length = 255)
 	private String loginId;
-	@Basic(optional = false)
-  @NotNull
-  @Size(min = 1, max = 255)
-  @Column(name = "password_hash", nullable = false, length = 255)
+	@Size(max = 255)
+  @Column(name = "password_hash", length = 255)
 	private String passwordHash;
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "technicianEntity", fetch = FetchType.LAZY)
 	private List<ServiceReportEntity> serviceReportEntityList;
@@ -71,12 +67,10 @@ public class UserEntity implements Serializable {
 		this.id = id;
 	}
 
-	public UserEntity(Long id, AccessRole accessRole, String fullName, String loginId, String passwordHash) {
+	public UserEntity(Long id, String fullName, AccessRole accessRole) {
 		this.id = id;
-		this.accessRole = accessRole;
 		this.fullName = fullName;
-		this.loginId = loginId;
-		this.passwordHash = passwordHash;
+		this.accessRole = accessRole;
 	}
 
 	public Long getId() {
@@ -87,20 +81,20 @@ public class UserEntity implements Serializable {
 		this.id = id;
 	}
 
-	public AccessRole getAccessRole() {
-		return accessRole;
-	}
-
-	public void setAccessRole(AccessRole accessRole) {
-		this.accessRole = accessRole;
-	}
-
 	public String getFullName() {
 		return fullName;
 	}
 
 	public void setFullName(String fullName) {
 		this.fullName = fullName;
+	}
+
+	public AccessRole getAccessRole() {
+		return accessRole;
+	}
+
+	public void setAccessRole(AccessRole accessRole) {
+		this.accessRole = accessRole;
 	}
 
 	public String getLoginId() {

@@ -48,16 +48,26 @@ public class ServiceReportEntity implements Serializable {
   @Temporal(TemporalType.DATE)
 	private Date date;
 	@JoinColumns({
+  	@JoinColumn(name = "model_id", referencedColumnName = "model_id", nullable = false),
+  	@JoinColumn(name = "part_id", referencedColumnName = "part_id", nullable = false),
+  	@JoinColumn(name = "machine_model_part_identifier", referencedColumnName = "machine_model_part_identifier", nullable = false)})
+  @ManyToOne(optional = false, fetch = FetchType.LAZY)
+	private MachineModelPartEntity machineModelPartEntity;
+	@JoinColumns({
   	@JoinColumn(name = "spbu_id", referencedColumnName = "spbu_id", nullable = false),
-  	@JoinColumn(name = "machine_identifier", referencedColumnName = "machine_identifier", nullable = false)})
+  	@JoinColumn(name = "model_id", referencedColumnName = "model_id", nullable = false),
+  	@JoinColumn(name = "serial_number", referencedColumnName = "serial_number", nullable = false)})
   @ManyToOne(optional = false, fetch = FetchType.LAZY)
 	private SpbuMachineEntity spbuMachineEntity;
-	@JoinColumn(name = "failure_mode_handling_id", referencedColumnName = "id", nullable = false)
-  @ManyToOne(optional = false, fetch = FetchType.LAZY)
-	private FailureModeHandlingEntity failureModeHandlingEntity;
 	@JoinColumn(name = "technician_id", referencedColumnName = "id", nullable = false)
   @ManyToOne(optional = false, fetch = FetchType.LAZY)
 	private UserEntity technicianEntity;
+	@JoinColumns({
+  	@JoinColumn(name = "part_id", referencedColumnName = "part_id", nullable = false),
+  	@JoinColumn(name = "failure_mode_code", referencedColumnName = "failure_mode_code", nullable = false),
+  	@JoinColumn(name = "failure_mode_handling_code", referencedColumnName = "failure_mode_handling_code", nullable = false)})
+  @ManyToOne(optional = false, fetch = FetchType.LAZY)
+	private FailureModeHandlingEntity failureModeHandlingEntity;
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "serviceReportEntity", fetch = FetchType.LAZY)
 	private List<ServiceReportSpbuMachineTotalizerEntity> serviceReportSpbuMachineTotalizerEntityList;
 
@@ -89,6 +99,14 @@ public class ServiceReportEntity implements Serializable {
 		this.date = date;
 	}
 
+	public MachineModelPartEntity getMachineModelPartEntity() {
+		return machineModelPartEntity;
+	}
+
+	public void setMachineModelPartEntity(MachineModelPartEntity machineModelPartEntity) {
+		this.machineModelPartEntity = machineModelPartEntity;
+	}
+
 	public SpbuMachineEntity getSpbuMachineEntity() {
 		return spbuMachineEntity;
 	}
@@ -97,20 +115,20 @@ public class ServiceReportEntity implements Serializable {
 		this.spbuMachineEntity = spbuMachineEntity;
 	}
 
-	public FailureModeHandlingEntity getFailureModeHandlingEntity() {
-		return failureModeHandlingEntity;
-	}
-
-	public void setFailureModeHandlingEntity(FailureModeHandlingEntity failureModeHandlingEntity) {
-		this.failureModeHandlingEntity = failureModeHandlingEntity;
-	}
-
 	public UserEntity getTechnicianEntity() {
 		return technicianEntity;
 	}
 
 	public void setTechnicianEntity(UserEntity technicianEntity) {
 		this.technicianEntity = technicianEntity;
+	}
+
+	public FailureModeHandlingEntity getFailureModeHandlingEntity() {
+		return failureModeHandlingEntity;
+	}
+
+	public void setFailureModeHandlingEntity(FailureModeHandlingEntity failureModeHandlingEntity) {
+		this.failureModeHandlingEntity = failureModeHandlingEntity;
 	}
 
 	public List<ServiceReportSpbuMachineTotalizerEntity> getServiceReportSpbuMachineTotalizerEntityList() {

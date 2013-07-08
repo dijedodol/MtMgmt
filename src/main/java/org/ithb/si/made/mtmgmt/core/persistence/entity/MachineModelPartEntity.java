@@ -7,19 +7,17 @@ package org.ithb.si.made.mtmgmt.core.persistence.entity;
 
 import java.io.Serializable;
 import java.util.List;
-import javax.persistence.Basic;
 import javax.persistence.CascadeType;
-import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
+import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
-import javax.validation.constraints.NotNull;
 
 /**
  *
@@ -33,22 +31,18 @@ public class MachineModelPartEntity implements Serializable {
 	private static final long serialVersionUID = 1L;
 	@EmbeddedId
 	protected MachineModelPartEntityPK machineModelPartEntityPK;
-	@Basic(optional = false)
-  @NotNull
-  @Column(name = "mttf", nullable = false)
-	private double mttf;
-	@Basic(optional = false)
-  @NotNull
-  @Column(name = "mttf_threshold", nullable = false)
-	private double mttfThreshold;
+	@ManyToMany(mappedBy = "machineModelPartEntityList", fetch = FetchType.LAZY)
+	private List<MachineModelTotalizerEntity> machineModelTotalizerEntityList;
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "machineModelPartEntity", fetch = FetchType.LAZY)
-	private List<MachineModelPartTotalizerEntity> machineModelPartTotalizerEntityList;
-	@JoinColumn(name = "machine_model_id", referencedColumnName = "id", nullable = false, insertable = false, updatable = false)
+	private List<ServiceReportEntity> serviceReportEntityList;
+	@JoinColumn(name = "model_id", referencedColumnName = "model_id", nullable = false, insertable = false, updatable = false)
   @ManyToOne(optional = false, fetch = FetchType.LAZY)
 	private MachineModelEntity machineModelEntity;
-	@JoinColumn(name = "machine_part_id", referencedColumnName = "id", nullable = false, insertable = false, updatable = false)
+	@JoinColumn(name = "part_id", referencedColumnName = "part_id", nullable = false, insertable = false, updatable = false)
   @ManyToOne(optional = false, fetch = FetchType.LAZY)
-	private MachinePartEntity machinePartEntity;
+	private MachinePartTypeEntity machinePartTypeEntity;
+	@OneToMany(cascade = CascadeType.ALL, mappedBy = "machineModelPartEntity", fetch = FetchType.LAZY)
+	private List<SpbuMachinePartMttfEntity> spbuMachinePartMttfEntityList;
 
 	public MachineModelPartEntity() {
 	}
@@ -57,14 +51,8 @@ public class MachineModelPartEntity implements Serializable {
 		this.machineModelPartEntityPK = machineModelPartEntityPK;
 	}
 
-	public MachineModelPartEntity(MachineModelPartEntityPK machineModelPartEntityPK, double mttf, double mttfThreshold) {
-		this.machineModelPartEntityPK = machineModelPartEntityPK;
-		this.mttf = mttf;
-		this.mttfThreshold = mttfThreshold;
-	}
-
-	public MachineModelPartEntity(long machinePartId, long machineModelId) {
-		this.machineModelPartEntityPK = new MachineModelPartEntityPK(machinePartId, machineModelId);
+	public MachineModelPartEntity(String modelId, String partId, String machineModelPartIdentifier) {
+		this.machineModelPartEntityPK = new MachineModelPartEntityPK(modelId, partId, machineModelPartIdentifier);
 	}
 
 	public MachineModelPartEntityPK getMachineModelPartEntityPK() {
@@ -75,28 +63,20 @@ public class MachineModelPartEntity implements Serializable {
 		this.machineModelPartEntityPK = machineModelPartEntityPK;
 	}
 
-	public double getMttf() {
-		return mttf;
+	public List<MachineModelTotalizerEntity> getMachineModelTotalizerEntityList() {
+		return machineModelTotalizerEntityList;
 	}
 
-	public void setMttf(double mttf) {
-		this.mttf = mttf;
+	public void setMachineModelTotalizerEntityList(List<MachineModelTotalizerEntity> machineModelTotalizerEntityList) {
+		this.machineModelTotalizerEntityList = machineModelTotalizerEntityList;
 	}
 
-	public double getMttfThreshold() {
-		return mttfThreshold;
+	public List<ServiceReportEntity> getServiceReportEntityList() {
+		return serviceReportEntityList;
 	}
 
-	public void setMttfThreshold(double mttfThreshold) {
-		this.mttfThreshold = mttfThreshold;
-	}
-
-	public List<MachineModelPartTotalizerEntity> getMachineModelPartTotalizerEntityList() {
-		return machineModelPartTotalizerEntityList;
-	}
-
-	public void setMachineModelPartTotalizerEntityList(List<MachineModelPartTotalizerEntity> machineModelPartTotalizerEntityList) {
-		this.machineModelPartTotalizerEntityList = machineModelPartTotalizerEntityList;
+	public void setServiceReportEntityList(List<ServiceReportEntity> serviceReportEntityList) {
+		this.serviceReportEntityList = serviceReportEntityList;
 	}
 
 	public MachineModelEntity getMachineModelEntity() {
@@ -107,12 +87,20 @@ public class MachineModelPartEntity implements Serializable {
 		this.machineModelEntity = machineModelEntity;
 	}
 
-	public MachinePartEntity getMachinePartEntity() {
-		return machinePartEntity;
+	public MachinePartTypeEntity getMachinePartTypeEntity() {
+		return machinePartTypeEntity;
 	}
 
-	public void setMachinePartEntity(MachinePartEntity machinePartEntity) {
-		this.machinePartEntity = machinePartEntity;
+	public void setMachinePartTypeEntity(MachinePartTypeEntity machinePartTypeEntity) {
+		this.machinePartTypeEntity = machinePartTypeEntity;
+	}
+
+	public List<SpbuMachinePartMttfEntity> getSpbuMachinePartMttfEntityList() {
+		return spbuMachinePartMttfEntityList;
+	}
+
+	public void setSpbuMachinePartMttfEntityList(List<SpbuMachinePartMttfEntity> spbuMachinePartMttfEntityList) {
+		this.spbuMachinePartMttfEntityList = spbuMachinePartMttfEntityList;
 	}
 
 	@Override

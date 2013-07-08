@@ -2,6 +2,32 @@
 <persistence version="2.1" xmlns="http://xmlns.jcp.org/xml/ns/persistence" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/persistence http://xmlns.jcp.org/xml/ns/persistence/persistence_2_1.xsd">
   <persistence-unit name="MtMgmt-PU">
     <!-- <provider>org.hibernate.ejb.HibernatePersistence</provider> -->
+    <class>org.ithb.si.made.mtmgmt.core.persistence.entity.PartFailureModes</class>
+    <class>org.ithb.si.made.mtmgmt.core.persistence.entity.SpbuMachinePartMttfs</class>
+    <class>org.ithb.si.made.mtmgmt.core.persistence.entity.ServiceReports</class>
+    <class>org.ithb.si.made.mtmgmt.core.persistence.entity.SpbuMachineTotalizers</class>
+    <class>org.ithb.si.made.mtmgmt.core.persistence.entity.SpbuMachines</class>
+    <class>org.ithb.si.made.mtmgmt.core.persistence.entity.Spbus</class>
+    <class>org.ithb.si.made.mtmgmt.core.persistence.entity.Users</class>
+    <class>org.ithb.si.made.mtmgmt.core.persistence.entity.ServiceReportSpbuMachineTotalizers</class>
+    <class>org.ithb.si.made.mtmgmt.core.persistence.entity.MachineModelParts</class>
+    <class>org.ithb.si.made.mtmgmt.core.persistence.entity.MachinePartTypes</class>
+    <class>org.ithb.si.made.mtmgmt.core.persistence.entity.FailureModeHandlings</class>
+    <class>org.ithb.si.made.mtmgmt.core.persistence.entity.MachineModels</class>
+    <class>org.ithb.si.made.mtmgmt.core.persistence.entity.MachineModelTotalizers</class>
+    <class>org.ithb.si.made.mtmgmt.core.persistence.entity.SpbuEntity</class>
+    <class>org.ithb.si.made.mtmgmt.core.persistence.entity.SpbuMachinePartMttfEntity</class>
+    <class>org.ithb.si.made.mtmgmt.core.persistence.entity.UserEntity</class>
+    <class>org.ithb.si.made.mtmgmt.core.persistence.entity.MachinePartTypeEntity</class>
+    <class>org.ithb.si.made.mtmgmt.core.persistence.entity.MachineModelPartEntity</class>
+    <class>org.ithb.si.made.mtmgmt.core.persistence.entity.PartFailureModeEntity</class>
+    <class>org.ithb.si.made.mtmgmt.core.persistence.entity.SpbuMachineEntity</class>
+    <class>org.ithb.si.made.mtmgmt.core.persistence.entity.SpbuMachineTotalizerEntity</class>
+    <class>org.ithb.si.made.mtmgmt.core.persistence.entity.MachineModelEntity</class>
+    <class>org.ithb.si.made.mtmgmt.core.persistence.entity.ServiceReportSpbuMachineTotalizerEntity</class>
+    <class>org.ithb.si.made.mtmgmt.core.persistence.entity.MachineModelTotalizerEntity</class>
+    <class>org.ithb.si.made.mtmgmt.core.persistence.entity.ServiceReportEntity</class>
+    <class>org.ithb.si.made.mtmgmt.core.persistence.entity.FailureModeHandlingEntity</class>
     <exclude-unlisted-classes>false</exclude-unlisted-classes>
   </persistence-unit>
 </persistence>

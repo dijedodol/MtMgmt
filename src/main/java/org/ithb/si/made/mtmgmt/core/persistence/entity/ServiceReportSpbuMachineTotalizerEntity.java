@@ -39,11 +39,10 @@ public class ServiceReportSpbuMachineTotalizerEntity implements Serializable {
   @ManyToOne(optional = false, fetch = FetchType.LAZY)
 	private ServiceReportEntity serviceReportEntity;
 	@JoinColumns({
-  	@JoinColumn(name = "spbu_id", referencedColumnName = "spbu_id", nullable = false, insertable = false, updatable = false),
-  	@JoinColumn(name = "machine_identifier", referencedColumnName = "machine_identifier", nullable = false, insertable = false, updatable = false),
-  	@JoinColumn(name = "machine_totalizer_id", referencedColumnName = "machine_totalizer_id", nullable = false, insertable = false, updatable = false)})
+  	@JoinColumn(name = "model_id", referencedColumnName = "model_id", nullable = false, insertable = false, updatable = false),
+  	@JoinColumn(name = "totalizer_id", referencedColumnName = "totalizer_id", nullable = false, insertable = false, updatable = false)})
   @ManyToOne(optional = false, fetch = FetchType.LAZY)
-	private SpbuMachineTotalizerEntity spbuMachineTotalizerEntity;
+	private MachineModelTotalizerEntity machineModelTotalizerEntity;
 
 	public ServiceReportSpbuMachineTotalizerEntity() {
 	}
@@ -57,8 +56,8 @@ public class ServiceReportSpbuMachineTotalizerEntity implements Serializable {
 		this.counter = counter;
 	}
 
-	public ServiceReportSpbuMachineTotalizerEntity(long spbuId, String machineIdentifier, long machineTotalizerId, long serviceReportId) {
-		this.serviceReportSpbuMachineTotalizerEntityPK = new ServiceReportSpbuMachineTotalizerEntityPK(spbuId, machineIdentifier, machineTotalizerId, serviceReportId);
+	public ServiceReportSpbuMachineTotalizerEntity(long serviceReportId, String modelId, String totalizerId) {
+		this.serviceReportSpbuMachineTotalizerEntityPK = new ServiceReportSpbuMachineTotalizerEntityPK(serviceReportId, modelId, totalizerId);
 	}
 
 	public ServiceReportSpbuMachineTotalizerEntityPK getServiceReportSpbuMachineTotalizerEntityPK() {
@@ -85,12 +84,12 @@ public class ServiceReportSpbuMachineTotalizerEntity implements Serializable {
 		this.serviceReportEntity = serviceReportEntity;
 	}
 
-	public SpbuMachineTotalizerEntity getSpbuMachineTotalizerEntity() {
-		return spbuMachineTotalizerEntity;
+	public MachineModelTotalizerEntity getMachineModelTotalizerEntity() {
+		return machineModelTotalizerEntity;
 	}
 
-	public void setSpbuMachineTotalizerEntity(SpbuMachineTotalizerEntity spbuMachineTotalizerEntity) {
-		this.spbuMachineTotalizerEntity = spbuMachineTotalizerEntity;
+	public void setMachineModelTotalizerEntity(MachineModelTotalizerEntity machineModelTotalizerEntity) {
+		this.machineModelTotalizerEntity = machineModelTotalizerEntity;
 	}
 
 	@Override
