@@ -15,6 +15,9 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
@@ -42,8 +45,11 @@ public class MachineTotalizerEntity implements Serializable {
   @Size(min = 1, max = 20)
   @Column(name = "name", nullable = false, length = 20)
 	private String name;
-	@OneToMany(cascade = CascadeType.ALL, mappedBy = "machineTotalizerEntity", fetch = FetchType.LAZY)
-	private List<MachineModelTotalizerEntity> machineModelTotalizerEntityList;
+	@JoinTable(name = "machine_model_totalizers", joinColumns = {
+  	@JoinColumn(name = "machine_totalizer_id", referencedColumnName = "id", nullable = false)}, inverseJoinColumns = {
+  	@JoinColumn(name = "machine_model_id", referencedColumnName = "id", nullable = false)})
+  @ManyToMany(fetch = FetchType.LAZY)
+	private List<MachineModelEntity> machineModelEntityList;
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "machineTotalizerEntity", fetch = FetchType.LAZY)
 	private List<SpbuMachineTotalizerEntity> spbuMachineTotalizerEntityList;
 
@@ -75,12 +81,12 @@ public class MachineTotalizerEntity implements Serializable {
 		this.name = name;
 	}
 
-	public List<MachineModelTotalizerEntity> getMachineModelTotalizerEntityList() {
-		return machineModelTotalizerEntityList;
+	public List<MachineModelEntity> getMachineModelEntityList() {
+		return machineModelEntityList;
 	}
 
-	public void setMachineModelTotalizerEntityList(List<MachineModelTotalizerEntity> machineModelTotalizerEntityList) {
-		this.machineModelTotalizerEntityList = machineModelTotalizerEntityList;
+	public void setMachineModelEntityList(List<MachineModelEntity> machineModelEntityList) {
+		this.machineModelEntityList = machineModelEntityList;
 	}
 
 	public List<SpbuMachineTotalizerEntity> getSpbuMachineTotalizerEntityList() {

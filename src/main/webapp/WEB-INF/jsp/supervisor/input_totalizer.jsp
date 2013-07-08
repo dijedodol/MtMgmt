@@ -19,8 +19,9 @@
 	<body>
 		<div id="sidebar">
 			<ul>
-				<li><a href="failure_history.htm"><s:message code="supervisor.home.list.failure"/></a></li>
-				<li><a href="input_totalizer.htm"><s:message code="supervisor.home.input.totalizer"/></a></li>
+				<li><a href="home.htm"><s:message code="supervisor.menu.home"/></a></li>
+				<li><a href="failure_history.htm"><s:message code="supervisor.menu.failureHistory"/></a></li>
+				<li><a href="input_totalizer.htm"><s:message code="supervisor.menu.inputTotalizer"/></a></li>
 			</ul>
 		</div>
 		<div id="content">
@@ -144,7 +145,7 @@
 								var newRow = "";
 								newRow += "<tr>";
 								newRow += "<td>";
-								newRow += totalizer.machineTotalizerName;
+								newRow += totalizer.machineTotalizerName + " (" + totalizer.alias + ")";
 								newRow += "</td>";
 								newRow += "<td>";
 								newRow += "<input type='text' name='totalizerValues[" + index + "]' value='" + totalizer.counter + "'/>";

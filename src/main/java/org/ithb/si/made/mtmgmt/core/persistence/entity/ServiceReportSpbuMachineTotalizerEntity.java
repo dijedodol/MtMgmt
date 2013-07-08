@@ -36,13 +36,13 @@ public class ServiceReportSpbuMachineTotalizerEntity implements Serializable {
   @Column(name = "counter", nullable = false)
 	private double counter;
 	@JoinColumn(name = "service_report_id", referencedColumnName = "id", nullable = false, insertable = false, updatable = false)
-  @ManyToOne(optional = false, fetch = FetchType.EAGER)
+  @ManyToOne(optional = false, fetch = FetchType.LAZY)
 	private ServiceReportEntity serviceReportEntity;
 	@JoinColumns({
   	@JoinColumn(name = "spbu_id", referencedColumnName = "spbu_id", nullable = false, insertable = false, updatable = false),
   	@JoinColumn(name = "machine_identifier", referencedColumnName = "machine_identifier", nullable = false, insertable = false, updatable = false),
   	@JoinColumn(name = "machine_totalizer_id", referencedColumnName = "machine_totalizer_id", nullable = false, insertable = false, updatable = false)})
-  @ManyToOne(optional = false, fetch = FetchType.EAGER)
+  @ManyToOne(optional = false, fetch = FetchType.LAZY)
 	private SpbuMachineTotalizerEntity spbuMachineTotalizerEntity;
 
 	public ServiceReportSpbuMachineTotalizerEntity() {
@@ -57,8 +57,8 @@ public class ServiceReportSpbuMachineTotalizerEntity implements Serializable {
 		this.counter = counter;
 	}
 
-	public ServiceReportSpbuMachineTotalizerEntity(long serviceReportId, long spbuId, String machineIdentifier, long machineTotalizerId) {
-		this.serviceReportSpbuMachineTotalizerEntityPK = new ServiceReportSpbuMachineTotalizerEntityPK(serviceReportId, spbuId, machineIdentifier, machineTotalizerId);
+	public ServiceReportSpbuMachineTotalizerEntity(long spbuId, String machineIdentifier, long machineTotalizerId, long serviceReportId) {
+		this.serviceReportSpbuMachineTotalizerEntityPK = new ServiceReportSpbuMachineTotalizerEntityPK(spbuId, machineIdentifier, machineTotalizerId, serviceReportId);
 	}
 
 	public ServiceReportSpbuMachineTotalizerEntityPK getServiceReportSpbuMachineTotalizerEntityPK() {

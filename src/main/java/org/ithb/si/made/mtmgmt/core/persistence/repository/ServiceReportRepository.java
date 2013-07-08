@@ -6,6 +6,7 @@ package org.ithb.si.made.mtmgmt.core.persistence.repository;
 
 import java.util.List;
 import org.ithb.si.made.mtmgmt.core.persistence.entity.ServiceReportEntity;
+import org.ithb.si.made.mtmgmt.core.persistence.entity.SpbuMachineEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 /**
@@ -15,4 +16,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 public interface ServiceReportRepository extends JpaRepository<ServiceReportEntity, Long> {
 
 	List<ServiceReportEntity> findBySpbuMachineEntity_SpbuEntity_IdOrderByDateDesc(long spbuId);
+
+	List<ServiceReportEntity> findBySpbuMachineEntityOrderByDateDesc(SpbuMachineEntity spbuMachineEntity);
 }

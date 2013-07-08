@@ -7,15 +7,19 @@ package org.ithb.si.made.mtmgmt.core.persistence.entity;
 
 import java.io.Serializable;
 import java.util.List;
+import javax.persistence.Basic;
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
-import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.validation.constraints.NotNull;
 
 /**
  *
@@ -29,13 +33,21 @@ public class MachineModelPartEntity implements Serializable {
 	private static final long serialVersionUID = 1L;
 	@EmbeddedId
 	protected MachineModelPartEntityPK machineModelPartEntityPK;
-	@ManyToMany(mappedBy = "machineModelPartEntityList", fetch = FetchType.LAZY)
-	private List<MachineModelTotalizerEntity> machineModelTotalizerEntityList;
+	@Basic(optional = false)
+  @NotNull
+  @Column(name = "mttf", nullable = false)
+	private double mttf;
+	@Basic(optional = false)
+  @NotNull
+  @Column(name = "mttf_threshold", nullable = false)
+	private double mttfThreshold;
+	@OneToMany(cascade = CascadeType.ALL, mappedBy = "machineModelPartEntity", fetch = FetchType.LAZY)
+	private List<MachineModelPartTotalizerEntity> machineModelPartTotalizerEntityList;
 	@JoinColumn(name = "machine_model_id", referencedColumnName = "id", nullable = false, insertable = false, updatable = false)
-  @ManyToOne(optional = false, fetch = FetchType.EAGER)
+  @ManyToOne(optional = false, fetch = FetchType.LAZY)
 	private MachineModelEntity machineModelEntity;
 	@JoinColumn(name = "machine_part_id", referencedColumnName = "id", nullable = false, insertable = false, updatable = false)
-  @ManyToOne(optional = false, fetch = FetchType.EAGER)
+  @ManyToOne(optional = false, fetch = FetchType.LAZY)
 	private MachinePartEntity machinePartEntity;
 
 	public MachineModelPartEntity() {
@@ -43,6 +55,12 @@ public class MachineModelPartEntity implements Serializable {
 
 	public MachineModelPartEntity(MachineModelPartEntityPK machineModelPartEntityPK) {
 		this.machineModelPartEntityPK = machineModelPartEntityPK;
+	}
+
+	public MachineModelPartEntity(MachineModelPartEntityPK machineModelPartEntityPK, double mttf, double mttfThreshold) {
+		this.machineModelPartEntityPK = machineModelPartEntityPK;
+		this.mttf = mttf;
+		this.mttfThreshold = mttfThreshold;
 	}
 
 	public MachineModelPartEntity(long machinePartId, long machineModelId) {
@@ -57,12 +75,28 @@ public class MachineModelPartEntity implements Serializable {
 		this.machineModelPartEntityPK = machineModelPartEntityPK;
 	}
 
-	public List<MachineModelTotalizerEntity> getMachineModelTotalizerEntityList() {
-		return machineModelTotalizerEntityList;
+	public double getMttf() {
+		return mttf;
 	}
 
-	public void setMachineModelTotalizerEntityList(List<MachineModelTotalizerEntity> machineModelTotalizerEntityList) {
-		this.machineModelTotalizerEntityList = machineModelTotalizerEntityList;
+	public void setMttf(double mttf) {
+		this.mttf = mttf;
+	}
+
+	public double getMttfThreshold() {
+		return mttfThreshold;
+	}
+
+	public void setMttfThreshold(double mttfThreshold) {
+		this.mttfThreshold = mttfThreshold;
+	}
+
+	public List<MachineModelPartTotalizerEntity> getMachineModelPartTotalizerEntityList() {
+		return machineModelPartTotalizerEntityList;
+	}
+
+	public void setMachineModelPartTotalizerEntityList(List<MachineModelPartTotalizerEntity> machineModelPartTotalizerEntityList) {
+		this.machineModelPartTotalizerEntityList = machineModelPartTotalizerEntityList;
 	}
 
 	public MachineModelEntity getMachineModelEntity() {

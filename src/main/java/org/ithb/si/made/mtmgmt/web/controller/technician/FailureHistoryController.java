@@ -2,8 +2,9 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package org.ithb.si.made.mtmgmt.web.controller.supervisor;
+package org.ithb.si.made.mtmgmt.web.controller.technician;
 
+import org.ithb.si.made.mtmgmt.web.controller.supervisor.*;
 import java.security.Principal;
 import org.ithb.si.made.mtmgmt.core.persistence.repository.ServiceReportRepository;
 import org.slf4j.Logger;
@@ -18,8 +19,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
  *
  * @author Uyeee
  */
-@Controller("supervisorFailureHistoryController")
-@RequestMapping("/supervisor/failure_history")
+@Controller("technicianFailureHistoryController")
+@RequestMapping("/technician/failure_history")
 public class FailureHistoryController {
 
 	private static final Logger LOG = LoggerFactory.getLogger(FailureHistoryController.class);
@@ -30,7 +31,7 @@ public class FailureHistoryController {
 	public String showFailureHistory(Principal principal, Model model) {
 		LOG.debug("showFailureHistory principal:[{}]", principal);
 		model.addAttribute("formData", new InputTotalizerController.FormData());
-		return "supervisor/failure_history";
+		return "technician/failure_history";
 	}
 
 	public static class TotalizerFormData {

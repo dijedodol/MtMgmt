@@ -14,9 +14,11 @@ import org.ithb.si.made.mtmgmt.core.persistence.entity.FailureModeHandlingEntity
 import org.ithb.si.made.mtmgmt.core.persistence.entity.MachineModelPartEntity;
 import org.ithb.si.made.mtmgmt.core.persistence.entity.MachineModelPartEntityPK;
 import org.ithb.si.made.mtmgmt.core.persistence.entity.PartFailureModeEntity;
+import org.ithb.si.made.mtmgmt.core.persistence.entity.ServiceReportEntity;
 import org.ithb.si.made.mtmgmt.core.persistence.entity.SpbuEntity;
 import org.ithb.si.made.mtmgmt.core.persistence.entity.SpbuMachineEntity;
 import org.ithb.si.made.mtmgmt.core.persistence.entity.SpbuMachineEntityPK;
+import org.ithb.si.made.mtmgmt.core.persistence.entity.UserEntity;
 import org.ithb.si.made.mtmgmt.core.persistence.repository.MachineModelPartRepository;
 import org.ithb.si.made.mtmgmt.core.persistence.repository.PartFailureModeRepository;
 import org.ithb.si.made.mtmgmt.core.persistence.repository.ServiceReportRepository;
@@ -24,6 +26,7 @@ import org.ithb.si.made.mtmgmt.core.persistence.repository.SpbuMachineRepository
 import org.ithb.si.made.mtmgmt.core.persistence.repository.SpbuMachineTotalizerRepository;
 import org.ithb.si.made.mtmgmt.core.persistence.repository.SpbuRepository;
 import org.ithb.si.made.mtmgmt.core.persistence.repository.UserRepository;
+import org.ithb.si.made.mtmgmt.core.util.DateUtil;
 import org.ithb.si.made.mtmgmt.core.util.MapBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -188,6 +191,34 @@ public class AjaxDataController {
 						respEntity.add(tmp);
 					}
 				}
+			}
+		}
+		ret = new ResponseEntity(respEntity, HttpStatus.OK);
+		return ret;
+	}
+
+	@Transactional
+	@ResponseBody
+	@RequestMapping(value = "spbu/{spbuId}/service_report", produces = "application/json", method = RequestMethod.GET)
+	public ResponseEntity<List<Map>> technicianListServiceReport(Principal principal, @PathVariable long spbuId) {
+		final UserEntity dbUserEntity = userRepository.findByLoginId(principal.getName());
+		final SpbuEntity dbSpbuEntity = spbuRepository.findOne(spbuId);
+		final ResponseEntity<List<Map>> ret;
+
+		final List<Map> respEntity = new LinkedList<>();
+		if (dbUserEntity != null && dbSpbuEntity != null) {
+			final List<ServiceReportEntity> serviceReports = serviceReportRepository.findBySpbuMachineEntity_SpbuEntity_IdOrderByDateDesc(dbSpbuEntity.getId());
+
+			for (final ServiceReportEntity serviceReportEntity : serviceReports) {
+				final Map<String, Object> tmp = new MapBuilder<>(new HashMap<String, Object>())
+								.put("date", DateUtil.format(serviceReportEntity.getDate()))
+								.put("machineIdentifier", serviceReportEntity.getSpbuMachineEntity().getSpbuMachineEntityPK().getMachineIdentifier())
+								.put("machinePart", serviceReportEntity.getFailureModeHandlingEntity().getPartFailureModeEntity().getMachinePartEntity().getName())
+								.put("failureMode", serviceReportEntity.getFailureModeHandlingEntity().getPartFailureModeEntity().getName())
+								.put("failureModeHandling", serviceReportEntity.getFailureModeHandlingEntity().getName())
+								.put("technician", serviceReportEntity.getTechnicianEntity().getFullName())
+								.getMap();
+				respEntity.add(tmp);
 			}
 		}
 		ret = new ResponseEntity(respEntity, HttpStatus.OK);

@@ -10,7 +10,7 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import org.ithb.si.made.mtmgmt.core.persistence.entity.MachineModelTotalizerEntity;
+import org.ithb.si.made.mtmgmt.core.persistence.entity.MachineTotalizerEntity;
 import org.ithb.si.made.mtmgmt.core.persistence.entity.ServiceReportEntity;
 import org.ithb.si.made.mtmgmt.core.persistence.entity.SpbuEntity;
 import org.ithb.si.made.mtmgmt.core.persistence.entity.SpbuMachineEntity;
@@ -120,15 +120,30 @@ public class AjaxDataController {
 		if (dbUserEntity != null && dbSpbuMachineEntity != null && dbUserEntity.getId() == dbSpbuMachineEntity.getSpbuEntity().getSupervisorEntity().getId()) {
 			LOG.debug("supervisorListSpbuMachineTotalizer dbSpbuMachineEntity.getSpbuMachineTotalizerEntityList:[{}]", dbSpbuMachineEntity.getSpbuMachineTotalizerEntityList());
 
-			dbSpbuMachineEntity.getMachineModelEntity().getMachineModelTotalizerEntityList().size();
-			LOG.debug("supervisorListSpbuMachineTotalizer dbSpbuMachineEntity.getMachineModelEntity().getMachineModelTotalizerEntityList:[{}]", dbSpbuMachineEntity.getMachineModelEntity().getMachineModelTotalizerEntityList());
-			for (MachineModelTotalizerEntity machineModelTotalizerEntity : dbSpbuMachineEntity.getMachineModelEntity().getMachineModelTotalizerEntityList()) {
-				final SpbuMachineTotalizerEntity spbuMachineTotalizerEntity = spbuMachineTotalizerRepository.findOne(new SpbuMachineTotalizerEntityPK(spbuId, spbuMachineIdentifier, machineModelTotalizerEntity.getMachineTotalizerEntity().getId()));
-				final MapBuilder<String, Object> mapBuilder = new MapBuilder(new HashMap<>());
+			dbSpbuMachineEntity.getMachineModelEntity().getMachineTotalizerEntityList().size();
+			LOG.debug("supervisorListSpbuMachineTotalizer dbSpbuMachineEntity.getMachineModelEntity().getMachineModelTotalizerEntityList:[{}]", dbSpbuMachineEntity.getMachineModelEntity().getMachineTotalizerEntityList());
+			for (MachineTotalizerEntity machineTotalizerEntity : dbSpbuMachineEntity.getMachineModelEntity().getMachineTotalizerEntityList()) {
+				SpbuMachineTotalizerEntity spbuMachineTotalizerEntity = spbuMachineTotalizerRepository.findOne(new SpbuMachineTotalizerEntityPK(spbuId, spbuMachineIdentifier, machineTotalizerEntity.getId()));
+				if (spbuMachineTotalizerEntity == null) {
+					SpbuMachineTotalizerEntityPK spbuMachineTotalizerEntityPk = new SpbuMachineTotalizerEntityPK();
+					spbuMachineTotalizerEntityPk.setSpbuId(spbuId);
+					spbuMachineTotalizerEntityPk.setMachineIdentifier(spbuMachineIdentifier);
+					spbuMachineTotalizerEntityPk.setMachineTotalizerId(machineTotalizerEntity.getId());
+					
+					spbuMachineTotalizerEntity = new SpbuMachineTotalizerEntity(spbuMachineTotalizerEntityPk);
+					spbuMachineTotalizerEntity.setAlias(machineTotalizerEntity.getName());
+					spbuMachineTotalizerEntity.setCounter(0);
+					spbuMachineTotalizerEntity.setMttf(0);
+					spbuMachineTotalizerEntity.setMttfThreshold(0);
+					spbuMachineTotalizerEntity = spbuMachineTotalizerRepository.saveAndFlush(spbuMachineTotalizerEntity);
+				}
 
-				respEntity.add(mapBuilder.put("machineTotalizerId", machineModelTotalizerEntity.getMachineTotalizerEntity().getId())
-								.put("counter", spbuMachineTotalizerEntity == null ? 0 : spbuMachineTotalizerEntity.getCounter())
-								.put("machineTotalizerName", machineModelTotalizerEntity.getMachineTotalizerEntity().getName())
+				final MapBuilder<String, Object> mapBuilder = new MapBuilder(new HashMap<>());
+				respEntity.add(mapBuilder
+								.put("machineTotalizerId", machineTotalizerEntity.getId())
+								.put("alias", spbuMachineTotalizerEntity.getAlias())
+								.put("counter", spbuMachineTotalizerEntity.getCounter())
+								.put("machineTotalizerName", machineTotalizerEntity.getName())
 								.getMap());
 			}
 		}

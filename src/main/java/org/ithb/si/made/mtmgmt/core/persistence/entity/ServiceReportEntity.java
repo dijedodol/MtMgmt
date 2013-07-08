@@ -50,13 +50,13 @@ public class ServiceReportEntity implements Serializable {
 	@JoinColumns({
   	@JoinColumn(name = "spbu_id", referencedColumnName = "spbu_id", nullable = false),
   	@JoinColumn(name = "machine_identifier", referencedColumnName = "machine_identifier", nullable = false)})
-  @ManyToOne(optional = false, fetch = FetchType.EAGER)
+  @ManyToOne(optional = false, fetch = FetchType.LAZY)
 	private SpbuMachineEntity spbuMachineEntity;
 	@JoinColumn(name = "failure_mode_handling_id", referencedColumnName = "id", nullable = false)
-  @ManyToOne(optional = false, fetch = FetchType.EAGER)
+  @ManyToOne(optional = false, fetch = FetchType.LAZY)
 	private FailureModeHandlingEntity failureModeHandlingEntity;
-	@JoinColumn(name = "technician_id", referencedColumnName = "ID", nullable = false)
-  @ManyToOne(optional = false, fetch = FetchType.EAGER)
+	@JoinColumn(name = "technician_id", referencedColumnName = "id", nullable = false)
+  @ManyToOne(optional = false, fetch = FetchType.LAZY)
 	private UserEntity technicianEntity;
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "serviceReportEntity", fetch = FetchType.LAZY)
 	private List<ServiceReportSpbuMachineTotalizerEntity> serviceReportSpbuMachineTotalizerEntityList;

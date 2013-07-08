@@ -15,6 +15,7 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.ManyToMany;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
@@ -49,11 +50,11 @@ public class MachineModelEntity implements Serializable {
   @Size(min = 1, max = 255)
   @Column(name = "name", nullable = false, length = 255)
 	private String name;
-	@OneToMany(cascade = CascadeType.ALL, mappedBy = "machineModelEntity", fetch = FetchType.LAZY)
-	private List<MachineModelTotalizerEntity> machineModelTotalizerEntityList;
+	@ManyToMany(mappedBy = "machineModelEntityList", fetch = FetchType.LAZY)
+	private List<MachineTotalizerEntity> machineTotalizerEntityList;
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "machineModelEntity", fetch = FetchType.LAZY)
 	private List<MachineModelPartEntity> machineModelPartEntityList;
-	@OneToMany(mappedBy = "machineModelEntity", fetch = FetchType.LAZY)
+	@OneToMany(cascade = CascadeType.ALL, mappedBy = "machineModelEntity", fetch = FetchType.LAZY)
 	private List<SpbuMachineEntity> spbuMachineEntityList;
 
 	public MachineModelEntity() {
@@ -93,12 +94,12 @@ public class MachineModelEntity implements Serializable {
 		this.name = name;
 	}
 
-	public List<MachineModelTotalizerEntity> getMachineModelTotalizerEntityList() {
-		return machineModelTotalizerEntityList;
+	public List<MachineTotalizerEntity> getMachineTotalizerEntityList() {
+		return machineTotalizerEntityList;
 	}
 
-	public void setMachineModelTotalizerEntityList(List<MachineModelTotalizerEntity> machineModelTotalizerEntityList) {
-		this.machineModelTotalizerEntityList = machineModelTotalizerEntityList;
+	public void setMachineTotalizerEntityList(List<MachineTotalizerEntity> machineTotalizerEntityList) {
+		this.machineTotalizerEntityList = machineTotalizerEntityList;
 	}
 
 	public List<MachineModelPartEntity> getMachineModelPartEntityList() {

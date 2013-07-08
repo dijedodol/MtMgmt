@@ -19,8 +19,9 @@
 	<body>
 		<div id="sidebar">
 			<ul>
-				<li><a href="failure_history.htm"><s:message code="supervisor.home.list.failure"/></a></li>
-				<li><a href="input_totalizer.htm"><s:message code="supervisor.home.input.totalizer"/></a></li>
+				<li><a href="home.htm"><s:message code="supervisor.menu.home"/></a></li>
+				<li><a href="failure_history.htm"><s:message code="supervisor.menu.failureHistory"/></a></li>
+				<li><a href="input_totalizer.htm"><s:message code="supervisor.menu.inputTotalizer"/></a></li>
 			</ul>
 		</div>
 		<div id="content">
@@ -57,6 +58,9 @@
 		<div id="clear"></div>
 
 		<script type="text/javascript">
+			$("#spbuId").change(function() {
+				loadServiceReport();
+			});
 			loadSpbuId();
 
 			function loadSpbuId() {
@@ -76,7 +80,7 @@
 									$("#spbuId").append(new Option(spbu.code, spbu.id, false, false));
 								}
 							});
-							loadMachineId();
+							loadServiceReport();
 						},
 						error: function(jqXHR, textStatus, errorThrown) {
 							alert("Ajax data load fail!");
@@ -85,7 +89,7 @@
 				});
 			}
 
-			function loadMachineId() {
+			function loadServiceReport() {
 				var url = "ajax/spbu/" + $("#spbuId").val() + "/service_report.json";
 				console.log("url: " + url);
 				$(document).ready(function() {

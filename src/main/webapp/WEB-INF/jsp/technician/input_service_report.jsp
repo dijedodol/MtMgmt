@@ -19,8 +19,9 @@
 	<body>
 		<div id="sidebar">
 			<ul>
-				<li><a href="failure_history.htm"><s:message code="technician.home.list.failure"/></a></li>
-				<li><a href="input_service_report.htm"><s:message code="technician.home.input.service_report"/></a></li>
+				<li><a href="home.htm"><s:message code="technician.menu.home"/></a></li>
+				<li><a href="failure_history.htm"><s:message code="technician.menu.failureHistory"/></a></li>
+				<li><a href="input_service_report.htm"><s:message code="technician.menu.serviceReport"/></a></li>
 			</ul>
 		</div>
 		<div id="content">

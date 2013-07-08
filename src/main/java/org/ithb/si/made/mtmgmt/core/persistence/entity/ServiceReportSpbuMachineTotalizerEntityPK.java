@@ -20,10 +20,6 @@ import javax.validation.constraints.Size;
 public class ServiceReportSpbuMachineTotalizerEntityPK implements Serializable {
 	@Basic(optional = false)
   @NotNull
-  @Column(name = "service_report_id", nullable = false)
-	private long serviceReportId;
-	@Basic(optional = false)
-  @NotNull
   @Column(name = "spbu_id", nullable = false)
 	private long spbuId;
 	@Basic(optional = false)
@@ -35,22 +31,18 @@ public class ServiceReportSpbuMachineTotalizerEntityPK implements Serializable {
   @NotNull
   @Column(name = "machine_totalizer_id", nullable = false)
 	private long machineTotalizerId;
+	@Basic(optional = false)
+  @NotNull
+  @Column(name = "service_report_id", nullable = false)
+	private long serviceReportId;
 
 	public ServiceReportSpbuMachineTotalizerEntityPK() {
 	}
 
-	public ServiceReportSpbuMachineTotalizerEntityPK(long serviceReportId, long spbuId, String machineIdentifier, long machineTotalizerId) {
-		this.serviceReportId = serviceReportId;
+	public ServiceReportSpbuMachineTotalizerEntityPK(long spbuId, String machineIdentifier, long machineTotalizerId, long serviceReportId) {
 		this.spbuId = spbuId;
 		this.machineIdentifier = machineIdentifier;
 		this.machineTotalizerId = machineTotalizerId;
-	}
-
-	public long getServiceReportId() {
-		return serviceReportId;
-	}
-
-	public void setServiceReportId(long serviceReportId) {
 		this.serviceReportId = serviceReportId;
 	}
 
@@ -78,13 +70,21 @@ public class ServiceReportSpbuMachineTotalizerEntityPK implements Serializable {
 		this.machineTotalizerId = machineTotalizerId;
 	}
 
+	public long getServiceReportId() {
+		return serviceReportId;
+	}
+
+	public void setServiceReportId(long serviceReportId) {
+		this.serviceReportId = serviceReportId;
+	}
+
 	@Override
 	public int hashCode() {
 		int hash = 0;
-		hash += (int) serviceReportId;
 		hash += (int) spbuId;
 		hash += (machineIdentifier != null ? machineIdentifier.hashCode() : 0);
 		hash += (int) machineTotalizerId;
+		hash += (int) serviceReportId;
 		return hash;
 	}
 
@@ -95,9 +95,6 @@ public class ServiceReportSpbuMachineTotalizerEntityPK implements Serializable {
 			return false;
 		}
 		ServiceReportSpbuMachineTotalizerEntityPK other = (ServiceReportSpbuMachineTotalizerEntityPK) object;
-		if (this.serviceReportId != other.serviceReportId) {
-			return false;
-		}
 		if (this.spbuId != other.spbuId) {
 			return false;
 		}
@@ -107,12 +104,15 @@ public class ServiceReportSpbuMachineTotalizerEntityPK implements Serializable {
 		if (this.machineTotalizerId != other.machineTotalizerId) {
 			return false;
 		}
+		if (this.serviceReportId != other.serviceReportId) {
+			return false;
+		}
 		return true;
 	}
 
 	@Override
 	public String toString() {
-		return "org.ithb.si.made.mtmgmt.core.persistence.entity.ServiceReportSpbuMachineTotalizerEntityPK[ serviceReportId=" + serviceReportId + ", spbuId=" + spbuId + ", machineIdentifier=" + machineIdentifier + ", machineTotalizerId=" + machineTotalizerId + " ]";
+		return "org.ithb.si.made.mtmgmt.core.persistence.entity.ServiceReportSpbuMachineTotalizerEntityPK[ spbuId=" + spbuId + ", machineIdentifier=" + machineIdentifier + ", machineTotalizerId=" + machineTotalizerId + ", serviceReportId=" + serviceReportId + " ]";
 	}
 
 }

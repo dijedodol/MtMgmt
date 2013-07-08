@@ -57,8 +57,8 @@ public class SpbuEntity implements Serializable {
   @Size(min = 1, max = 20)
   @Column(name = "phone", nullable = false, length = 20)
 	private String phone;
-	@JoinColumn(name = "supervisor_id", referencedColumnName = "ID", nullable = false)
-  @ManyToOne(optional = false, fetch = FetchType.EAGER)
+	@JoinColumn(name = "supervisor_id", referencedColumnName = "id", nullable = false)
+  @ManyToOne(optional = false, fetch = FetchType.LAZY)
 	private UserEntity supervisorEntity;
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "spbuEntity", fetch = FetchType.LAZY)
 	private List<SpbuMachineEntity> spbuMachineEntityList;

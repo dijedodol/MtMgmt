@@ -17,10 +17,11 @@
 	</head>
 	<body>
 		<div id="sidebar">
-				<ul>
-					<li><a href="failure_history.htm"><s:message code="supervisor.home.list.failure"/></a></li>
-					<li><a href="input_totalizer.htm"><s:message code="supervisor.home.input.totalizer"/></a></li>
-				</ul>
+			<ul>
+				<li><a href="home.htm"><s:message code="supervisor.menu.home"/></a></li>
+				<li><a href="failure_history.htm"><s:message code="supervisor.menu.failureHistory"/></a></li>
+				<li><a href="input_totalizer.htm"><s:message code="supervisor.menu.inputTotalizer"/></a></li>
+			</ul>
 		</div>
 		<div id="content"></div>
 	</body>
