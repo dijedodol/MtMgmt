@@ -1,3 +1,13 @@
+--
+-- ER/Studio 8.0 SQL Code Generation
+-- Company :      Samsung Electronics
+-- Project :      database2.DM1
+-- Author :       MSCI
+--
+-- Date Created : Monday, July 08, 2013 19:14:51
+-- Target DBMS : MySQL 5.x
+--
+
 drop database mtmgmt;
 create database mtmgmt;
 use mtmgmt;
@@ -7,11 +17,12 @@ use mtmgmt;
 --
 
 CREATE TABLE `failure_mode_handlings`(
-    `part_id`                   VARCHAR(40)     NOT NULL,
-    `failure_mode_id`           VARCHAR(255)    NOT NULL,
-    `failure_mode_handling_id`  VARCHAR(40)     NOT NULL,
-    `description`               TEXT            NOT NULL,
-    PRIMARY KEY (`part_id`, `failure_mode_id`, `failure_mode_handling_id`)
+    `part_id`                     VARCHAR(40)     NOT NULL,
+    `failure_mode_code`           VARCHAR(40)     NOT NULL,
+    `failure_mode_handling_code`  VARCHAR(40)     NOT NULL,
+    `name`                        VARCHAR(255)    NOT NULL,
+    `description`                 TEXT            NOT NULL,
+    PRIMARY KEY (`part_id`, `failure_mode_code`, `failure_mode_handling_code`)
 )ENGINE=INNODB
 ;
 
@@ -93,10 +104,11 @@ CREATE TABLE `machine_part_types`(
 --
 
 CREATE TABLE `part_failure_modes`(
-    `part_id`          VARCHAR(40)     NOT NULL,
-    `failure_mode_id`  VARCHAR(255)    NOT NULL,
-    `description`      TEXT            NOT NULL,
-    PRIMARY KEY (`part_id`, `failure_mode_id`)
+    `part_id`            VARCHAR(40)     NOT NULL,
+    `failure_mode_code`  VARCHAR(40)     NOT NULL,
+    `name`               VARCHAR(255)    NOT NULL,
+    `description`        TEXT            NOT NULL,
+    PRIMARY KEY (`part_id`, `failure_mode_code`)
 )ENGINE=INNODB
 ;
 
@@ -124,16 +136,16 @@ CREATE TABLE `service_report_spbu_machine_totalizers`(
 --
 
 CREATE TABLE `service_reports`(
-    `id`                             BIGINT          AUTO_INCREMENT,
-    `spbu_id`                        BIGINT          NOT NULL,
-    `model_id`                       VARCHAR(40)     NOT NULL,
-    `serial_number`                  VARCHAR(40)     NOT NULL,
-    `date`                           DATE            NOT NULL,
-    `part_id`                        VARCHAR(40)     NOT NULL,
-    `machine_model_part_identifier`  VARCHAR(40)     NOT NULL,
-    `failure_mode_id`                VARCHAR(255)    NOT NULL,
-    `failure_mode_handling_id`       VARCHAR(40)     NOT NULL,
-    `technician_id`                  BIGINT          NOT NULL,
+    `id`                             BIGINT         AUTO_INCREMENT,
+    `spbu_id`                        BIGINT         NOT NULL,
+    `model_id`                       VARCHAR(40)    NOT NULL,
+    `serial_number`                  VARCHAR(40)    NOT NULL,
+    `date`                           DATE           NOT NULL,
+    `part_id`                        VARCHAR(40)    NOT NULL,
+    `machine_model_part_identifier`  VARCHAR(40)    NOT NULL,
+    `failure_mode_code`              VARCHAR(40)    NOT NULL,
+    `failure_mode_handling_code`     VARCHAR(40)    NOT NULL,
+    `technician_id`                  BIGINT         NOT NULL,
     PRIMARY KEY (`id`, `spbu_id`, `model_id`, `serial_number`)
 )ENGINE=INNODB
 ;
@@ -226,19 +238,19 @@ CREATE TABLE `users`(
 -- INDEX: `Ref1530` 
 --
 
-CREATE INDEX `Ref1530` ON `failure_mode_handlings`(`part_id`, `failure_mode_id`)
+CREATE INDEX `Ref1530` ON `failure_mode_handlings`(`failure_mode_code`, `part_id`)
 ;
 -- 
 -- INDEX: `Ref67` 
 --
 
-CREATE INDEX `Ref67` ON `machine_model_part_totalizers`(`model_id`, `part_id`, `machine_model_part_identifier`)
+CREATE INDEX `Ref67` ON `machine_model_part_totalizers`(`part_id`, `machine_model_part_identifier`, `model_id`)
 ;
 -- 
 -- INDEX: `Ref711` 
 --
 
-CREATE INDEX `Ref711` ON `machine_model_part_totalizers`(`model_id`, `totalizer_id`)
+CREATE INDEX `Ref711` ON `machine_model_part_totalizers`(`totalizer_id`, `model_id`)
 ;
 -- 
 -- INDEX: `Ref28` 
@@ -268,25 +280,25 @@ CREATE INDEX `Ref329` ON `part_failure_modes`(`part_id`)
 -- INDEX: `Ref1327` 
 --
 
-CREATE INDEX `Ref1327` ON `service_report_spbu_machine_totalizers`(`service_report_id`, `spbu_id`, `model_id`, `serial_number`)
+CREATE INDEX `Ref1327` ON `service_report_spbu_machine_totalizers`(`model_id`, `spbu_id`, `service_report_id`, `serial_number`)
 ;
 -- 
 -- INDEX: `Ref1128` 
 --
 
-CREATE INDEX `Ref1128` ON `service_report_spbu_machine_totalizers`(`spbu_id`, `model_id`, `serial_number`, `totalizer_id`)
+CREATE INDEX `Ref1128` ON `service_report_spbu_machine_totalizers`(`spbu_id`, `model_id`, `totalizer_id`, `serial_number`)
 ;
 -- 
 -- INDEX: `Ref524` 
 --
 
-CREATE INDEX `Ref524` ON `service_reports`(`spbu_id`, `model_id`, `serial_number`)
+CREATE INDEX `Ref524` ON `service_reports`(`serial_number`, `model_id`, `spbu_id`)
 ;
 -- 
 -- INDEX: `Ref625` 
 --
 
-CREATE INDEX `Ref625` ON `service_reports`(`model_id`, `part_id`, `machine_model_part_identifier`)
+CREATE INDEX `Ref625` ON `service_reports`(`machine_model_part_identifier`, `part_id`, `model_id`)
 ;
 -- 
 -- INDEX: `Ref126` 
@@ -298,31 +310,31 @@ CREATE INDEX `Ref126` ON `service_reports`(`technician_id`)
 -- INDEX: `Ref1631` 
 --
 
-CREATE INDEX `Ref1631` ON `service_reports`(`part_id`, `failure_mode_id`, `failure_mode_handling_id`)
+CREATE INDEX `Ref1631` ON `service_reports`(`part_id`, `failure_mode_handling_code`, `failure_mode_code`)
 ;
 -- 
 -- INDEX: `Ref516` 
 --
 
-CREATE INDEX `Ref516` ON `spbu_machine_part_mttfs`(`spbu_id`, `model_id`, `serial_number`)
+CREATE INDEX `Ref516` ON `spbu_machine_part_mttfs`(`serial_number`, `model_id`, `spbu_id`)
 ;
 -- 
 -- INDEX: `Ref617` 
 --
 
-CREATE INDEX `Ref617` ON `spbu_machine_part_mttfs`(`model_id`, `part_id`, `machine_model_part_identifier`)
+CREATE INDEX `Ref617` ON `spbu_machine_part_mttfs`(`machine_model_part_identifier`, `part_id`, `model_id`)
 ;
 -- 
 -- INDEX: `Ref518` 
 --
 
-CREATE INDEX `Ref518` ON `spbu_machine_totalizers`(`spbu_id`, `model_id`, `serial_number`)
+CREATE INDEX `Ref518` ON `spbu_machine_totalizers`(`model_id`, `spbu_id`, `serial_number`)
 ;
 -- 
 -- INDEX: `Ref719` 
 --
 
-CREATE INDEX `Ref719` ON `spbu_machine_totalizers`(`model_id`, `totalizer_id`)
+CREATE INDEX `Ref719` ON `spbu_machine_totalizers`(`totalizer_id`, `model_id`)
 ;
 -- 
 -- INDEX: `Ref412` 
@@ -359,8 +371,8 @@ CREATE UNIQUE INDEX `unique_users_login_id` ON `users`(`login_id`)
 --
 
 ALTER TABLE `failure_mode_handlings` ADD 
-    FOREIGN KEY (`part_id`, `failure_mode_id`)
-    REFERENCES `part_failure_modes`(`part_id`, `failure_mode_id`)
+    FOREIGN KEY (`part_id`, `failure_mode_code`)
+    REFERENCES `part_failure_modes`(`part_id`, `failure_mode_code`)
 ;
 
 
@@ -449,8 +461,8 @@ ALTER TABLE `service_reports` ADD
 ;
 
 ALTER TABLE `service_reports` ADD 
-    FOREIGN KEY (`part_id`, `failure_mode_id`, `failure_mode_handling_id`)
-    REFERENCES `failure_mode_handlings`(`part_id`, `failure_mode_id`, `failure_mode_handling_id`)
+    FOREIGN KEY (`part_id`, `failure_mode_code`, `failure_mode_handling_code`)
+    REFERENCES `failure_mode_handlings`(`part_id`, `failure_mode_code`, `failure_mode_handling_code`)
 ;
 
 

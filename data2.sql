@@ -47,14 +47,14 @@ insert into machine_model_totalizers(model_id, totalizer_id) values('Encore S-30
 insert into machine_model_totalizers(model_id, totalizer_id) values('Encore S-300.2', 'Totalizer3');
 insert into machine_model_totalizers(model_id, totalizer_id) values('Encore S-300.2', 'Totalizer4');
 
-insert into part_failure_modes(part_id, failure_mode_id, description) values('Assymeter', 'Volume BBM Tidak Stabil', 'Volume BBM yang dikeluarkan mesin tidak stabil');
-insert into part_failure_modes(part_id, failure_mode_id, description) values('Assymeter', 'Tidak Mengeluarkan BBM', 'Tidak ada BBM yang dikeluarkan meskipun handle nozzle telah ditekan');
-insert into part_failure_modes(part_id, failure_mode_id, description) values('Filter', 'Aliran BBM Tidak Maksimal', 'Aliran volume BBM yang dikeluarkan tidak dapat mencapai kecepatan maksimal');
+insert into part_failure_modes(part_id, failure_mode_code, name, description) values('Assymeter', 'ASSY-001', 'Volume BBM Tidak Stabil', 'Volume BBM yang dikeluarkan mesin tidak stabil');
+insert into part_failure_modes(part_id, failure_mode_code, name, description) values('Assymeter', 'ASSY-002', 'Tidak Mengeluarkan BBM', 'Tidak ada BBM yang dikeluarkan meskipun handle nozzle telah ditekan');
+insert into part_failure_modes(part_id, failure_mode_code, name, description) values('Filter', 'FLTR-001', 'Aliran BBM Tidak Maksimal', 'Aliran volume BBM yang dikeluarkan tidak dapat mencapai kecepatan maksimal');
 
-insert into failure_mode_handlings(part_id, failure_mode_id, failure_mode_handling_id, description) values('Assymeter', 'Volume BBM Tidak Stabil', 'Perbaiki Bearing & Liner', 'Perbaiki Bearing & Liner');
-insert into failure_mode_handlings(part_id, failure_mode_id, failure_mode_handling_id, description) values('Assymeter', 'Tidak Mengeluarkan BBM', 'Perbaiki Shaft Utama', 'Perbaiki Shaft Utama');
-insert into failure_mode_handlings(part_id, failure_mode_id, failure_mode_handling_id, description) values('Filter', 'Aliran BBM Tidak Maksimal', 'Dibersihkan', 'Dibersihkan');
-insert into failure_mode_handlings(part_id, failure_mode_id, failure_mode_handling_id, description) values('Filter', 'Aliran BBM Tidak Maksimal', 'Ganti Baru', 'Ganti Baru');
+insert into failure_mode_handlings(part_id, failure_mode_code, failure_mode_handling_code, name, description) values('Assymeter', 'ASSY-001', 'ASSY-001.H-001', 'Perbaiki Bearing & Liner', 'Perbaiki Bearing & Liner');
+insert into failure_mode_handlings(part_id, failure_mode_code, failure_mode_handling_code, name, description) values('Assymeter', 'ASSY-002', 'ASSY-002.H-001', 'Perbaiki Shaft Utama', 'Perbaiki Shaft Utama');
+insert into failure_mode_handlings(part_id, failure_mode_code, failure_mode_handling_code, name, description) values('Filter', 'FLTR-001', 'FLTR-001.H-001', 'Dibersihkan', 'Dibersihkan');
+insert into failure_mode_handlings(part_id, failure_mode_code, failure_mode_handling_code, name, description) values('Filter', 'FLTR-001', 'FLTR-001.H-002', 'Ganti Baru', 'Ganti Baru');
 
 insert into spbu_machines(spbu_id, model_id, serial_number, machine_identifier) values(1, 'Encore S-300.1', '10001', 'Mesin1');
 insert into spbu_machines(spbu_id, model_id, serial_number, machine_identifier) values(1, 'Encore S-300.1', '10002', 'Mesin2');
@@ -73,50 +73,50 @@ insert into machine_model_part_totalizers(model_id, part_id, machine_model_part_
 insert into machine_model_part_totalizers(model_id, part_id, machine_model_part_identifier, totalizer_id) values('Encore S-300.2', 'Assymeter', 'Assymeter3', 'Totalizer3');
 insert into machine_model_part_totalizers(model_id, part_id, machine_model_part_identifier, totalizer_id) values('Encore S-300.2', 'Assymeter', 'Assymeter4', 'Totalizer4');
 
-insert into spbu_machines(spbu_id, model_id, serial_number, totalizer_id, alias, counter) values(1, 'Encore S-300.1', '10001', 'Totalizer1', 'Pertamax 1.1', 0);
-insert into spbu_machines(spbu_id, model_id, serial_number, totalizer_id, alias, counter) values(1, 'Encore S-300.1', '10001', 'Totalizer2', 'Pertamax 1.2', 0);
-insert into spbu_machines(spbu_id, model_id, serial_number, totalizer_id, alias, counter) values(1, 'Encore S-300.1', '10001', 'Totalizer3', 'Premium 1.1', 0);
-insert into spbu_machines(spbu_id, model_id, serial_number, totalizer_id, alias, counter) values(1, 'Encore S-300.1', '10001', 'Totalizer4', 'Premium 1.2', 0);
-insert into spbu_machines(spbu_id, model_id, serial_number, totalizer_id, alias, counter) values(1, 'Encore S-300.1', '10001', 'Totalizer5', 'Solar 1.1', 0);
-insert into spbu_machines(spbu_id, model_id, serial_number, totalizer_id, alias, counter) values(1, 'Encore S-300.1', '10001', 'Totalizer6', 'Solar 1.2', 0);
+insert into spbu_machine_totalizers(spbu_id, model_id, serial_number, totalizer_id, alias, counter) values(1, 'Encore S-300.1', '10001', 'Totalizer1', 'Pertamax 1.1', 0);
+insert into spbu_machine_totalizers(spbu_id, model_id, serial_number, totalizer_id, alias, counter) values(1, 'Encore S-300.1', '10001', 'Totalizer2', 'Pertamax 1.2', 0);
+insert into spbu_machine_totalizers(spbu_id, model_id, serial_number, totalizer_id, alias, counter) values(1, 'Encore S-300.1', '10001', 'Totalizer3', 'Premium 1.1', 0);
+insert into spbu_machine_totalizers(spbu_id, model_id, serial_number, totalizer_id, alias, counter) values(1, 'Encore S-300.1', '10001', 'Totalizer4', 'Premium 1.2', 0);
+insert into spbu_machine_totalizers(spbu_id, model_id, serial_number, totalizer_id, alias, counter) values(1, 'Encore S-300.1', '10001', 'Totalizer5', 'Solar 1.1', 0);
+insert into spbu_machine_totalizers(spbu_id, model_id, serial_number, totalizer_id, alias, counter) values(1, 'Encore S-300.1', '10001', 'Totalizer6', 'Solar 1.2', 0);
 
-insert into spbu_machines(spbu_id, model_id, serial_number, totalizer_id, alias, counter) values(1, 'Encore S-300.1', '10002', 'Totalizer1', 'Pertamax 2.1', 0);
-insert into spbu_machines(spbu_id, model_id, serial_number, totalizer_id, alias, counter) values(1, 'Encore S-300.1', '10002', 'Totalizer2', 'Pertamax 2.2', 0);
-insert into spbu_machines(spbu_id, model_id, serial_number, totalizer_id, alias, counter) values(1, 'Encore S-300.1', '10002', 'Totalizer3', 'Premium 2.1', 0);
-insert into spbu_machines(spbu_id, model_id, serial_number, totalizer_id, alias, counter) values(1, 'Encore S-300.1', '10002', 'Totalizer4', 'Premium 2.2', 0);
-insert into spbu_machines(spbu_id, model_id, serial_number, totalizer_id, alias, counter) values(1, 'Encore S-300.1', '10002', 'Totalizer5', 'Solar 2.1', 0);
-insert into spbu_machines(spbu_id, model_id, serial_number, totalizer_id, alias, counter) values(1, 'Encore S-300.1', '10002', 'Totalizer6', 'Solar 2.2', 0);
+insert into spbu_machine_totalizers(spbu_id, model_id, serial_number, totalizer_id, alias, counter) values(1, 'Encore S-300.1', '10002', 'Totalizer1', 'Pertamax 2.1', 0);
+insert into spbu_machine_totalizers(spbu_id, model_id, serial_number, totalizer_id, alias, counter) values(1, 'Encore S-300.1', '10002', 'Totalizer2', 'Pertamax 2.2', 0);
+insert into spbu_machine_totalizers(spbu_id, model_id, serial_number, totalizer_id, alias, counter) values(1, 'Encore S-300.1', '10002', 'Totalizer3', 'Premium 2.1', 0);
+insert into spbu_machine_totalizers(spbu_id, model_id, serial_number, totalizer_id, alias, counter) values(1, 'Encore S-300.1', '10002', 'Totalizer4', 'Premium 2.2', 0);
+insert into spbu_machine_totalizers(spbu_id, model_id, serial_number, totalizer_id, alias, counter) values(1, 'Encore S-300.1', '10002', 'Totalizer5', 'Solar 2.1', 0);
+insert into spbu_machine_totalizers(spbu_id, model_id, serial_number, totalizer_id, alias, counter) values(1, 'Encore S-300.1', '10002', 'Totalizer6', 'Solar 2.2', 0);
 
-insert into spbu_machines(spbu_id, model_id, serial_number, totalizer_id, alias, counter) values(1, 'Encore S-300.2', '10003', 'Totalizer1', 'Pertamax 3.1', 0);
-insert into spbu_machines(spbu_id, model_id, serial_number, totalizer_id, alias, counter) values(1, 'Encore S-300.2', '10003', 'Totalizer2', 'Pertamax 3.2', 0);
-insert into spbu_machines(spbu_id, model_id, serial_number, totalizer_id, alias, counter) values(1, 'Encore S-300.2', '10003', 'Totalizer3', 'Premium 3.1', 0);
-insert into spbu_machines(spbu_id, model_id, serial_number, totalizer_id, alias, counter) values(1, 'Encore S-300.2', '10003', 'Totalizer4', 'Premium 3.2', 0);
+insert into spbu_machine_totalizers(spbu_id, model_id, serial_number, totalizer_id, alias, counter) values(1, 'Encore S-300.2', '10003', 'Totalizer1', 'Pertamax 3.1', 0);
+insert into spbu_machine_totalizers(spbu_id, model_id, serial_number, totalizer_id, alias, counter) values(1, 'Encore S-300.2', '10003', 'Totalizer2', 'Pertamax 3.2', 0);
+insert into spbu_machine_totalizers(spbu_id, model_id, serial_number, totalizer_id, alias, counter) values(1, 'Encore S-300.2', '10003', 'Totalizer3', 'Premium 3.1', 0);
+insert into spbu_machine_totalizers(spbu_id, model_id, serial_number, totalizer_id, alias, counter) values(1, 'Encore S-300.2', '10003', 'Totalizer4', 'Premium 3.2', 0);
 
-insert into spbu_machines(spbu_id, model_id, serial_number, totalizer_id, alias, counter) values(1, 'Encore S-300.2', '10003', 'Totalizer1', 'Pertamax 4.1', 0);
-insert into spbu_machines(spbu_id, model_id, serial_number, totalizer_id, alias, counter) values(1, 'Encore S-300.2', '10003', 'Totalizer2', 'Pertamax 4.2', 0);
-insert into spbu_machines(spbu_id, model_id, serial_number, totalizer_id, alias, counter) values(1, 'Encore S-300.2', '10003', 'Totalizer3', 'Premium 4.1', 0);
-insert into spbu_machines(spbu_id, model_id, serial_number, totalizer_id, alias, counter) values(1, 'Encore S-300.2', '10003', 'Totalizer4', 'Premium 4.2', 0);
+insert into spbu_machine_totalizers(spbu_id, model_id, serial_number, totalizer_id, alias, counter) values(1, 'Encore S-300.2', '10004', 'Totalizer1', 'Pertamax 4.1', 0);
+insert into spbu_machine_totalizers(spbu_id, model_id, serial_number, totalizer_id, alias, counter) values(1, 'Encore S-300.2', '10004', 'Totalizer2', 'Pertamax 4.2', 0);
+insert into spbu_machine_totalizers(spbu_id, model_id, serial_number, totalizer_id, alias, counter) values(1, 'Encore S-300.2', '10004', 'Totalizer3', 'Premium 4.1', 0);
+insert into spbu_machine_totalizers(spbu_id, model_id, serial_number, totalizer_id, alias, counter) values(1, 'Encore S-300.2', '10004', 'Totalizer4', 'Premium 4.2', 0);
 
-insert into spbu_machine_part_mttfs(spbu_id, model_id, serial_number, part_id, machine_model_part_identifier, mttf, mttf_threshold) values(1, 'Encore S-300.1', '10001', 'Assymeter', 'Assymeter1', 0, 0);
-insert into spbu_machine_part_mttfs(spbu_id, model_id, serial_number, part_id, machine_model_part_identifier, mttf, mttf_threshold) values(1, 'Encore S-300.1', '10001', 'Assymeter', 'Assymeter2', 0, 0);
+insert into spbu_machine_part_mttfs(spbu_id, model_id, serial_number, part_id, machine_model_part_identifier, mttf, mttf_threshold) values(1, 'Encore S-300.1', '10001', 'Assymeter', 'Assymeter1', -1, 0);
+insert into spbu_machine_part_mttfs(spbu_id, model_id, serial_number, part_id, machine_model_part_identifier, mttf, mttf_threshold) values(1, 'Encore S-300.1', '10001', 'Assymeter', 'Assymeter2', -1, 0);
 insert into spbu_machine_part_mttfs(spbu_id, model_id, serial_number, part_id, machine_model_part_identifier, mttf, mttf_threshold) values(1, 'Encore S-300.1', '10001', 'Assymeter', 'Assymeter3', 3200000, 3108000);
 insert into spbu_machine_part_mttfs(spbu_id, model_id, serial_number, part_id, machine_model_part_identifier, mttf, mttf_threshold) values(1, 'Encore S-300.1', '10001', 'Assymeter', 'Assymeter4', 3200000, 3108000);
-insert into spbu_machine_part_mttfs(spbu_id, model_id, serial_number, part_id, machine_model_part_identifier, mttf, mttf_threshold) values(1, 'Encore S-300.1', '10001', 'Assymeter', 'Assymeter3', 5400000, 5372000);
-insert into spbu_machine_part_mttfs(spbu_id, model_id, serial_number, part_id, machine_model_part_identifier, mttf, mttf_threshold) values(1, 'Encore S-300.1', '10001', 'Assymeter', 'Assymeter4', 5400000, 5372000);
+insert into spbu_machine_part_mttfs(spbu_id, model_id, serial_number, part_id, machine_model_part_identifier, mttf, mttf_threshold) values(1, 'Encore S-300.1', '10001', 'Assymeter', 'Assymeter5', 5400000, 5372000);
+insert into spbu_machine_part_mttfs(spbu_id, model_id, serial_number, part_id, machine_model_part_identifier, mttf, mttf_threshold) values(1, 'Encore S-300.1', '10001', 'Assymeter', 'Assymeter6', 5400000, 5372000);
 
-insert into spbu_machine_part_mttfs(spbu_id, model_id, serial_number, part_id, machine_model_part_identifier, mttf, mttf_threshold) values(1, 'Encore S-300.1', '10002', 'Assymeter', 'Assymeter1', 0, 0);
-insert into spbu_machine_part_mttfs(spbu_id, model_id, serial_number, part_id, machine_model_part_identifier, mttf, mttf_threshold) values(1, 'Encore S-300.1', '10002', 'Assymeter', 'Assymeter2', 0, 0);
+insert into spbu_machine_part_mttfs(spbu_id, model_id, serial_number, part_id, machine_model_part_identifier, mttf, mttf_threshold) values(1, 'Encore S-300.1', '10002', 'Assymeter', 'Assymeter1', -1, 0);
+insert into spbu_machine_part_mttfs(spbu_id, model_id, serial_number, part_id, machine_model_part_identifier, mttf, mttf_threshold) values(1, 'Encore S-300.1', '10002', 'Assymeter', 'Assymeter2', -1, 0);
 insert into spbu_machine_part_mttfs(spbu_id, model_id, serial_number, part_id, machine_model_part_identifier, mttf, mttf_threshold) values(1, 'Encore S-300.1', '10002', 'Assymeter', 'Assymeter3', 3200000, 3108000);
 insert into spbu_machine_part_mttfs(spbu_id, model_id, serial_number, part_id, machine_model_part_identifier, mttf, mttf_threshold) values(1, 'Encore S-300.1', '10002', 'Assymeter', 'Assymeter4', 3200000, 3108000);
-insert into spbu_machine_part_mttfs(spbu_id, model_id, serial_number, part_id, machine_model_part_identifier, mttf, mttf_threshold) values(1, 'Encore S-300.1', '10002', 'Assymeter', 'Assymeter3', 5400000, 5372000);
-insert into spbu_machine_part_mttfs(spbu_id, model_id, serial_number, part_id, machine_model_part_identifier, mttf, mttf_threshold) values(1, 'Encore S-300.1', '10002', 'Assymeter', 'Assymeter4', 5400000, 5372000);
+insert into spbu_machine_part_mttfs(spbu_id, model_id, serial_number, part_id, machine_model_part_identifier, mttf, mttf_threshold) values(1, 'Encore S-300.1', '10002', 'Assymeter', 'Assymeter5', 5400000, 5372000);
+insert into spbu_machine_part_mttfs(spbu_id, model_id, serial_number, part_id, machine_model_part_identifier, mttf, mttf_threshold) values(1, 'Encore S-300.1', '10002', 'Assymeter', 'Assymeter6', 5400000, 5372000);
 
-insert into spbu_machine_part_mttfs(spbu_id, model_id, serial_number, part_id, machine_model_part_identifier, mttf, mttf_threshold) values(1, 'Encore S-300.2', '10003', 'Assymeter', 'Assymeter1', 0, 0);
-insert into spbu_machine_part_mttfs(spbu_id, model_id, serial_number, part_id, machine_model_part_identifier, mttf, mttf_threshold) values(1, 'Encore S-300.2', '10003', 'Assymeter', 'Assymeter2', 0, 0);
+insert into spbu_machine_part_mttfs(spbu_id, model_id, serial_number, part_id, machine_model_part_identifier, mttf, mttf_threshold) values(1, 'Encore S-300.2', '10003', 'Assymeter', 'Assymeter1', -1, 0);
+insert into spbu_machine_part_mttfs(spbu_id, model_id, serial_number, part_id, machine_model_part_identifier, mttf, mttf_threshold) values(1, 'Encore S-300.2', '10003', 'Assymeter', 'Assymeter2', -1, 0);
 insert into spbu_machine_part_mttfs(spbu_id, model_id, serial_number, part_id, machine_model_part_identifier, mttf, mttf_threshold) values(1, 'Encore S-300.2', '10003', 'Assymeter', 'Assymeter3', 3200000, 3108000);
 insert into spbu_machine_part_mttfs(spbu_id, model_id, serial_number, part_id, machine_model_part_identifier, mttf, mttf_threshold) values(1, 'Encore S-300.2', '10003', 'Assymeter', 'Assymeter4', 3200000, 3108000);
 
-insert into spbu_machine_part_mttfs(spbu_id, model_id, serial_number, part_id, machine_model_part_identifier, mttf, mttf_threshold) values(1, 'Encore S-300.2', '10004', 'Assymeter', 'Assymeter1', 0, 0);
-insert into spbu_machine_part_mttfs(spbu_id, model_id, serial_number, part_id, machine_model_part_identifier, mttf, mttf_threshold) values(1, 'Encore S-300.2', '10004', 'Assymeter', 'Assymeter2', 0, 0);
+insert into spbu_machine_part_mttfs(spbu_id, model_id, serial_number, part_id, machine_model_part_identifier, mttf, mttf_threshold) values(1, 'Encore S-300.2', '10004', 'Assymeter', 'Assymeter1', -1, 0);
+insert into spbu_machine_part_mttfs(spbu_id, model_id, serial_number, part_id, machine_model_part_identifier, mttf, mttf_threshold) values(1, 'Encore S-300.2', '10004', 'Assymeter', 'Assymeter2', -1, 0);
 insert into spbu_machine_part_mttfs(spbu_id, model_id, serial_number, part_id, machine_model_part_identifier, mttf, mttf_threshold) values(1, 'Encore S-300.2', '10004', 'Assymeter', 'Assymeter3', 3200000, 3108000);
 insert into spbu_machine_part_mttfs(spbu_id, model_id, serial_number, part_id, machine_model_part_identifier, mttf, mttf_threshold) values(1, 'Encore S-300.2', '10004', 'Assymeter', 'Assymeter4', 3200000, 3108000);
