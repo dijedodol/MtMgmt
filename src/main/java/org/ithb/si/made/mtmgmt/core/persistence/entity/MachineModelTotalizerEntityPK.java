@@ -11,10 +11,12 @@ import javax.persistence.Column;
 import javax.persistence.Embeddable;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  *
- * @author Uyeee
+ * @author gde.satrigraha
  */
 @Embeddable
 public class MachineModelTotalizerEntityPK implements Serializable {
@@ -28,6 +30,8 @@ public class MachineModelTotalizerEntityPK implements Serializable {
   @Size(min = 1, max = 40)
   @Column(name = "totalizer_id", nullable = false, length = 40)
 	private String totalizerId;
+
+    private static final Logger LOG = LoggerFactory.getLogger(MachineModelTotalizerEntityPK.class);
 
 	public MachineModelTotalizerEntityPK() {
 	}
@@ -81,5 +85,4 @@ public class MachineModelTotalizerEntityPK implements Serializable {
 	public String toString() {
 		return "org.ithb.si.made.mtmgmt.core.persistence.entity.MachineModelTotalizerEntityPK[ modelId=" + modelId + ", totalizerId=" + totalizerId + " ]";
 	}
-
 }

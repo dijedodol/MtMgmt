@@ -11,27 +11,25 @@ import javax.persistence.Column;
 import javax.persistence.Embeddable;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  *
- * @author Uyeee
+ * @author gde.satrigraha
  */
 @Embeddable
 public class SpbuMachinePartMttfEntityPK implements Serializable {
 	@Basic(optional = false)
   @NotNull
-  @Column(name = "spbu_id", nullable = false)
-	private long spbuId;
+  @Size(min = 1, max = 40)
+  @Column(name = "machine_serial", nullable = false, length = 40)
+	private String machineSerial;
 	@Basic(optional = false)
   @NotNull
   @Size(min = 1, max = 40)
   @Column(name = "model_id", nullable = false, length = 40)
 	private String modelId;
-	@Basic(optional = false)
-  @NotNull
-  @Size(min = 1, max = 40)
-  @Column(name = "serial_number", nullable = false, length = 40)
-	private String serialNumber;
 	@Basic(optional = false)
   @NotNull
   @Size(min = 1, max = 40)
@@ -43,23 +41,24 @@ public class SpbuMachinePartMttfEntityPK implements Serializable {
   @Column(name = "machine_model_part_identifier", nullable = false, length = 40)
 	private String machineModelPartIdentifier;
 
+    private static final Logger LOG = LoggerFactory.getLogger(SpbuMachinePartMttfEntityPK.class);
+
 	public SpbuMachinePartMttfEntityPK() {
 	}
 
-	public SpbuMachinePartMttfEntityPK(long spbuId, String modelId, String serialNumber, String partId, String machineModelPartIdentifier) {
-		this.spbuId = spbuId;
+	public SpbuMachinePartMttfEntityPK(String machineSerial, String modelId, String partId, String machineModelPartIdentifier) {
+		this.machineSerial = machineSerial;
 		this.modelId = modelId;
-		this.serialNumber = serialNumber;
 		this.partId = partId;
 		this.machineModelPartIdentifier = machineModelPartIdentifier;
 	}
 
-	public long getSpbuId() {
-		return spbuId;
+	public String getMachineSerial() {
+		return machineSerial;
 	}
 
-	public void setSpbuId(long spbuId) {
-		this.spbuId = spbuId;
+	public void setMachineSerial(String machineSerial) {
+		this.machineSerial = machineSerial;
 	}
 
 	public String getModelId() {
@@ -68,14 +67,6 @@ public class SpbuMachinePartMttfEntityPK implements Serializable {
 
 	public void setModelId(String modelId) {
 		this.modelId = modelId;
-	}
-
-	public String getSerialNumber() {
-		return serialNumber;
-	}
-
-	public void setSerialNumber(String serialNumber) {
-		this.serialNumber = serialNumber;
 	}
 
 	public String getPartId() {
@@ -97,9 +88,8 @@ public class SpbuMachinePartMttfEntityPK implements Serializable {
 	@Override
 	public int hashCode() {
 		int hash = 0;
-		hash += (int) spbuId;
+		hash += (machineSerial != null ? machineSerial.hashCode() : 0);
 		hash += (modelId != null ? modelId.hashCode() : 0);
-		hash += (serialNumber != null ? serialNumber.hashCode() : 0);
 		hash += (partId != null ? partId.hashCode() : 0);
 		hash += (machineModelPartIdentifier != null ? machineModelPartIdentifier.hashCode() : 0);
 		return hash;
@@ -112,13 +102,10 @@ public class SpbuMachinePartMttfEntityPK implements Serializable {
 			return false;
 		}
 		SpbuMachinePartMttfEntityPK other = (SpbuMachinePartMttfEntityPK) object;
-		if (this.spbuId != other.spbuId) {
+		if ((this.machineSerial == null && other.machineSerial != null) || (this.machineSerial != null && !this.machineSerial.equals(other.machineSerial))) {
 			return false;
 		}
 		if ((this.modelId == null && other.modelId != null) || (this.modelId != null && !this.modelId.equals(other.modelId))) {
-			return false;
-		}
-		if ((this.serialNumber == null && other.serialNumber != null) || (this.serialNumber != null && !this.serialNumber.equals(other.serialNumber))) {
 			return false;
 		}
 		if ((this.partId == null && other.partId != null) || (this.partId != null && !this.partId.equals(other.partId))) {
@@ -132,7 +119,6 @@ public class SpbuMachinePartMttfEntityPK implements Serializable {
 
 	@Override
 	public String toString() {
-		return "org.ithb.si.made.mtmgmt.core.persistence.entity.SpbuMachinePartMttfEntityPK[ spbuId=" + spbuId + ", modelId=" + modelId + ", serialNumber=" + serialNumber + ", partId=" + partId + ", machineModelPartIdentifier=" + machineModelPartIdentifier + " ]";
+		return "org.ithb.si.made.mtmgmt.core.persistence.entity.SpbuMachinePartMttfEntityPK[ machineSerial=" + machineSerial + ", modelId=" + modelId + ", partId=" + partId + ", machineModelPartIdentifier=" + machineModelPartIdentifier + " ]";
 	}
-
 }

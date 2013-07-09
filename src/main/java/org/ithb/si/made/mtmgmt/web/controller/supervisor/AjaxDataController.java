@@ -10,11 +10,10 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import org.ithb.si.made.mtmgmt.core.persistence.entity.MachineTotalizerEntity;
+import org.ithb.si.made.mtmgmt.core.persistence.entity.MachineModelTotalizerEntity;
 import org.ithb.si.made.mtmgmt.core.persistence.entity.ServiceReportEntity;
 import org.ithb.si.made.mtmgmt.core.persistence.entity.SpbuEntity;
 import org.ithb.si.made.mtmgmt.core.persistence.entity.SpbuMachineEntity;
-import org.ithb.si.made.mtmgmt.core.persistence.entity.SpbuMachineEntityPK;
 import org.ithb.si.made.mtmgmt.core.persistence.entity.SpbuMachineTotalizerEntity;
 import org.ithb.si.made.mtmgmt.core.persistence.entity.SpbuMachineTotalizerEntityPK;
 import org.ithb.si.made.mtmgmt.core.persistence.entity.UserEntity;
@@ -88,13 +87,9 @@ public class AjaxDataController {
 		if (dbUserEntity != null && dbSpbuEntity != null && dbUserEntity.getId() == dbSpbuEntity.getSupervisorEntity().getId()) {
 			for (final SpbuMachineEntity spbuMachineEntity : dbSpbuEntity.getSpbuMachineEntityList()) {
 				final Map<String, Object> tmp = new HashMap<>();
-				tmp.put("machineIdentifier", spbuMachineEntity.getSpbuMachineEntityPK().getMachineIdentifier());
-				tmp.put("machineModelId", spbuMachineEntity.getMachineModelEntity().getId());
-				tmp.put("machineEntity", new MapBuilder<>(new HashMap<String, Object>())
-								.put("id", spbuMachineEntity.getMachineModelEntity().getId())
-								.put("code", spbuMachineEntity.getMachineModelEntity().getCode())
-								.put("name", spbuMachineEntity.getMachineModelEntity().getName())
-								.getMap());
+				tmp.put("machineSerial", spbuMachineEntity.getMachineSerial());
+				tmp.put("modelId", spbuMachineEntity.getMachineModelEntity().getModelId());
+				tmp.put("machineIdentifier", spbuMachineEntity.getMachineIdentifier());
 				respEntity.add(tmp);
 			}
 		}
@@ -104,46 +99,43 @@ public class AjaxDataController {
 
 	@Transactional
 	@ResponseBody
-	@RequestMapping(value = "spbu/{spbuId}/machine/{machineIdentifier}/totalizer", produces = "application/json", method = RequestMethod.GET)
-	public ResponseEntity<List<Map>> supervisorListSpbuMachineTotalizer(Principal principal, @PathVariable("spbuId") long spbuId, @PathVariable("machineIdentifier") String spbuMachineIdentifier) {
-		final UserEntity dbUserEntity = userRepository.findByLoginId(principal.getName());
-		final SpbuMachineEntity dbSpbuMachineEntity = spbuMachineRepository.findOne(new SpbuMachineEntityPK(spbuId, spbuMachineIdentifier));
+	@RequestMapping(value = "spbu/{spbuId}/machine/{machineSerial}/totalizer", produces = "application/json", method = RequestMethod.GET)
+	public ResponseEntity<List<Map>> supervisorListSpbuMachineTotalizer(Principal principal, @PathVariable("spbuId") long spbuId, @PathVariable("machineSerial") String machineSerial) {
+		final UserEntity userEntity = userRepository.findByLoginId(principal.getName());
+		final SpbuMachineEntity spbuMachineEntity = spbuMachineRepository.findOne(machineSerial);
 		final ResponseEntity<List<Map>> ret;
 
-		LOG.debug("supervisorListSpbuMachineTotalizer dbUserEntity:[{}], spbuId:[{}], spbuMachineIdentifier:[{}], dbSpbuMachineEntity:[{}]",
-						dbUserEntity,
+		LOG.debug("supervisorListSpbuMachineTotalizer dbUserEntity:[{}], spbuId:[{}], machineSerial:[{}], dbSpbuMachineEntity:[{}]",
+						userEntity,
 						spbuId,
-						spbuMachineIdentifier,
-						dbSpbuMachineEntity);
+						machineSerial,
+						spbuMachineEntity);
 
 		final List<Map> respEntity = new LinkedList<>();
-		if (dbUserEntity != null && dbSpbuMachineEntity != null && dbUserEntity.getId() == dbSpbuMachineEntity.getSpbuEntity().getSupervisorEntity().getId()) {
-			LOG.debug("supervisorListSpbuMachineTotalizer dbSpbuMachineEntity.getSpbuMachineTotalizerEntityList:[{}]", dbSpbuMachineEntity.getSpbuMachineTotalizerEntityList());
+		if (userEntity != null && spbuMachineEntity != null && userEntity.getId() == spbuMachineEntity.getSpbuEntity().getSupervisorEntity().getId()) {
+			LOG.debug("supervisorListSpbuMachineTotalizer dbSpbuMachineEntity.getSpbuMachineTotalizerEntityList:[{}]", spbuMachineEntity.getSpbuMachineTotalizerEntityList());
 
-			dbSpbuMachineEntity.getMachineModelEntity().getMachineTotalizerEntityList().size();
-			LOG.debug("supervisorListSpbuMachineTotalizer dbSpbuMachineEntity.getMachineModelEntity().getMachineModelTotalizerEntityList:[{}]", dbSpbuMachineEntity.getMachineModelEntity().getMachineTotalizerEntityList());
-			for (MachineTotalizerEntity machineTotalizerEntity : dbSpbuMachineEntity.getMachineModelEntity().getMachineTotalizerEntityList()) {
-				SpbuMachineTotalizerEntity spbuMachineTotalizerEntity = spbuMachineTotalizerRepository.findOne(new SpbuMachineTotalizerEntityPK(spbuId, spbuMachineIdentifier, machineTotalizerEntity.getId()));
+			for (MachineModelTotalizerEntity machineModelTotalizerEntity : spbuMachineEntity.getMachineModelEntity().getMachineModelTotalizerEntityList()) {
+				final SpbuMachineTotalizerEntityPK spbuMachineTotalizerEntityPK = new SpbuMachineTotalizerEntityPK();
+				spbuMachineTotalizerEntityPK.setMachineSerial(machineSerial);
+				spbuMachineTotalizerEntityPK.setModelId(spbuMachineEntity.getMachineModelEntity().getModelId());
+				spbuMachineTotalizerEntityPK.setTotalizerId(machineModelTotalizerEntity.getMachineModelTotalizerEntityPK().getTotalizerId());
+
+				SpbuMachineTotalizerEntity spbuMachineTotalizerEntity = spbuMachineTotalizerRepository.findOne(spbuMachineTotalizerEntityPK);
 				if (spbuMachineTotalizerEntity == null) {
-					SpbuMachineTotalizerEntityPK spbuMachineTotalizerEntityPk = new SpbuMachineTotalizerEntityPK();
-					spbuMachineTotalizerEntityPk.setSpbuId(spbuId);
-					spbuMachineTotalizerEntityPk.setMachineIdentifier(spbuMachineIdentifier);
-					spbuMachineTotalizerEntityPk.setMachineTotalizerId(machineTotalizerEntity.getId());
-					
-					spbuMachineTotalizerEntity = new SpbuMachineTotalizerEntity(spbuMachineTotalizerEntityPk);
-					spbuMachineTotalizerEntity.setAlias(machineTotalizerEntity.getName());
+					spbuMachineTotalizerEntity = new SpbuMachineTotalizerEntity(spbuMachineTotalizerEntityPK);
+					spbuMachineTotalizerEntity.setAlias(machineModelTotalizerEntity.getMachineModelTotalizerEntityPK().getTotalizerId());
 					spbuMachineTotalizerEntity.setCounter(0);
-					spbuMachineTotalizerEntity.setMttf(0);
-					spbuMachineTotalizerEntity.setMttfThreshold(0);
+					spbuMachineTotalizerEntity.setSpbuMachineEntity(spbuMachineEntity);
+					spbuMachineTotalizerEntity.setMachineModelTotalizerEntity(machineModelTotalizerEntity);
 					spbuMachineTotalizerEntity = spbuMachineTotalizerRepository.saveAndFlush(spbuMachineTotalizerEntity);
 				}
 
 				final MapBuilder<String, Object> mapBuilder = new MapBuilder(new HashMap<>());
 				respEntity.add(mapBuilder
-								.put("machineTotalizerId", machineTotalizerEntity.getId())
+								.put("totalizerId", machineModelTotalizerEntity.getMachineModelTotalizerEntityPK().getTotalizerId())
 								.put("alias", spbuMachineTotalizerEntity.getAlias())
 								.put("counter", spbuMachineTotalizerEntity.getCounter())
-								.put("machineTotalizerName", machineTotalizerEntity.getName())
 								.getMap());
 			}
 		}
@@ -155,22 +147,24 @@ public class AjaxDataController {
 	@ResponseBody
 	@RequestMapping(value = "spbu/{spbuId}/service_report", produces = "application/json", method = RequestMethod.GET)
 	public ResponseEntity<List<Map>> supervisorListServiceReport(Principal principal, @PathVariable long spbuId) {
-		final UserEntity dbUserEntity = userRepository.findByLoginId(principal.getName());
-		final SpbuEntity dbSpbuEntity = spbuRepository.findOne(spbuId);
+		final UserEntity userEntity = userRepository.findByLoginId(principal.getName());
+		final SpbuEntity spbuEntity = spbuRepository.findOne(spbuId);
 		final ResponseEntity<List<Map>> ret;
 
 		final List<Map> respEntity = new LinkedList<>();
-		if (dbUserEntity != null && dbSpbuEntity != null && dbUserEntity.getId() == dbSpbuEntity.getSupervisorEntity().getId()) {
-			final List<ServiceReportEntity> serviceReports = serviceReportRepository.findBySpbuMachineEntity_SpbuEntity_IdOrderByDateDesc(dbSpbuEntity.getId());
-
-			for (final ServiceReportEntity serviceReportEntity : serviceReports) {
+		if (userEntity != null && spbuEntity != null && userEntity.getId() == spbuEntity.getSupervisorEntity().getId()) {
+			final List<ServiceReportEntity> serviceReportEntities = serviceReportRepository.findBySpbuMachineEntity_SpbuEntityOrderByDateDesc(spbuEntity);
+			for (final ServiceReportEntity serviceReportEntity : serviceReportEntities) {
 				final Map<String, Object> tmp = new MapBuilder<>(new HashMap<String, Object>())
 								.put("date", DateUtil.format(serviceReportEntity.getDate()))
-								.put("machineIdentifier", serviceReportEntity.getSpbuMachineEntity().getSpbuMachineEntityPK().getMachineIdentifier())
-								.put("machinePart", serviceReportEntity.getFailureModeHandlingEntity().getPartFailureModeEntity().getMachinePartEntity().getName())
-								.put("failureMode", serviceReportEntity.getFailureModeHandlingEntity().getPartFailureModeEntity().getName())
-								.put("failureModeHandling", serviceReportEntity.getFailureModeHandlingEntity().getName())
-								.put("technician", serviceReportEntity.getTechnicianEntity().getFullName())
+								.put("machineSerial", serviceReportEntity.getSpbuMachineEntity().getMachineSerial())
+								.put("machineIdentifier", serviceReportEntity.getSpbuMachineEntity().getMachineIdentifier())
+								.put("modelId", serviceReportEntity.getMachineModelPartEntity().getMachineModelPartEntityPK().getModelId())
+								.put("partId", serviceReportEntity.getMachineModelPartEntity().getMachineModelPartEntityPK().getPartId())
+								.put("failureModeCode", serviceReportEntity.getFailureModeHandlingEntity().getFailureModeHandlingEntityPK().getFailureModeCode())
+								.put("failureModeHandlingCode", serviceReportEntity.getFailureModeHandlingEntity().getFailureModeHandlingEntityPK().getFailureModeHandlingCode())
+								.put("technicianId", serviceReportEntity.getTechnicianEntity().getId())
+								.put("technicianName", serviceReportEntity.getTechnicianEntity().getFullName())
 								.getMap();
 				respEntity.add(tmp);
 			}

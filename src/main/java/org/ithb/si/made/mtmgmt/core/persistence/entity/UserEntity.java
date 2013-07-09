@@ -2,7 +2,6 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-
 package org.ithb.si.made.mtmgmt.core.persistence.entity;
 
 import java.io.Serializable;
@@ -23,10 +22,12 @@ import javax.persistence.UniqueConstraint;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import org.ithb.si.made.mtmgmt.core.security.AccessRole;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  *
- * @author Uyeee
+ * @author gde.satrigraha
  */
 @Entity
 @Table(name = "users", uniqueConstraints = {
@@ -34,31 +35,33 @@ import org.ithb.si.made.mtmgmt.core.security.AccessRole;
 @NamedQueries({
 	@NamedQuery(name = "UserEntity.findAll", query = "SELECT u FROM UserEntity u")})
 public class UserEntity implements Serializable {
+
 	private static final long serialVersionUID = 1L;
 	@Id
-  @GeneratedValue(strategy = GenerationType.IDENTITY)
-  @Basic(optional = false)
-  @Column(name = "id", nullable = false)
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Basic(optional = false)
+	@Column(name = "id", nullable = false)
 	private Long id;
 	@Basic(optional = false)
-  @NotNull
-  @Size(min = 1, max = 40)
-  @Column(name = "full_name", nullable = false, length = 40)
+	@NotNull
+	@Size(min = 1, max = 40)
+	@Column(name = "full_name", nullable = false, length = 40)
 	private String fullName;
 	@Basic(optional = false)
-  @NotNull
-  @Column(name = "access_role", nullable = false)
+	@NotNull
+	@Column(name = "access_role", nullable = false)
 	private AccessRole accessRole;
 	@Size(max = 255)
-  @Column(name = "login_id", length = 255)
+	@Column(name = "login_id", length = 255)
 	private String loginId;
 	@Size(max = 255)
-  @Column(name = "password_hash", length = 255)
+	@Column(name = "password_hash", length = 255)
 	private String passwordHash;
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "technicianEntity", fetch = FetchType.LAZY)
 	private List<ServiceReportEntity> serviceReportEntityList;
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "supervisorEntity", fetch = FetchType.LAZY)
 	private List<SpbuEntity> spbuEntityList;
+	private static final Logger LOG = LoggerFactory.getLogger(UserEntity.class);
 
 	public UserEntity() {
 	}
@@ -153,5 +156,4 @@ public class UserEntity implements Serializable {
 	public String toString() {
 		return "org.ithb.si.made.mtmgmt.core.persistence.entity.UserEntity[ id=" + id + " ]";
 	}
-
 }

@@ -11,17 +11,20 @@ import javax.persistence.Column;
 import javax.persistence.Embeddable;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  *
- * @author Uyeee
+ * @author gde.satrigraha
  */
 @Embeddable
 public class SpbuMachineTotalizerEntityPK implements Serializable {
 	@Basic(optional = false)
   @NotNull
-  @Column(name = "spbu_id", nullable = false)
-	private long spbuId;
+  @Size(min = 1, max = 40)
+  @Column(name = "machine_serial", nullable = false, length = 40)
+	private String machineSerial;
 	@Basic(optional = false)
   @NotNull
   @Size(min = 1, max = 40)
@@ -30,30 +33,26 @@ public class SpbuMachineTotalizerEntityPK implements Serializable {
 	@Basic(optional = false)
   @NotNull
   @Size(min = 1, max = 40)
-  @Column(name = "serial_number", nullable = false, length = 40)
-	private String serialNumber;
-	@Basic(optional = false)
-  @NotNull
-  @Size(min = 1, max = 40)
   @Column(name = "totalizer_id", nullable = false, length = 40)
 	private String totalizerId;
+
+    private static final Logger LOG = LoggerFactory.getLogger(SpbuMachineTotalizerEntityPK.class);
 
 	public SpbuMachineTotalizerEntityPK() {
 	}
 
-	public SpbuMachineTotalizerEntityPK(long spbuId, String modelId, String serialNumber, String totalizerId) {
-		this.spbuId = spbuId;
+	public SpbuMachineTotalizerEntityPK(String machineSerial, String modelId, String totalizerId) {
+		this.machineSerial = machineSerial;
 		this.modelId = modelId;
-		this.serialNumber = serialNumber;
 		this.totalizerId = totalizerId;
 	}
 
-	public long getSpbuId() {
-		return spbuId;
+	public String getMachineSerial() {
+		return machineSerial;
 	}
 
-	public void setSpbuId(long spbuId) {
-		this.spbuId = spbuId;
+	public void setMachineSerial(String machineSerial) {
+		this.machineSerial = machineSerial;
 	}
 
 	public String getModelId() {
@@ -62,14 +61,6 @@ public class SpbuMachineTotalizerEntityPK implements Serializable {
 
 	public void setModelId(String modelId) {
 		this.modelId = modelId;
-	}
-
-	public String getSerialNumber() {
-		return serialNumber;
-	}
-
-	public void setSerialNumber(String serialNumber) {
-		this.serialNumber = serialNumber;
 	}
 
 	public String getTotalizerId() {
@@ -83,9 +74,8 @@ public class SpbuMachineTotalizerEntityPK implements Serializable {
 	@Override
 	public int hashCode() {
 		int hash = 0;
-		hash += (int) spbuId;
+		hash += (machineSerial != null ? machineSerial.hashCode() : 0);
 		hash += (modelId != null ? modelId.hashCode() : 0);
-		hash += (serialNumber != null ? serialNumber.hashCode() : 0);
 		hash += (totalizerId != null ? totalizerId.hashCode() : 0);
 		return hash;
 	}
@@ -97,13 +87,10 @@ public class SpbuMachineTotalizerEntityPK implements Serializable {
 			return false;
 		}
 		SpbuMachineTotalizerEntityPK other = (SpbuMachineTotalizerEntityPK) object;
-		if (this.spbuId != other.spbuId) {
+		if ((this.machineSerial == null && other.machineSerial != null) || (this.machineSerial != null && !this.machineSerial.equals(other.machineSerial))) {
 			return false;
 		}
 		if ((this.modelId == null && other.modelId != null) || (this.modelId != null && !this.modelId.equals(other.modelId))) {
-			return false;
-		}
-		if ((this.serialNumber == null && other.serialNumber != null) || (this.serialNumber != null && !this.serialNumber.equals(other.serialNumber))) {
 			return false;
 		}
 		if ((this.totalizerId == null && other.totalizerId != null) || (this.totalizerId != null && !this.totalizerId.equals(other.totalizerId))) {
@@ -114,7 +101,6 @@ public class SpbuMachineTotalizerEntityPK implements Serializable {
 
 	@Override
 	public String toString() {
-		return "org.ithb.si.made.mtmgmt.core.persistence.entity.SpbuMachineTotalizerEntityPK[ spbuId=" + spbuId + ", modelId=" + modelId + ", serialNumber=" + serialNumber + ", totalizerId=" + totalizerId + " ]";
+		return "org.ithb.si.made.mtmgmt.core.persistence.entity.SpbuMachineTotalizerEntityPK[ machineSerial=" + machineSerial + ", modelId=" + modelId + ", totalizerId=" + totalizerId + " ]";
 	}
-
 }

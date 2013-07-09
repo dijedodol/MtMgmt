@@ -11,10 +11,12 @@ import javax.persistence.Column;
 import javax.persistence.Embeddable;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  *
- * @author Uyeee
+ * @author gde.satrigraha
  */
 @Embeddable
 public class MachineModelPartEntityPK implements Serializable {
@@ -33,6 +35,8 @@ public class MachineModelPartEntityPK implements Serializable {
   @Size(min = 1, max = 40)
   @Column(name = "machine_model_part_identifier", nullable = false, length = 40)
 	private String machineModelPartIdentifier;
+
+    private static final Logger LOG = LoggerFactory.getLogger(MachineModelPartEntityPK.class);
 
 	public MachineModelPartEntityPK() {
 	}
@@ -99,5 +103,4 @@ public class MachineModelPartEntityPK implements Serializable {
 	public String toString() {
 		return "org.ithb.si.made.mtmgmt.core.persistence.entity.MachineModelPartEntityPK[ modelId=" + modelId + ", partId=" + partId + ", machineModelPartIdentifier=" + machineModelPartIdentifier + " ]";
 	}
-
 }

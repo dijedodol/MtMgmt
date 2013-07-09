@@ -19,10 +19,12 @@ import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  *
- * @author Uyeee
+ * @author gde.satrigraha
  */
 @Entity
 @Table(name = "spbu_machine_totalizers")
@@ -42,16 +44,15 @@ public class SpbuMachineTotalizerEntity implements Serializable {
   @Column(name = "counter", nullable = false)
 	private double counter;
 	@JoinColumns({
-  	@JoinColumn(name = "spbu_id", referencedColumnName = "spbu_id", nullable = false, insertable = false, updatable = false),
-  	@JoinColumn(name = "model_id", referencedColumnName = "model_id", nullable = false, insertable = false, updatable = false),
-  	@JoinColumn(name = "serial_number", referencedColumnName = "serial_number", nullable = false, insertable = false, updatable = false)})
-  @ManyToOne(optional = false, fetch = FetchType.LAZY)
-	private SpbuMachineEntity spbuMachineEntity;
-	@JoinColumns({
   	@JoinColumn(name = "model_id", referencedColumnName = "model_id", nullable = false, insertable = false, updatable = false),
   	@JoinColumn(name = "totalizer_id", referencedColumnName = "totalizer_id", nullable = false, insertable = false, updatable = false)})
   @ManyToOne(optional = false, fetch = FetchType.LAZY)
 	private MachineModelTotalizerEntity machineModelTotalizerEntity;
+	@JoinColumn(name = "machine_serial", referencedColumnName = "machine_serial", nullable = false, insertable = false, updatable = false)
+  @ManyToOne(optional = false, fetch = FetchType.LAZY)
+	private SpbuMachineEntity spbuMachineEntity;
+
+    private static final Logger LOG = LoggerFactory.getLogger(SpbuMachineTotalizerEntity.class);
 
 	public SpbuMachineTotalizerEntity() {
 	}
@@ -66,8 +67,8 @@ public class SpbuMachineTotalizerEntity implements Serializable {
 		this.counter = counter;
 	}
 
-	public SpbuMachineTotalizerEntity(long spbuId, String modelId, String serialNumber, String totalizerId) {
-		this.spbuMachineTotalizerEntityPK = new SpbuMachineTotalizerEntityPK(spbuId, modelId, serialNumber, totalizerId);
+	public SpbuMachineTotalizerEntity(String machineSerial, String modelId, String totalizerId) {
+		this.spbuMachineTotalizerEntityPK = new SpbuMachineTotalizerEntityPK(machineSerial, modelId, totalizerId);
 	}
 
 	public SpbuMachineTotalizerEntityPK getSpbuMachineTotalizerEntityPK() {
@@ -94,20 +95,20 @@ public class SpbuMachineTotalizerEntity implements Serializable {
 		this.counter = counter;
 	}
 
-	public SpbuMachineEntity getSpbuMachineEntity() {
-		return spbuMachineEntity;
-	}
-
-	public void setSpbuMachineEntity(SpbuMachineEntity spbuMachineEntity) {
-		this.spbuMachineEntity = spbuMachineEntity;
-	}
-
 	public MachineModelTotalizerEntity getMachineModelTotalizerEntity() {
 		return machineModelTotalizerEntity;
 	}
 
 	public void setMachineModelTotalizerEntity(MachineModelTotalizerEntity machineModelTotalizerEntity) {
 		this.machineModelTotalizerEntity = machineModelTotalizerEntity;
+	}
+
+	public SpbuMachineEntity getSpbuMachineEntity() {
+		return spbuMachineEntity;
+	}
+
+	public void setSpbuMachineEntity(SpbuMachineEntity spbuMachineEntity) {
+		this.spbuMachineEntity = spbuMachineEntity;
 	}
 
 	@Override
@@ -134,5 +135,4 @@ public class SpbuMachineTotalizerEntity implements Serializable {
 	public String toString() {
 		return "org.ithb.si.made.mtmgmt.core.persistence.entity.SpbuMachineTotalizerEntity[ spbuMachineTotalizerEntityPK=" + spbuMachineTotalizerEntityPK + " ]";
 	}
-
 }

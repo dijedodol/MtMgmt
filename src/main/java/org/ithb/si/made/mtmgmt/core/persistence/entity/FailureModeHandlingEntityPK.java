@@ -11,10 +11,12 @@ import javax.persistence.Column;
 import javax.persistence.Embeddable;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  *
- * @author Uyeee
+ * @author gde.satrigraha
  */
 @Embeddable
 public class FailureModeHandlingEntityPK implements Serializable {
@@ -33,6 +35,8 @@ public class FailureModeHandlingEntityPK implements Serializable {
   @Size(min = 1, max = 40)
   @Column(name = "failure_mode_handling_code", nullable = false, length = 40)
 	private String failureModeHandlingCode;
+
+    private static final Logger LOG = LoggerFactory.getLogger(FailureModeHandlingEntityPK.class);
 
 	public FailureModeHandlingEntityPK() {
 	}
@@ -99,5 +103,4 @@ public class FailureModeHandlingEntityPK implements Serializable {
 	public String toString() {
 		return "org.ithb.si.made.mtmgmt.core.persistence.entity.FailureModeHandlingEntityPK[ partId=" + partId + ", failureModeCode=" + failureModeCode + ", failureModeHandlingCode=" + failureModeHandlingCode + " ]";
 	}
-
 }

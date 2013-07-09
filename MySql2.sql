@@ -4,7 +4,7 @@
 -- Project :      database2.DM1
 -- Author :       MSCI
 --
--- Date Created : Monday, July 08, 2013 21:22:54
+-- Date Created : Tuesday, July 09, 2013 11:54:23
 -- Target DBMS : MySQL 5.x
 --
 
@@ -136,9 +136,8 @@ CREATE TABLE `service_report_spbu_machine_totalizers`(
 CREATE TABLE `service_reports`(
     `id`                             BIGINT         AUTO_INCREMENT,
     `date`                           DATE           NOT NULL,
-    `spbu_id`                        BIGINT         NOT NULL,
+    `machine_serial`                 VARCHAR(40)    NOT NULL,
     `model_id`                       VARCHAR(40)    NOT NULL,
-    `serial_number`                  VARCHAR(40)    NOT NULL,
     `part_id`                        VARCHAR(40)    NOT NULL,
     `machine_model_part_identifier`  VARCHAR(40)    NOT NULL,
     `failure_mode_code`              VARCHAR(40)    NOT NULL,
@@ -155,14 +154,13 @@ CREATE TABLE `service_reports`(
 --
 
 CREATE TABLE `spbu_machine_part_mttfs`(
-    `spbu_id`                        BIGINT           NOT NULL,
+    `machine_serial`                 VARCHAR(40)      NOT NULL,
     `model_id`                       VARCHAR(40)      NOT NULL,
-    `serial_number`                  VARCHAR(40)      NOT NULL,
     `part_id`                        VARCHAR(40)      NOT NULL,
     `machine_model_part_identifier`  VARCHAR(40)      NOT NULL,
     `mttf`                           DOUBLE(18, 0)    NOT NULL,
     `mttf_threshold`                 DOUBLE(18, 0)    NOT NULL,
-    PRIMARY KEY (`spbu_id`, `model_id`, `serial_number`, `part_id`, `machine_model_part_identifier`)
+    PRIMARY KEY (`machine_serial`, `model_id`, `part_id`, `machine_model_part_identifier`)
 )ENGINE=INNODB
 ;
 
@@ -173,13 +171,12 @@ CREATE TABLE `spbu_machine_part_mttfs`(
 --
 
 CREATE TABLE `spbu_machine_totalizers`(
-    `spbu_id`        BIGINT           NOT NULL,
-    `model_id`       VARCHAR(40)      NOT NULL,
-    `serial_number`  VARCHAR(40)      NOT NULL,
-    `totalizer_id`   VARCHAR(40)      NOT NULL,
-    `alias`          VARCHAR(40)      NOT NULL,
-    `counter`        DOUBLE(18, 0)    NOT NULL,
-    PRIMARY KEY (`spbu_id`, `model_id`, `serial_number`, `totalizer_id`)
+    `machine_serial`  VARCHAR(40)      NOT NULL,
+    `model_id`        VARCHAR(40)      NOT NULL,
+    `totalizer_id`    VARCHAR(40)      NOT NULL,
+    `alias`           VARCHAR(40)      NOT NULL,
+    `counter`         DOUBLE(18, 0)    NOT NULL,
+    PRIMARY KEY (`machine_serial`, `model_id`, `totalizer_id`)
 )ENGINE=INNODB
 ;
 
@@ -190,11 +187,11 @@ CREATE TABLE `spbu_machine_totalizers`(
 --
 
 CREATE TABLE `spbu_machines`(
+    `machine_serial`      VARCHAR(40)    NOT NULL,
     `spbu_id`             BIGINT         NOT NULL,
     `model_id`            VARCHAR(40)    NOT NULL,
-    `serial_number`       VARCHAR(40)    NOT NULL,
     `machine_identifier`  VARCHAR(40)    NOT NULL,
-    PRIMARY KEY (`spbu_id`, `model_id`, `serial_number`)
+    PRIMARY KEY (`machine_serial`)
 )ENGINE=INNODB
 ;
 
@@ -236,19 +233,19 @@ CREATE TABLE `users`(
 -- INDEX: `Ref1530` 
 --
 
-CREATE INDEX `Ref1530` ON `failure_mode_handlings`(`failure_mode_code`, `part_id`)
+CREATE INDEX `Ref1530` ON `failure_mode_handlings`(`part_id`, `failure_mode_code`)
 ;
 -- 
 -- INDEX: `Ref67` 
 --
 
-CREATE INDEX `Ref67` ON `machine_model_part_totalizers`(`part_id`, `machine_model_part_identifier`, `model_id`)
+CREATE INDEX `Ref67` ON `machine_model_part_totalizers`(`machine_model_part_identifier`, `model_id`, `part_id`)
 ;
 -- 
 -- INDEX: `Ref711` 
 --
 
-CREATE INDEX `Ref711` ON `machine_model_part_totalizers`(`totalizer_id`, `model_id`)
+CREATE INDEX `Ref711` ON `machine_model_part_totalizers`(`model_id`, `totalizer_id`)
 ;
 -- 
 -- INDEX: `Ref28` 
@@ -284,7 +281,7 @@ CREATE INDEX `Ref1327` ON `service_report_spbu_machine_totalizers`(`service_repo
 -- INDEX: `Ref735` 
 --
 
-CREATE INDEX `Ref735` ON `service_report_spbu_machine_totalizers`(`model_id`, `totalizer_id`)
+CREATE INDEX `Ref735` ON `service_report_spbu_machine_totalizers`(`totalizer_id`, `model_id`)
 ;
 -- 
 -- INDEX: `Ref126` 
@@ -293,58 +290,58 @@ CREATE INDEX `Ref735` ON `service_report_spbu_machine_totalizers`(`model_id`, `t
 CREATE INDEX `Ref126` ON `service_reports`(`technician_id`)
 ;
 -- 
--- INDEX: `Ref532` 
---
-
-CREATE INDEX `Ref532` ON `service_reports`(`spbu_id`, `model_id`, `serial_number`)
-;
--- 
 -- INDEX: `Ref633` 
 --
 
-CREATE INDEX `Ref633` ON `service_reports`(`model_id`, `part_id`, `machine_model_part_identifier`)
+CREATE INDEX `Ref633` ON `service_reports`(`machine_model_part_identifier`, `model_id`, `part_id`)
 ;
 -- 
 -- INDEX: `Ref1634` 
 --
 
-CREATE INDEX `Ref1634` ON `service_reports`(`part_id`, `failure_mode_code`, `failure_mode_handling_code`)
+CREATE INDEX `Ref1634` ON `service_reports`(`failure_mode_code`, `failure_mode_handling_code`, `part_id`)
+;
+-- 
+-- INDEX: `Ref537` 
+--
+
+CREATE INDEX `Ref537` ON `service_reports`(`machine_serial`)
 ;
 -- 
 -- INDEX: `Ref516` 
 --
 
-CREATE INDEX `Ref516` ON `spbu_machine_part_mttfs`(`serial_number`, `model_id`, `spbu_id`)
+CREATE INDEX `Ref516` ON `spbu_machine_part_mttfs`(`machine_serial`)
 ;
 -- 
 -- INDEX: `Ref617` 
 --
 
-CREATE INDEX `Ref617` ON `spbu_machine_part_mttfs`(`machine_model_part_identifier`, `part_id`, `model_id`)
+CREATE INDEX `Ref617` ON `spbu_machine_part_mttfs`(`model_id`, `part_id`, `machine_model_part_identifier`)
 ;
 -- 
 -- INDEX: `Ref518` 
 --
 
-CREATE INDEX `Ref518` ON `spbu_machine_totalizers`(`model_id`, `spbu_id`, `serial_number`)
+CREATE INDEX `Ref518` ON `spbu_machine_totalizers`(`machine_serial`)
 ;
 -- 
 -- INDEX: `Ref719` 
 --
 
-CREATE INDEX `Ref719` ON `spbu_machine_totalizers`(`totalizer_id`, `model_id`)
+CREATE INDEX `Ref719` ON `spbu_machine_totalizers`(`model_id`, `totalizer_id`)
 ;
 -- 
--- INDEX: `Ref412` 
+-- INDEX: `Ref236` 
 --
 
-CREATE INDEX `Ref412` ON `spbu_machines`(`spbu_id`)
+CREATE INDEX `Ref236` ON `spbu_machines`(`model_id`)
 ;
 -- 
--- INDEX: `Ref213` 
+-- INDEX: `Ref438` 
 --
 
-CREATE INDEX `Ref213` ON `spbu_machines`(`model_id`)
+CREATE INDEX `Ref438` ON `spbu_machines`(`spbu_id`)
 ;
 -- 
 -- INDEX: `unique_spbus_code` 
@@ -449,11 +446,6 @@ ALTER TABLE `service_reports` ADD
 ;
 
 ALTER TABLE `service_reports` ADD 
-    FOREIGN KEY (`spbu_id`, `model_id`, `serial_number`)
-    REFERENCES `spbu_machines`(`spbu_id`, `model_id`, `serial_number`)
-;
-
-ALTER TABLE `service_reports` ADD 
     FOREIGN KEY (`model_id`, `part_id`, `machine_model_part_identifier`)
     REFERENCES `machine_model_parts`(`model_id`, `part_id`, `machine_model_part_identifier`)
 ;
@@ -463,14 +455,19 @@ ALTER TABLE `service_reports` ADD
     REFERENCES `failure_mode_handlings`(`part_id`, `failure_mode_code`, `failure_mode_handling_code`)
 ;
 
+ALTER TABLE `service_reports` ADD 
+    FOREIGN KEY (`machine_serial`)
+    REFERENCES `spbu_machines`(`machine_serial`)
+;
+
 
 -- 
 -- TABLE: `spbu_machine_part_mttfs` 
 --
 
 ALTER TABLE `spbu_machine_part_mttfs` ADD 
-    FOREIGN KEY (`spbu_id`, `model_id`, `serial_number`)
-    REFERENCES `spbu_machines`(`spbu_id`, `model_id`, `serial_number`)
+    FOREIGN KEY (`machine_serial`)
+    REFERENCES `spbu_machines`(`machine_serial`)
 ;
 
 ALTER TABLE `spbu_machine_part_mttfs` ADD 
@@ -484,8 +481,8 @@ ALTER TABLE `spbu_machine_part_mttfs` ADD
 --
 
 ALTER TABLE `spbu_machine_totalizers` ADD 
-    FOREIGN KEY (`spbu_id`, `model_id`, `serial_number`)
-    REFERENCES `spbu_machines`(`spbu_id`, `model_id`, `serial_number`)
+    FOREIGN KEY (`machine_serial`)
+    REFERENCES `spbu_machines`(`machine_serial`)
 ;
 
 ALTER TABLE `spbu_machine_totalizers` ADD 
@@ -499,13 +496,13 @@ ALTER TABLE `spbu_machine_totalizers` ADD
 --
 
 ALTER TABLE `spbu_machines` ADD 
-    FOREIGN KEY (`spbu_id`)
-    REFERENCES `spbus`(`id`)
+    FOREIGN KEY (`model_id`)
+    REFERENCES `machine_models`(`model_id`)
 ;
 
 ALTER TABLE `spbu_machines` ADD 
-    FOREIGN KEY (`model_id`)
-    REFERENCES `machine_models`(`model_id`)
+    FOREIGN KEY (`spbu_id`)
+    REFERENCES `spbus`(`id`)
 ;
 
 

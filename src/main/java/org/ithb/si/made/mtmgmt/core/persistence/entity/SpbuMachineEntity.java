@@ -10,9 +10,9 @@ import java.util.List;
 import javax.persistence.Basic;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
-import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
@@ -21,10 +21,12 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  *
- * @author Uyeee
+ * @author gde.satrigraha
  */
 @Entity
 @Table(name = "spbu_machines")
@@ -32,8 +34,12 @@ import javax.validation.constraints.Size;
 	@NamedQuery(name = "SpbuMachineEntity.findAll", query = "SELECT s FROM SpbuMachineEntity s")})
 public class SpbuMachineEntity implements Serializable {
 	private static final long serialVersionUID = 1L;
-	@EmbeddedId
-	protected SpbuMachineEntityPK spbuMachineEntityPK;
+	@Id
+  @Basic(optional = false)
+  @NotNull
+  @Size(min = 1, max = 40)
+  @Column(name = "machine_serial", nullable = false, length = 40)
+	private String machineSerial;
 	@Basic(optional = false)
   @NotNull
   @Size(min = 1, max = 40)
@@ -42,38 +48,36 @@ public class SpbuMachineEntity implements Serializable {
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "spbuMachineEntity", fetch = FetchType.LAZY)
 	private List<ServiceReportEntity> serviceReportEntityList;
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "spbuMachineEntity", fetch = FetchType.LAZY)
+	private List<SpbuMachineTotalizerEntity> spbuMachineTotalizerEntityList;
+	@OneToMany(cascade = CascadeType.ALL, mappedBy = "spbuMachineEntity", fetch = FetchType.LAZY)
 	private List<SpbuMachinePartMttfEntity> spbuMachinePartMttfEntityList;
-	@JoinColumn(name = "spbu_id", referencedColumnName = "id", nullable = false, insertable = false, updatable = false)
+	@JoinColumn(name = "spbu_id", referencedColumnName = "id", nullable = false)
   @ManyToOne(optional = false, fetch = FetchType.LAZY)
 	private SpbuEntity spbuEntity;
-	@JoinColumn(name = "model_id", referencedColumnName = "model_id", nullable = false, insertable = false, updatable = false)
+	@JoinColumn(name = "model_id", referencedColumnName = "model_id", nullable = false)
   @ManyToOne(optional = false, fetch = FetchType.LAZY)
 	private MachineModelEntity machineModelEntity;
-	@OneToMany(cascade = CascadeType.ALL, mappedBy = "spbuMachineEntity", fetch = FetchType.LAZY)
-	private List<SpbuMachineTotalizerEntity> spbuMachineTotalizerEntityList;
+
+    private static final Logger LOG = LoggerFactory.getLogger(SpbuMachineEntity.class);
 
 	public SpbuMachineEntity() {
 	}
 
-	public SpbuMachineEntity(SpbuMachineEntityPK spbuMachineEntityPK) {
-		this.spbuMachineEntityPK = spbuMachineEntityPK;
+	public SpbuMachineEntity(String machineSerial) {
+		this.machineSerial = machineSerial;
 	}
 
-	public SpbuMachineEntity(SpbuMachineEntityPK spbuMachineEntityPK, String machineIdentifier) {
-		this.spbuMachineEntityPK = spbuMachineEntityPK;
+	public SpbuMachineEntity(String machineSerial, String machineIdentifier) {
+		this.machineSerial = machineSerial;
 		this.machineIdentifier = machineIdentifier;
 	}
 
-	public SpbuMachineEntity(long spbuId, String modelId, String serialNumber) {
-		this.spbuMachineEntityPK = new SpbuMachineEntityPK(spbuId, modelId, serialNumber);
+	public String getMachineSerial() {
+		return machineSerial;
 	}
 
-	public SpbuMachineEntityPK getSpbuMachineEntityPK() {
-		return spbuMachineEntityPK;
-	}
-
-	public void setSpbuMachineEntityPK(SpbuMachineEntityPK spbuMachineEntityPK) {
-		this.spbuMachineEntityPK = spbuMachineEntityPK;
+	public void setMachineSerial(String machineSerial) {
+		this.machineSerial = machineSerial;
 	}
 
 	public String getMachineIdentifier() {
@@ -90,6 +94,14 @@ public class SpbuMachineEntity implements Serializable {
 
 	public void setServiceReportEntityList(List<ServiceReportEntity> serviceReportEntityList) {
 		this.serviceReportEntityList = serviceReportEntityList;
+	}
+
+	public List<SpbuMachineTotalizerEntity> getSpbuMachineTotalizerEntityList() {
+		return spbuMachineTotalizerEntityList;
+	}
+
+	public void setSpbuMachineTotalizerEntityList(List<SpbuMachineTotalizerEntity> spbuMachineTotalizerEntityList) {
+		this.spbuMachineTotalizerEntityList = spbuMachineTotalizerEntityList;
 	}
 
 	public List<SpbuMachinePartMttfEntity> getSpbuMachinePartMttfEntityList() {
@@ -116,18 +128,10 @@ public class SpbuMachineEntity implements Serializable {
 		this.machineModelEntity = machineModelEntity;
 	}
 
-	public List<SpbuMachineTotalizerEntity> getSpbuMachineTotalizerEntityList() {
-		return spbuMachineTotalizerEntityList;
-	}
-
-	public void setSpbuMachineTotalizerEntityList(List<SpbuMachineTotalizerEntity> spbuMachineTotalizerEntityList) {
-		this.spbuMachineTotalizerEntityList = spbuMachineTotalizerEntityList;
-	}
-
 	@Override
 	public int hashCode() {
 		int hash = 0;
-		hash += (spbuMachineEntityPK != null ? spbuMachineEntityPK.hashCode() : 0);
+		hash += (machineSerial != null ? machineSerial.hashCode() : 0);
 		return hash;
 	}
 
@@ -138,7 +142,7 @@ public class SpbuMachineEntity implements Serializable {
 			return false;
 		}
 		SpbuMachineEntity other = (SpbuMachineEntity) object;
-		if ((this.spbuMachineEntityPK == null && other.spbuMachineEntityPK != null) || (this.spbuMachineEntityPK != null && !this.spbuMachineEntityPK.equals(other.spbuMachineEntityPK))) {
+		if ((this.machineSerial == null && other.machineSerial != null) || (this.machineSerial != null && !this.machineSerial.equals(other.machineSerial))) {
 			return false;
 		}
 		return true;
@@ -146,7 +150,6 @@ public class SpbuMachineEntity implements Serializable {
 
 	@Override
 	public String toString() {
-		return "org.ithb.si.made.mtmgmt.core.persistence.entity.SpbuMachineEntity[ spbuMachineEntityPK=" + spbuMachineEntityPK + " ]";
+		return "org.ithb.si.made.mtmgmt.core.persistence.entity.SpbuMachineEntity[ machineSerial=" + machineSerial + " ]";
 	}
-
 }

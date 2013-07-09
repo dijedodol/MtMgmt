@@ -26,10 +26,12 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.validation.constraints.NotNull;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  *
- * @author Uyeee
+ * @author gde.satrigraha
  */
 @Entity
 @Table(name = "service_reports")
@@ -47,29 +49,28 @@ public class ServiceReportEntity implements Serializable {
   @Column(name = "date", nullable = false)
   @Temporal(TemporalType.DATE)
 	private Date date;
-	@JoinColumns({
-  	@JoinColumn(name = "model_id", referencedColumnName = "model_id", nullable = false),
-  	@JoinColumn(name = "part_id", referencedColumnName = "part_id", nullable = false),
-  	@JoinColumn(name = "machine_model_part_identifier", referencedColumnName = "machine_model_part_identifier", nullable = false)})
-  @ManyToOne(optional = false, fetch = FetchType.LAZY)
-	private MachineModelPartEntity machineModelPartEntity;
-	@JoinColumns({
-  	@JoinColumn(name = "spbu_id", referencedColumnName = "spbu_id", nullable = false),
-  	@JoinColumn(name = "model_id", referencedColumnName = "model_id", nullable = false),
-  	@JoinColumn(name = "serial_number", referencedColumnName = "serial_number", nullable = false)})
+	@JoinColumn(name = "machine_serial", referencedColumnName = "machine_serial", nullable = false)
   @ManyToOne(optional = false, fetch = FetchType.LAZY)
 	private SpbuMachineEntity spbuMachineEntity;
-	@JoinColumn(name = "technician_id", referencedColumnName = "id", nullable = false)
-  @ManyToOne(optional = false, fetch = FetchType.LAZY)
-	private UserEntity technicianEntity;
 	@JoinColumns({
   	@JoinColumn(name = "part_id", referencedColumnName = "part_id", nullable = false),
   	@JoinColumn(name = "failure_mode_code", referencedColumnName = "failure_mode_code", nullable = false),
   	@JoinColumn(name = "failure_mode_handling_code", referencedColumnName = "failure_mode_handling_code", nullable = false)})
   @ManyToOne(optional = false, fetch = FetchType.LAZY)
 	private FailureModeHandlingEntity failureModeHandlingEntity;
+	@JoinColumns({
+  	@JoinColumn(name = "model_id", referencedColumnName = "model_id", nullable = false),
+  	@JoinColumn(name = "part_id", referencedColumnName = "part_id", nullable = false),
+  	@JoinColumn(name = "machine_model_part_identifier", referencedColumnName = "machine_model_part_identifier", nullable = false)})
+  @ManyToOne(optional = false, fetch = FetchType.LAZY)
+	private MachineModelPartEntity machineModelPartEntity;
+	@JoinColumn(name = "technician_id", referencedColumnName = "id", nullable = false)
+  @ManyToOne(optional = false, fetch = FetchType.LAZY)
+	private UserEntity technicianEntity;
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "serviceReportEntity", fetch = FetchType.LAZY)
 	private List<ServiceReportSpbuMachineTotalizerEntity> serviceReportSpbuMachineTotalizerEntityList;
+
+    private static final Logger LOG = LoggerFactory.getLogger(ServiceReportEntity.class);
 
 	public ServiceReportEntity() {
 	}
@@ -99,14 +100,6 @@ public class ServiceReportEntity implements Serializable {
 		this.date = date;
 	}
 
-	public MachineModelPartEntity getMachineModelPartEntity() {
-		return machineModelPartEntity;
-	}
-
-	public void setMachineModelPartEntity(MachineModelPartEntity machineModelPartEntity) {
-		this.machineModelPartEntity = machineModelPartEntity;
-	}
-
 	public SpbuMachineEntity getSpbuMachineEntity() {
 		return spbuMachineEntity;
 	}
@@ -115,20 +108,28 @@ public class ServiceReportEntity implements Serializable {
 		this.spbuMachineEntity = spbuMachineEntity;
 	}
 
-	public UserEntity getTechnicianEntity() {
-		return technicianEntity;
-	}
-
-	public void setTechnicianEntity(UserEntity technicianEntity) {
-		this.technicianEntity = technicianEntity;
-	}
-
 	public FailureModeHandlingEntity getFailureModeHandlingEntity() {
 		return failureModeHandlingEntity;
 	}
 
 	public void setFailureModeHandlingEntity(FailureModeHandlingEntity failureModeHandlingEntity) {
 		this.failureModeHandlingEntity = failureModeHandlingEntity;
+	}
+
+	public MachineModelPartEntity getMachineModelPartEntity() {
+		return machineModelPartEntity;
+	}
+
+	public void setMachineModelPartEntity(MachineModelPartEntity machineModelPartEntity) {
+		this.machineModelPartEntity = machineModelPartEntity;
+	}
+
+	public UserEntity getTechnicianEntity() {
+		return technicianEntity;
+	}
+
+	public void setTechnicianEntity(UserEntity technicianEntity) {
+		this.technicianEntity = technicianEntity;
 	}
 
 	public List<ServiceReportSpbuMachineTotalizerEntity> getServiceReportSpbuMachineTotalizerEntityList() {
@@ -163,5 +164,4 @@ public class ServiceReportEntity implements Serializable {
 	public String toString() {
 		return "org.ithb.si.made.mtmgmt.core.persistence.entity.ServiceReportEntity[ id=" + id + " ]";
 	}
-
 }

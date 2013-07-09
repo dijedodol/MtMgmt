@@ -5,7 +5,6 @@
 package org.ithb.si.made.mtmgmt.web.controller.technician;
 
 import java.security.Principal;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -14,11 +13,10 @@ import org.ithb.si.made.mtmgmt.core.persistence.entity.FailureModeHandlingEntity
 import org.ithb.si.made.mtmgmt.core.persistence.entity.MachineModelPartEntity;
 import org.ithb.si.made.mtmgmt.core.persistence.entity.MachineModelPartEntityPK;
 import org.ithb.si.made.mtmgmt.core.persistence.entity.PartFailureModeEntity;
+import org.ithb.si.made.mtmgmt.core.persistence.entity.PartFailureModeEntityPK;
 import org.ithb.si.made.mtmgmt.core.persistence.entity.ServiceReportEntity;
 import org.ithb.si.made.mtmgmt.core.persistence.entity.SpbuEntity;
 import org.ithb.si.made.mtmgmt.core.persistence.entity.SpbuMachineEntity;
-import org.ithb.si.made.mtmgmt.core.persistence.entity.SpbuMachineEntityPK;
-import org.ithb.si.made.mtmgmt.core.persistence.entity.UserEntity;
 import org.ithb.si.made.mtmgmt.core.persistence.repository.MachineModelPartRepository;
 import org.ithb.si.made.mtmgmt.core.persistence.repository.PartFailureModeRepository;
 import org.ithb.si.made.mtmgmt.core.persistence.repository.ServiceReportRepository;
@@ -91,13 +89,9 @@ public class AjaxDataController {
 		if (dbSpbuEntity != null) {
 			for (final SpbuMachineEntity spbuMachineEntity : dbSpbuEntity.getSpbuMachineEntityList()) {
 				final Map<String, Object> tmp = new HashMap<>();
-				tmp.put("machineIdentifier", spbuMachineEntity.getSpbuMachineEntityPK().getMachineIdentifier());
-				tmp.put("machineModelId", spbuMachineEntity.getMachineModelEntity().getId());
-				tmp.put("machineEntity", new MapBuilder<>(new HashMap<String, Object>())
-								.put("id", spbuMachineEntity.getMachineModelEntity().getId())
-								.put("code", spbuMachineEntity.getMachineModelEntity().getCode())
-								.put("name", spbuMachineEntity.getMachineModelEntity().getName())
-								.getMap());
+				tmp.put("machineSerial", spbuMachineEntity.getMachineSerial());
+				tmp.put("modelId", spbuMachineEntity.getMachineModelEntity().getModelId());
+				tmp.put("machineIdentifier", spbuMachineEntity.getMachineIdentifier());
 				respEntity.add(tmp);
 			}
 		}
@@ -107,21 +101,18 @@ public class AjaxDataController {
 
 	@Transactional
 	@ResponseBody
-	@RequestMapping(value = "spbu/{spbuId}/machine/{machineIdentifier}/part", produces = "application/json", method = RequestMethod.GET)
-	public ResponseEntity<List<Map>> technicianListSpbuMachinePart(Principal principal, @PathVariable("spbuId") long spbuId, @PathVariable("machineIdentifier") String machineIdentifier) {
-		final SpbuMachineEntityPK dbSpbuMachineEntityPK = new SpbuMachineEntityPK();
-		dbSpbuMachineEntityPK.setSpbuId(spbuId);
-		dbSpbuMachineEntityPK.setMachineIdentifier(machineIdentifier);
-
-		final SpbuMachineEntity dbSpbuMachineEntity = spbuMachineRepository.findOne(dbSpbuMachineEntityPK);
+	@RequestMapping(value = "spbu/{spbuId}/machine/{machineSerial}/part", produces = "application/json", method = RequestMethod.GET)
+	public ResponseEntity<List<Map>> technicianListSpbuMachineModelPart(Principal principal, @PathVariable("spbuId") long spbuId, @PathVariable("machineSerial") String machineSerial) {
+		final SpbuMachineEntity spbuMachineEntity = spbuMachineRepository.findOne(machineSerial);
 		final ResponseEntity<List<Map>> ret;
-		final List<Map> respEntity = new ArrayList<>(dbSpbuMachineEntity.getMachineModelEntity().getMachineModelPartEntityList().size());
+		final List<Map> respEntity = new LinkedList<>();
 
-		if (dbSpbuMachineEntity != null) {
-			for (final MachineModelPartEntity dbMachineModelPartEntity : dbSpbuMachineEntity.getMachineModelEntity().getMachineModelPartEntityList()) {
+		if (spbuMachineEntity != null) {
+			for (final MachineModelPartEntity machineModelPartEntity : spbuMachineEntity.getMachineModelEntity().getMachineModelPartEntityList()) {
 				final Map<String, Object> tmp = new MapBuilder<>(new HashMap<String, Object>())
-								.put("id", dbMachineModelPartEntity.getMachinePartEntity().getId())
-								.put("name", dbMachineModelPartEntity.getMachinePartEntity().getName())
+								.put("partId", machineModelPartEntity.getMachineModelPartEntityPK().getPartId())
+								.put("machineModelPartIdentifier", machineModelPartEntity.getMachineModelPartEntityPK().getMachineModelPartIdentifier())
+								.put("name", machineModelPartEntity.getMachinePartTypeEntity().getName())
 								.getMap();
 				respEntity.add(tmp);
 			}
@@ -132,27 +123,25 @@ public class AjaxDataController {
 
 	@Transactional
 	@ResponseBody
-	@RequestMapping(value = "spbu/{spbuId}/machine/{machineIdentifier}/part/{partId}/failure_mode", produces = "application/json", method = RequestMethod.GET)
-	public ResponseEntity<List<Map>> technicianListSpbuMachinePartFailureMode(Principal principal, @PathVariable("spbuId") long spbuId, @PathVariable("machineIdentifier") String machineIdentifier, @PathVariable("partId") long partId) {
-		final SpbuMachineEntityPK dbSpbuMachineEntityPK = new SpbuMachineEntityPK();
-		dbSpbuMachineEntityPK.setSpbuId(spbuId);
-		dbSpbuMachineEntityPK.setMachineIdentifier(machineIdentifier);
-
-		final SpbuMachineEntity dbSpbuMachineEntity = spbuMachineRepository.findOne(dbSpbuMachineEntityPK);
+	@RequestMapping(value = "spbu/{spbuId}/machine/{machineSerial}/part/{partId}/{machineModelPartIdentifier}/failure_mode", produces = "application/json", method = RequestMethod.GET)
+	public ResponseEntity<List<Map>> technicianListSpbuMachinePartFailureMode(Principal principal, @PathVariable("spbuId") long spbuId, @PathVariable("machineSerial") String machineSerial, @PathVariable("partId") String partId, @PathVariable("machineModelPartIdentifier") String machineModelPartIdentifier) {
+		final SpbuMachineEntity spbuMachineEntity = spbuMachineRepository.findOne(machineSerial);
 		final ResponseEntity<List<Map>> ret;
 		final List<Map> respEntity = new LinkedList<>();
 
-		if (dbSpbuMachineEntity != null) {
-			final MachineModelPartEntityPK dbMachineModelPartEntityPK = new MachineModelPartEntityPK();
-			dbMachineModelPartEntityPK.setMachineModelId(dbSpbuMachineEntity.getMachineModelEntity().getId());
-			dbMachineModelPartEntityPK.setMachinePartId(partId);;
+		if (spbuMachineEntity != null) {
+			final MachineModelPartEntityPK machineModelPartEntityPK = new MachineModelPartEntityPK();
+			machineModelPartEntityPK.setModelId(spbuMachineEntity.getMachineModelEntity().getModelId());
+			machineModelPartEntityPK.setPartId(partId);
+			machineModelPartEntityPK.setMachineModelPartIdentifier(machineModelPartIdentifier);
 
-			final MachineModelPartEntity dbMachineModelPartEntity = machineModelPartRepository.findOne(dbMachineModelPartEntityPK);
-			if (dbMachineModelPartEntity != null) {
-				for (final PartFailureModeEntity dbPartFailureModeEntity : dbMachineModelPartEntity.getMachinePartEntity().getPartFailureModeEntityList()) {
+			final MachineModelPartEntity machineModelPartEntity = machineModelPartRepository.findOne(machineModelPartEntityPK);
+			if (machineModelPartEntity != null) {
+				for (final PartFailureModeEntity partFailureModeEntity : machineModelPartEntity.getMachinePartTypeEntity().getPartFailureModeEntityList()) {
 					final Map<String, Object> tmp = new MapBuilder<>(new HashMap<String, Object>())
-									.put("id", dbPartFailureModeEntity.getId())
-									.put("name", dbPartFailureModeEntity.getName())
+									.put("failureModeCode", partFailureModeEntity.getPartFailureModeEntityPK().getFailureModeCode())
+									.put("name", partFailureModeEntity.getName())
+									.put("description", partFailureModeEntity.getDescription())
 									.getMap();
 					respEntity.add(tmp);
 				}
@@ -164,29 +153,29 @@ public class AjaxDataController {
 
 	@Transactional
 	@ResponseBody
-	@RequestMapping(value = "spbu/{spbuId}/machine/{machineIdentifier}/part/{partId}/failure_mode/{failureModeId}/handling", produces = "application/json", method = RequestMethod.GET)
-	public ResponseEntity<List<Map>> technicianListSpbuMachinePartFailureModeHandling(Principal principal, @PathVariable("spbuId") long spbuId, @PathVariable("machineIdentifier") String machineIdentifier, @PathVariable("partId") long partId, @PathVariable("failureModeId") long failureModeId) {
-		final SpbuMachineEntityPK dbSpbuMachineEntityPK = new SpbuMachineEntityPK();
-		dbSpbuMachineEntityPK.setSpbuId(spbuId);
-		dbSpbuMachineEntityPK.setMachineIdentifier(machineIdentifier);
-
-		final SpbuMachineEntity dbSpbuMachineEntity = spbuMachineRepository.findOne(dbSpbuMachineEntityPK);
+	@RequestMapping(value = "spbu/{spbuId}/machine/{machineSerial}/part/{partId}/{machineModelPartIdentifier}/failure_mode/{failureModeCode}/handling", produces = "application/json", method = RequestMethod.GET)
+	public ResponseEntity<List<Map>> technicianListSpbuMachinePartFailureModeHandling(Principal principal, @PathVariable("spbuId") long spbuId, @PathVariable("machineSerial") String machineSerial, @PathVariable("partId") String partId, @PathVariable("machineModelPartIdentifier") String machineModelPartIdentifier, @PathVariable("failureModeCode") String failureModeCode) {
+		final SpbuMachineEntity spbuMachineEntity = spbuMachineRepository.findOne(machineSerial);
 		final ResponseEntity<List<Map>> ret;
 		final List<Map> respEntity = new LinkedList<>();
 
-		if (dbSpbuMachineEntity != null) {
-			final MachineModelPartEntityPK dbMachineModelPartEntityPK = new MachineModelPartEntityPK();
-			dbMachineModelPartEntityPK.setMachineModelId(dbSpbuMachineEntity.getMachineModelEntity().getId());
-			dbMachineModelPartEntityPK.setMachinePartId(partId);;
+		if (spbuMachineEntity != null) {
+			final MachineModelPartEntityPK machineModelPartEntityPK = new MachineModelPartEntityPK();
+			machineModelPartEntityPK.setModelId(spbuMachineEntity.getMachineModelEntity().getModelId());
+			machineModelPartEntityPK.setPartId(partId);
+			machineModelPartEntityPK.setMachineModelPartIdentifier(machineModelPartIdentifier);
 
-			final MachineModelPartEntity dbMachineModelPartEntity = machineModelPartRepository.findOne(dbMachineModelPartEntityPK);
-			if (dbMachineModelPartEntity != null) {
-				final PartFailureModeEntity dbPartFailureModeEntity = partFailureModeRepository.findOne(failureModeId);
-				if (dbPartFailureModeEntity != null) {
-					for (final FailureModeHandlingEntity dbFailureModeHandlingEntity : dbPartFailureModeEntity.getFailureModeHandlingEntityList()) {
+			final MachineModelPartEntity machineModelPartEntity = machineModelPartRepository.findOne(machineModelPartEntityPK);
+			if (machineModelPartEntity != null) {
+				final PartFailureModeEntityPK partFailureModeEntityPK = new PartFailureModeEntityPK();
+				partFailureModeEntityPK.setPartId(partId);
+				partFailureModeEntityPK.setFailureModeCode(failureModeCode);
+				final PartFailureModeEntity partFailureModeEntity = partFailureModeRepository.findOne(partFailureModeEntityPK);
+				if (partFailureModeEntity != null) {
+					for (final FailureModeHandlingEntity failureModeHandlingEntity : partFailureModeEntity.getFailureModeHandlingEntityList()) {
 						final Map<String, Object> tmp = new MapBuilder<>(new HashMap<String, Object>())
-										.put("id", dbFailureModeHandlingEntity.getId())
-										.put("name", dbFailureModeHandlingEntity.getName())
+										.put("failureModeHandlingCode", failureModeHandlingEntity.getFailureModeHandlingEntityPK().getFailureModeHandlingCode())
+										.put("name", failureModeHandlingEntity.getName())
 										.getMap();
 						respEntity.add(tmp);
 					}
@@ -201,22 +190,23 @@ public class AjaxDataController {
 	@ResponseBody
 	@RequestMapping(value = "spbu/{spbuId}/service_report", produces = "application/json", method = RequestMethod.GET)
 	public ResponseEntity<List<Map>> technicianListServiceReport(Principal principal, @PathVariable long spbuId) {
-		final UserEntity dbUserEntity = userRepository.findByLoginId(principal.getName());
-		final SpbuEntity dbSpbuEntity = spbuRepository.findOne(spbuId);
+		final SpbuEntity spbuEntity = spbuRepository.findOne(spbuId);
 		final ResponseEntity<List<Map>> ret;
 
 		final List<Map> respEntity = new LinkedList<>();
-		if (dbUserEntity != null && dbSpbuEntity != null) {
-			final List<ServiceReportEntity> serviceReports = serviceReportRepository.findBySpbuMachineEntity_SpbuEntity_IdOrderByDateDesc(dbSpbuEntity.getId());
-
+		if (spbuEntity != null) {
+			final List<ServiceReportEntity> serviceReports = serviceReportRepository.findBySpbuMachineEntity_SpbuEntityOrderByDateDesc(spbuEntity);
 			for (final ServiceReportEntity serviceReportEntity : serviceReports) {
 				final Map<String, Object> tmp = new MapBuilder<>(new HashMap<String, Object>())
 								.put("date", DateUtil.format(serviceReportEntity.getDate()))
-								.put("machineIdentifier", serviceReportEntity.getSpbuMachineEntity().getSpbuMachineEntityPK().getMachineIdentifier())
-								.put("machinePart", serviceReportEntity.getFailureModeHandlingEntity().getPartFailureModeEntity().getMachinePartEntity().getName())
-								.put("failureMode", serviceReportEntity.getFailureModeHandlingEntity().getPartFailureModeEntity().getName())
-								.put("failureModeHandling", serviceReportEntity.getFailureModeHandlingEntity().getName())
-								.put("technician", serviceReportEntity.getTechnicianEntity().getFullName())
+								.put("machineSerial", serviceReportEntity.getSpbuMachineEntity().getMachineSerial())
+								.put("machineIdentifier", serviceReportEntity.getSpbuMachineEntity().getMachineIdentifier())
+								.put("modelId", serviceReportEntity.getMachineModelPartEntity().getMachineModelPartEntityPK().getModelId())
+								.put("partId", serviceReportEntity.getMachineModelPartEntity().getMachineModelPartEntityPK().getPartId())
+								.put("failureModeCode", serviceReportEntity.getFailureModeHandlingEntity().getFailureModeHandlingEntityPK().getFailureModeCode())
+								.put("failureModeHandlingCode", serviceReportEntity.getFailureModeHandlingEntity().getFailureModeHandlingEntityPK().getFailureModeHandlingCode())
+								.put("technicianId", serviceReportEntity.getTechnicianEntity().getId())
+								.put("technicianName", serviceReportEntity.getTechnicianEntity().getFullName())
 								.getMap();
 				respEntity.add(tmp);
 			}

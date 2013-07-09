@@ -8,9 +8,9 @@ import java.security.Principal;
 import java.util.List;
 import javax.validation.Valid;
 import org.ithb.si.made.mtmgmt.core.exception.InvalidDataException;
-import org.ithb.si.made.mtmgmt.core.persistence.entity.MachineTotalizerEntity;
+import org.ithb.si.made.mtmgmt.core.persistence.entity.MachineModelTotalizerEntity;
+import org.ithb.si.made.mtmgmt.core.persistence.entity.MachineModelTotalizerEntityPK;
 import org.ithb.si.made.mtmgmt.core.persistence.entity.SpbuMachineEntity;
-import org.ithb.si.made.mtmgmt.core.persistence.entity.SpbuMachineEntityPK;
 import org.ithb.si.made.mtmgmt.core.persistence.entity.SpbuMachineTotalizerEntity;
 import org.ithb.si.made.mtmgmt.core.persistence.entity.SpbuMachineTotalizerEntityPK;
 import org.ithb.si.made.mtmgmt.core.persistence.entity.UserEntity;
@@ -74,36 +74,44 @@ public class InputTotalizerController {
 
 	@Transactional
 	private void _doInputTotalizer(Principal principal, @Valid FormData formData, BindingResult bindingResult) {
-		final UserEntity dbUserEntity = userRepository.findByLoginId(principal.getName());
-		final SpbuMachineEntity dbSpbuMachineEntity = spbuMachineRepository.findOne(new SpbuMachineEntityPK(formData.getSpbuId(), formData.getMachineIdentifier()));
-		if (dbUserEntity != null && dbSpbuMachineEntity != null && dbUserEntity.getId() == dbSpbuMachineEntity.getSpbuEntity().getSupervisorEntity().getId()) {
+		final UserEntity userEntity = userRepository.findByLoginId(principal.getName());
+		final SpbuMachineEntity spbuMachineEntity = spbuMachineRepository.findOne(formData.getMachineSerial());
+		if (userEntity != null && spbuMachineEntity != null && userEntity.getId() == spbuMachineEntity.getSpbuEntity().getSupervisorEntity().getId()) {
 			for (int i = 0; i < formData.getTotalizerIds().size(); i++) {
-				long totalizerId = formData.getTotalizerIds().get(i);
-				double totalizerValue = formData.getTotalizerValues().get(i);
+				final String totalizerId = formData.getTotalizerIds().get(i);
+				final double totalizerValue = formData.getTotalizerValues().get(i);
 
-				final MachineTotalizerEntity machineTotalizerEntity = machineTotalizerRepository.findOne(totalizerId);
-				if (machineTotalizerEntity == null) {
+				final MachineModelTotalizerEntityPK machineModelTotalizerEntityPK = new MachineModelTotalizerEntityPK();
+				machineModelTotalizerEntityPK.setModelId(spbuMachineEntity.getMachineModelEntity().getModelId());
+				machineModelTotalizerEntityPK.setTotalizerId(totalizerId);
+				final MachineModelTotalizerEntity machineModelTotalizerEntity = machineTotalizerRepository.findOne(machineModelTotalizerEntityPK);
+				if (machineModelTotalizerEntity == null) {
 					bindingResult.reject("common.error.invalidData");
 					throw new InvalidDataException("Invalid totalizer: " + totalizerId);
 				}
 
-				SpbuMachineTotalizerEntity spbuMachineTotalizerEntity = spbuMachineTotalizerRepository.findOne(new SpbuMachineTotalizerEntityPK(formData.getSpbuId(), formData.getMachineIdentifier(), totalizerId));
+				final SpbuMachineTotalizerEntityPK spbuMachineTotalizerEntityPK = new SpbuMachineTotalizerEntityPK();
+				spbuMachineTotalizerEntityPK.setMachineSerial(formData.machineSerial);
+				spbuMachineTotalizerEntityPK.setModelId(spbuMachineEntity.getMachineModelEntity().getModelId());
+				spbuMachineTotalizerEntityPK.setTotalizerId(totalizerId);
+				SpbuMachineTotalizerEntity spbuMachineTotalizerEntity = spbuMachineTotalizerRepository.findOne(spbuMachineTotalizerEntityPK);
 				if (spbuMachineTotalizerEntity == null) {
-					spbuMachineTotalizerEntity = new SpbuMachineTotalizerEntity(formData.getSpbuId(), formData.getMachineIdentifier(), totalizerId);
+					spbuMachineTotalizerEntity = new SpbuMachineTotalizerEntity(spbuMachineTotalizerEntityPK);
+					spbuMachineTotalizerEntity.setAlias(totalizerId);
 					spbuMachineTotalizerEntity.setCounter(0);
-					spbuMachineTotalizerEntity.setMachineTotalizerEntity(machineTotalizerEntity);
-					spbuMachineTotalizerEntity.setSpbuMachineEntity(dbSpbuMachineEntity);
+					spbuMachineTotalizerEntity.setMachineModelTotalizerEntity(machineModelTotalizerEntity);
+					spbuMachineTotalizerEntity.setSpbuMachineEntity(spbuMachineEntity);
 				}
 
 				if (totalizerValue < spbuMachineTotalizerEntity.getCounter()) {
 					bindingResult.reject("common.error.invalidData");
 					throw new InvalidDataException("Input totalizer less than current totalizer: " + totalizerValue + " < " + spbuMachineTotalizerEntity.getCounter());
 				}
-				
+
 				spbuMachineTotalizerEntity.setCounter(totalizerValue);
-				dbSpbuMachineEntity.getSpbuMachineTotalizerEntityList().add(spbuMachineTotalizerEntity);
+				spbuMachineEntity.getSpbuMachineTotalizerEntityList().add(spbuMachineTotalizerEntity);
 			}
-			spbuMachineRepository.saveAndFlush(dbSpbuMachineEntity);
+			spbuMachineRepository.saveAndFlush(spbuMachineEntity);
 		} else {
 			bindingResult.reject("supervisor.error.spbuMismatch");
 		}
@@ -112,8 +120,8 @@ public class InputTotalizerController {
 	public static class FormData {
 
 		private long spbuId;
-		private String machineIdentifier;
-		private List<Long> totalizerIds;
+		private String machineSerial;
+		private List<String> totalizerIds;
 		private List<Double> totalizerValues;
 
 		public FormData() {
@@ -121,7 +129,7 @@ public class InputTotalizerController {
 
 		@Override
 		public String toString() {
-			return "TotalizerFormData{" + "spbuId=" + spbuId + ", machineIdentifier=" + machineIdentifier + ", totalizerIds=" + totalizerIds + ", totalizerValues=" + totalizerValues + '}';
+			return "FormData{" + "spbuId=" + spbuId + ", machineSerial=" + machineSerial + ", totalizerIds=" + totalizerIds + ", totalizerValues=" + totalizerValues + '}';
 		}
 
 		public long getSpbuId() {
@@ -132,19 +140,19 @@ public class InputTotalizerController {
 			this.spbuId = spbuId;
 		}
 
-		public String getMachineIdentifier() {
-			return machineIdentifier;
+		public String getMachineSerial() {
+			return machineSerial;
 		}
 
-		public void setMachineIdentifier(String machineIdentifier) {
-			this.machineIdentifier = machineIdentifier;
+		public void setMachineSerial(String machineSerial) {
+			this.machineSerial = machineSerial;
 		}
 
-		public List<Long> getTotalizerIds() {
+		public List<String> getTotalizerIds() {
 			return totalizerIds;
 		}
 
-		public void setTotalizerIds(List<Long> totalizerIds) {
+		public void setTotalizerIds(List<String> totalizerIds) {
 			this.totalizerIds = totalizerIds;
 		}
 
