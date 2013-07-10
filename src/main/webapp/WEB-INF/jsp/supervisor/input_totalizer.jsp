@@ -34,9 +34,9 @@
 						<td><sf:errors path="spbuId"/></td>
 					</tr>
 					<tr>
-						<td><sf:label path="machineIdentifier"><s:message code="supervisor.input.totalizer.machineIdentifier"/>:</sf:label></td>
-						<td><sf:select path="machineIdentifier" id="machineIdentifier"/></td>
-						<td><sf:errors path="machineIdentifier"/></td>
+						<td><sf:label path="machineSerial"><s:message code="supervisor.input.totalizer.machineIdentifier"/>:</sf:label></td>
+						<td><sf:select path="machineSerial" id="machineSerial"/></td>
+						<td><sf:errors path="machineSerial"/></td>
 					</tr>
 					<tr>
 						<td><s:message code="supervisor.input.totalizer.totalizers"/>:</td>
@@ -70,7 +70,7 @@
 			$("#spbuId").change(function() {
 				loadMachineId();
 			});
-			$("#machineIdentifier").change(function() {
+			$("#machineSerial").change(function() {
 				loadTotalizers();
 			});
 			loadSpbuId();
@@ -110,14 +110,14 @@
 						dataType: "json",
 						success: function(data, textStatus, jqXHR) {
 							console.log(url + ": " + JSON.stringify(data));
-							$("#machineIdentifier").children().remove();
+							$("#machineSerial").children().remove();
 
 							$.each(data, function(index, spbuMachine) {
 								console.log("spbuMachine: " + JSON.stringify(spbuMachine));
 								if (index === 0) {
-									$("#machineIdentifier").append(new Option(spbuMachine.machineIdentifier, spbuMachine.machineIdentifier, true, true));
+									$("#machineSerial").append(new Option(spbuMachine.machineIdentifier, spbuMachine.machineSerial, true, true));
 								} else {
-									$("#machineIdentifier").append(new Option(spbuMachine.machineIdentifier, spbuMachine.machineIdentifier, false, false));
+									$("#machineSerial").append(new Option(spbuMachine.machineIdentifier, spbuMachine.machineSerial, false, false));
 								}
 							});
 							loadTotalizers();
@@ -130,7 +130,7 @@
 			}
 
 			function loadTotalizers() {
-				var url = "ajax/spbu/" + $("#spbuId").val() + "/machine/" + $("#machineIdentifier").val() + "/totalizer.json";
+				var url = "ajax/spbu/" + $("#spbuId").val() + "/machine/" + $("#machineSerial").val() + "/totalizer.json";
 				console.log("url: " + url);
 				$(document).ready(function() {
 					$.ajax({
@@ -145,14 +145,14 @@
 								var newRow = "";
 								newRow += "<tr>";
 								newRow += "<td>";
-								newRow += totalizer.machineTotalizerName + " (" + totalizer.alias + ")";
+								newRow += totalizer.totalizerId + " (" + totalizer.alias + ")";
 								newRow += "</td>";
 								newRow += "<td>";
 								newRow += "<input type='text' name='totalizerValues[" + index + "]' value='" + totalizer.counter + "'/>";
 								newRow += "</td>";
 								newRow += "<td>";
 								newRow += "<input type='text' name='totalizerValuesCurrent[" + index + "]' value='" + totalizer.counter + "' readonly tabindex='-1'/>";
-								newRow += "<input type='hidden' name='totalizerIds[" + index + "]' value='" + totalizer.machineTotalizerId + "'/>";
+								newRow += "<input type='hidden' name='totalizerIds[" + index + "]' value='" + totalizer.totalizerId + "'/>";
 								newRow += "</td>";
 								newRow += "</tr>";
 

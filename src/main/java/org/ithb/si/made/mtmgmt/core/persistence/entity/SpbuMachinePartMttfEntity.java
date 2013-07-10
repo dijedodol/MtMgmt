@@ -18,12 +18,10 @@ import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  *
- * @author gde.satrigraha
+ * @author Uyeee
  */
 @Entity
 @Table(name = "spbu_machine_part_mttfs")
@@ -41,17 +39,15 @@ public class SpbuMachinePartMttfEntity implements Serializable {
   @NotNull
   @Column(name = "mttf_threshold", nullable = false)
 	private double mttfThreshold;
+	@JoinColumn(name = "machine_serial", referencedColumnName = "machine_serial", nullable = false, insertable = false, updatable = false)
+  @ManyToOne(optional = false, fetch = FetchType.LAZY)
+	private SpbuMachineEntity spbuMachineEntity;
 	@JoinColumns({
   	@JoinColumn(name = "model_id", referencedColumnName = "model_id", nullable = false, insertable = false, updatable = false),
   	@JoinColumn(name = "part_id", referencedColumnName = "part_id", nullable = false, insertable = false, updatable = false),
   	@JoinColumn(name = "machine_model_part_identifier", referencedColumnName = "machine_model_part_identifier", nullable = false, insertable = false, updatable = false)})
   @ManyToOne(optional = false, fetch = FetchType.LAZY)
 	private MachineModelPartEntity machineModelPartEntity;
-	@JoinColumn(name = "machine_serial", referencedColumnName = "machine_serial", nullable = false, insertable = false, updatable = false)
-  @ManyToOne(optional = false, fetch = FetchType.LAZY)
-	private SpbuMachineEntity spbuMachineEntity;
-
-    private static final Logger LOG = LoggerFactory.getLogger(SpbuMachinePartMttfEntity.class);
 
 	public SpbuMachinePartMttfEntity() {
 	}
@@ -94,20 +90,20 @@ public class SpbuMachinePartMttfEntity implements Serializable {
 		this.mttfThreshold = mttfThreshold;
 	}
 
-	public MachineModelPartEntity getMachineModelPartEntity() {
-		return machineModelPartEntity;
-	}
-
-	public void setMachineModelPartEntity(MachineModelPartEntity machineModelPartEntity) {
-		this.machineModelPartEntity = machineModelPartEntity;
-	}
-
 	public SpbuMachineEntity getSpbuMachineEntity() {
 		return spbuMachineEntity;
 	}
 
 	public void setSpbuMachineEntity(SpbuMachineEntity spbuMachineEntity) {
 		this.spbuMachineEntity = spbuMachineEntity;
+	}
+
+	public MachineModelPartEntity getMachineModelPartEntity() {
+		return machineModelPartEntity;
+	}
+
+	public void setMachineModelPartEntity(MachineModelPartEntity machineModelPartEntity) {
+		this.machineModelPartEntity = machineModelPartEntity;
 	}
 
 	@Override
@@ -134,4 +130,5 @@ public class SpbuMachinePartMttfEntity implements Serializable {
 	public String toString() {
 		return "org.ithb.si.made.mtmgmt.core.persistence.entity.SpbuMachinePartMttfEntity[ spbuMachinePartMttfEntityPK=" + spbuMachinePartMttfEntityPK + " ]";
 	}
+
 }

@@ -111,16 +111,16 @@
 								newRow += serviceReport.machineIdentifier;
 								newRow += "</td>";
 								newRow += "<td>";
-								newRow += serviceReport.machinePart;
+								newRow += serviceReport.machineModelPartIdentifier;
 								newRow += "</td>";
 								newRow += "<td>";
-								newRow += serviceReport.failureMode;
+								newRow += serviceReport.failureModeName;
 								newRow += "</td>";
 								newRow += "<td>";
-								newRow += serviceReport.failureModeHandling;
+								newRow += serviceReport.failureModeHandlingName;
 								newRow += "</td>";
 								newRow += "<td>";
-								newRow += serviceReport.technician;
+								newRow += serviceReport.technicianName;
 								newRow += "</td>";
 								newRow += "</tr>";
 

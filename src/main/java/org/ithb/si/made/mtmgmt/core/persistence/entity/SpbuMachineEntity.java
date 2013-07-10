@@ -21,12 +21,10 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  *
- * @author gde.satrigraha
+ * @author Uyeee
  */
 @Entity
 @Table(name = "spbu_machines")
@@ -48,17 +46,15 @@ public class SpbuMachineEntity implements Serializable {
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "spbuMachineEntity", fetch = FetchType.LAZY)
 	private List<ServiceReportEntity> serviceReportEntityList;
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "spbuMachineEntity", fetch = FetchType.LAZY)
-	private List<SpbuMachineTotalizerEntity> spbuMachineTotalizerEntityList;
-	@OneToMany(cascade = CascadeType.ALL, mappedBy = "spbuMachineEntity", fetch = FetchType.LAZY)
 	private List<SpbuMachinePartMttfEntity> spbuMachinePartMttfEntityList;
-	@JoinColumn(name = "spbu_id", referencedColumnName = "id", nullable = false)
-  @ManyToOne(optional = false, fetch = FetchType.LAZY)
-	private SpbuEntity spbuEntity;
 	@JoinColumn(name = "model_id", referencedColumnName = "model_id", nullable = false)
   @ManyToOne(optional = false, fetch = FetchType.LAZY)
 	private MachineModelEntity machineModelEntity;
-
-    private static final Logger LOG = LoggerFactory.getLogger(SpbuMachineEntity.class);
+	@JoinColumn(name = "spbu_id", referencedColumnName = "id", nullable = false)
+  @ManyToOne(optional = false, fetch = FetchType.LAZY)
+	private SpbuEntity spbuEntity;
+	@OneToMany(cascade = CascadeType.ALL, mappedBy = "spbuMachineEntity", fetch = FetchType.LAZY)
+	private List<SpbuMachineTotalizerEntity> spbuMachineTotalizerEntityList;
 
 	public SpbuMachineEntity() {
 	}
@@ -96,20 +92,20 @@ public class SpbuMachineEntity implements Serializable {
 		this.serviceReportEntityList = serviceReportEntityList;
 	}
 
-	public List<SpbuMachineTotalizerEntity> getSpbuMachineTotalizerEntityList() {
-		return spbuMachineTotalizerEntityList;
-	}
-
-	public void setSpbuMachineTotalizerEntityList(List<SpbuMachineTotalizerEntity> spbuMachineTotalizerEntityList) {
-		this.spbuMachineTotalizerEntityList = spbuMachineTotalizerEntityList;
-	}
-
 	public List<SpbuMachinePartMttfEntity> getSpbuMachinePartMttfEntityList() {
 		return spbuMachinePartMttfEntityList;
 	}
 
 	public void setSpbuMachinePartMttfEntityList(List<SpbuMachinePartMttfEntity> spbuMachinePartMttfEntityList) {
 		this.spbuMachinePartMttfEntityList = spbuMachinePartMttfEntityList;
+	}
+
+	public MachineModelEntity getMachineModelEntity() {
+		return machineModelEntity;
+	}
+
+	public void setMachineModelEntity(MachineModelEntity machineModelEntity) {
+		this.machineModelEntity = machineModelEntity;
 	}
 
 	public SpbuEntity getSpbuEntity() {
@@ -120,12 +116,12 @@ public class SpbuMachineEntity implements Serializable {
 		this.spbuEntity = spbuEntity;
 	}
 
-	public MachineModelEntity getMachineModelEntity() {
-		return machineModelEntity;
+	public List<SpbuMachineTotalizerEntity> getSpbuMachineTotalizerEntityList() {
+		return spbuMachineTotalizerEntityList;
 	}
 
-	public void setMachineModelEntity(MachineModelEntity machineModelEntity) {
-		this.machineModelEntity = machineModelEntity;
+	public void setSpbuMachineTotalizerEntityList(List<SpbuMachineTotalizerEntity> spbuMachineTotalizerEntityList) {
+		this.spbuMachineTotalizerEntityList = spbuMachineTotalizerEntityList;
 	}
 
 	@Override
@@ -152,4 +148,5 @@ public class SpbuMachineEntity implements Serializable {
 	public String toString() {
 		return "org.ithb.si.made.mtmgmt.core.persistence.entity.SpbuMachineEntity[ machineSerial=" + machineSerial + " ]";
 	}
+
 }

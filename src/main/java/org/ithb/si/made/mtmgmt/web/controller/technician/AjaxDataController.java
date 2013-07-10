@@ -197,14 +197,20 @@ public class AjaxDataController {
 		if (spbuEntity != null) {
 			final List<ServiceReportEntity> serviceReports = serviceReportRepository.findBySpbuMachineEntity_SpbuEntityOrderByDateDesc(spbuEntity);
 			for (final ServiceReportEntity serviceReportEntity : serviceReports) {
+				final FailureModeHandlingEntity failureModeHandlingEntity = serviceReportEntity.getFailureModeHandlingEntity();
+				final PartFailureModeEntity partFailureModeEntity = failureModeHandlingEntity.getPartFailureModeEntity();
+				
 				final Map<String, Object> tmp = new MapBuilder<>(new HashMap<String, Object>())
 								.put("date", DateUtil.format(serviceReportEntity.getDate()))
 								.put("machineSerial", serviceReportEntity.getSpbuMachineEntity().getMachineSerial())
 								.put("machineIdentifier", serviceReportEntity.getSpbuMachineEntity().getMachineIdentifier())
-								.put("modelId", serviceReportEntity.getMachineModelPartEntity().getMachineModelPartEntityPK().getModelId())
-								.put("partId", serviceReportEntity.getMachineModelPartEntity().getMachineModelPartEntityPK().getPartId())
-								.put("failureModeCode", serviceReportEntity.getFailureModeHandlingEntity().getFailureModeHandlingEntityPK().getFailureModeCode())
-								.put("failureModeHandlingCode", serviceReportEntity.getFailureModeHandlingEntity().getFailureModeHandlingEntityPK().getFailureModeHandlingCode())
+								.put("modelId", serviceReportEntity.getMachineModelPartEntity().getMachineModelEntity().getModelId())
+								.put("partId", serviceReportEntity.getFailureModeHandlingEntity().getFailureModeHandlingEntityPK().getPartId())
+								.put("machineModelPartIdentifier", serviceReportEntity.getMachineModelPartEntity().getMachineModelPartEntityPK().getMachineModelPartIdentifier())
+								.put("failureModeCode", partFailureModeEntity.getPartFailureModeEntityPK().getFailureModeCode())
+								.put("failureModeName", partFailureModeEntity.getName())
+								.put("failureModeHandlingCode", failureModeHandlingEntity.getFailureModeHandlingEntityPK().getFailureModeHandlingCode())
+								.put("failureModeHandlingName", failureModeHandlingEntity.getName())
 								.put("technicianId", serviceReportEntity.getTechnicianEntity().getId())
 								.put("technicianName", serviceReportEntity.getTechnicianEntity().getFullName())
 								.getMap();

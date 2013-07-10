@@ -19,12 +19,10 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  *
- * @author gde.satrigraha
+ * @author Uyeee
  */
 @Entity
 @Table(name = "machine_models")
@@ -49,8 +47,6 @@ public class MachineModelEntity implements Serializable {
 	private List<MachineModelPartEntity> machineModelPartEntityList;
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "machineModelEntity", fetch = FetchType.LAZY)
 	private List<SpbuMachineEntity> spbuMachineEntityList;
-
-    private static final Logger LOG = LoggerFactory.getLogger(MachineModelEntity.class);
 
 	public MachineModelEntity() {
 	}
@@ -128,4 +124,5 @@ public class MachineModelEntity implements Serializable {
 	public String toString() {
 		return "org.ithb.si.made.mtmgmt.core.persistence.entity.MachineModelEntity[ modelId=" + modelId + " ]";
 	}
+
 }

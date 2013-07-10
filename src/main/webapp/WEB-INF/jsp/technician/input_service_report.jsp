@@ -34,9 +34,9 @@
 						<td><sf:errors path="spbuId"/></td>
 					</tr>
 					<tr>
-						<td><sf:label path="machineIdentifier"><s:message code="technician.input.serviceReport.machineIdentifier"/>:</sf:label></td>
-						<td><sf:select path="machineIdentifier" id="machineIdentifier"/></td>
-						<td><sf:errors path="machineIdentifier"/></td>
+						<td><sf:label path="machineSerial"><s:message code="technician.input.serviceReport.machineIdentifier"/>:</sf:label></td>
+						<td><sf:select path="machineSerial" id="machineSerial"/></td>
+						<td><sf:errors path="machineSerial"/></td>
 					</tr>
 					<tr>
 						<td><sf:label path="date"><s:message code="technician.input.serviceReport.date"/>:</sf:label></td>
@@ -44,19 +44,24 @@
 						<td><sf:errors path="date"/></td>
 					</tr>
 					<tr>
-						<td><sf:label path="machinePartId"><s:message code="technician.input.serviceReport.machinePartId"/>:</sf:label></td>
-						<td><sf:select path="machinePartId" id="machinePartId"/></td>
-						<td><sf:errors path="machinePartId"/></td>
+						<td><sf:label path="partId"><s:message code="technician.input.serviceReport.machinePartId"/>:</sf:label></td>
+						<td><sf:select path="partId" id="partId"/></td>
+						<td><sf:errors path="partId"/></td>
 					</tr>
 					<tr>
-						<td><sf:label path="failureModeId"><s:message code="technician.input.serviceReport.failureModeId"/>:</sf:label></td>
-						<td><sf:select path="failureModeId" id="failureModeId"/></td>
-						<td><sf:errors path="failureModeId"/></td>
+						<td><sf:label path="machineModelPartIdentifier"><s:message code="technician.input.serviceReport.machineModelPartIdentifier"/>:</sf:label></td>
+						<td><sf:select path="machineModelPartIdentifier" id="machineModelPartIdentifier"/></td>
+						<td><sf:errors path="machineModelPartIdentifier"/></td>
 					</tr>
 					<tr>
-						<td><sf:label path="failureModeHandlingId"><s:message code="technician.input.serviceReport.failureModeHandlingId"/>:</sf:label></td>
-						<td><sf:select path="failureModeHandlingId" id="failureModeHandlingId"/></td>
-						<td><sf:errors path="failureModeHandlingId"/></td>
+						<td><sf:label path="failureModeCode"><s:message code="technician.input.serviceReport.failureModeId"/>:</sf:label></td>
+						<td><sf:select path="failureModeCode" id="failureModeCode"/></td>
+						<td><sf:errors path="failureModeCode"/></td>
+					</tr>
+					<tr>
+						<td><sf:label path="failureModeHandlingCode"><s:message code="technician.input.serviceReport.failureModeHandlingId"/>:</sf:label></td>
+						<td><sf:select path="failureModeHandlingCode" id="failureModeHandlingCode"/></td>
+						<td><sf:errors path="failureModeHandlingCode"/></td>
 					</tr>
 					<tr>
 						<td>&nbsp;</td>
@@ -67,6 +72,8 @@
 		</div>
 
 		<script type="text/javascript">
+			var machineModelParts = {};
+
 			$("#btSubmit").click(function() {
 				$("#formTotalizer").submit();
 			});
@@ -76,7 +83,8 @@
 			$("#machineIdentifier").change(function() {
 				loadMachinePart();
 			});
-			$("#machinePartId").change(function() {
+			$("#partId").change(function() {
+				loadMachineModelPart();
 				loadFailureMode();
 			});
 			$("#failureModeId").change(function() {
@@ -119,14 +127,14 @@
 						dataType: "json",
 						success: function(data, textStatus, jqXHR) {
 							console.log(url + ": " + JSON.stringify(data));
-							$("#machineIdentifier").children().remove();
+							$("#machineSerial").children().remove();
 
 							$.each(data, function(index, machine) {
 								console.log("spbuMachine: " + JSON.stringify(machine));
 								if (index === 0) {
-									$("#machineIdentifier").append(new Option(machine.machineIdentifier, machine.machineIdentifier, true, true));
+									$("#machineSerial").append(new Option(machine.machineIdentifier, machine.machineSerial, true, true));
 								} else {
-									$("#machineIdentifier").append(new Option(machine.machineIdentifier, machine.machineIdentifier, false, false));
+									$("#machineSerial").append(new Option(machine.machineIdentifier, machine.machineSerial, false, false));
 								}
 							});
 							loadMachinePart();
@@ -139,7 +147,7 @@
 			}
 
 			function loadMachinePart() {
-				var url = "ajax/spbu/" + $("#spbuId").val() + "/machine/" + $("#machineIdentifier").val() + "/part.json";
+				var url = "ajax/spbu/" + $("#spbuId").val() + "/machine/" + $("#machineSerial").val() + "/part.json";
 				console.log("url: " + url);
 				$(document).ready(function() {
 					$.ajax({
@@ -147,16 +155,21 @@
 						dataType: "json",
 						success: function(data, textStatus, jqXHR) {
 							console.log(url + ": " + JSON.stringify(data));
-							$("#machinePartId").children().remove();
+							machineModelParts = {};
+							$("#partId").children().remove();
 
 							$.each(data, function(index, machinePart) {
-								console.log("machinePartId " + JSON.stringify(machinePart));
-								if (index === 0) {
-									$("#machinePartId").append(new Option(machinePart.name, machinePart.id, true, true));
-								} else {
-									$("#machinePartId").append(new Option(machinePart.name, machinePart.id, false, false));
+								if (machineModelParts[machinePart.partId] == null) {
+									machineModelParts[machinePart.partId] = [];
+									if (index === 0) {
+										$("#partId").append(new Option(machinePart.name, machinePart.partId, true, true));
+									} else {
+										$("#partId").append(new Option(machinePart.name, machinePart.partId, false, false));
+									}
 								}
+								machineModelParts[machinePart.partId].push(machinePart.machineModelPartIdentifier);
 							});
+							loadMachineModelPart();
 							loadFailureMode();
 						},
 						error: function(jqXHR, textStatus, errorThrown) {
@@ -166,8 +179,19 @@
 				});
 			}
 
+			function loadMachineModelPart() {
+				$("#machineModelPartIdentifier").children().remove();
+				$.each(machineModelParts[$("#partId").val()], function(index, machineModelPartIdentifier) {
+					if (index === 0) {
+						$("#machineModelPartIdentifier").append(new Option(machineModelPartIdentifier, machineModelPartIdentifier, true, true));
+					} else {
+						$("#machineModelPartIdentifier").append(new Option(machineModelPartIdentifier, machineModelPartIdentifier, false, false));
+					}
+				});
+			}
+
 			function loadFailureMode() {
-				var url = "ajax/spbu/" + $("#spbuId").val() + "/machine/" + $("#machineIdentifier").val() + "/part/" + $("#machinePartId").val() + "/failure_mode.json";
+				var url = "ajax/spbu/" + $("#spbuId").val() + "/machine/" + $("#machineSerial").val() + "/part/" + $("#partId").val() + "/" + $("#machineModelPartIdentifier").val() + "/failure_mode.json";
 				console.log("url: " + url);
 				$(document).ready(function() {
 					$.ajax({
@@ -175,14 +199,13 @@
 						dataType: "json",
 						success: function(data, textStatus, jqXHR) {
 							console.log(url + ": " + JSON.stringify(data));
-							$("#failureModeId").children().remove();
+							$("#failureModeCode").children().remove();
 
 							$.each(data, function(index, failureMode) {
-								console.log("failureMode " + JSON.stringify(failureMode));
 								if (index === 0) {
-									$("#failureModeId").append(new Option(failureMode.name, failureMode.id, true, true));
+									$("#failureModeCode").append(new Option(failureMode.name, failureMode.failureModeCode, true, true));
 								} else {
-									$("#failureModeId").append(new Option(failureMode.name, failureMode.id, false, false));
+									$("#failureModeCode").append(new Option(failureMode.name, failureMode.failureModeCode, false, false));
 								}
 							});
 							loadFailureModeHandling();
@@ -195,7 +218,7 @@
 			}
 
 			function loadFailureModeHandling() {
-				var url = "ajax/spbu/" + $("#spbuId").val() + "/machine/" + $("#machineIdentifier").val() + "/part/" + $("#machinePartId").val() + "/failure_mode/" + $("#failureModeId").val() + "/handling.json";
+				var url = "ajax/spbu/" + $("#spbuId").val() + "/machine/" + $("#machineSerial").val() + "/part/" + $("#partId").val() + "/" + $("#machineModelPartIdentifier").val() + "/failure_mode/" + $("#failureModeCode").val() + "/handling.json";
 				console.log("url: " + url);
 				$(document).ready(function() {
 					$.ajax({
@@ -203,14 +226,13 @@
 						dataType: "json",
 						success: function(data, textStatus, jqXHR) {
 							console.log(url + ": " + JSON.stringify(data));
-							$("#failureModeHandlingId").children().remove();
+							$("#failureModeHandlingCode").children().remove();
 
 							$.each(data, function(index, failureModeHandling) {
-								console.log("failureModeHandling " + JSON.stringify(failureModeHandling));
 								if (index === 0) {
-									$("#failureModeHandlingId").append(new Option(failureModeHandling.name, failureModeHandling.id, true, true));
+									$("#failureModeHandlingCode").append(new Option(failureModeHandling.name, failureModeHandling.failureModeHandlingCode, true, true));
 								} else {
-									$("#failureModeHandlingId").append(new Option(failureModeHandling.name, failureModeHandling.id, false, false));
+									$("#failureModeHandlingCode").append(new Option(failureModeHandling.name, failureModeHandling.failureModeHandlingCode, false, false));
 								}
 							});
 						},

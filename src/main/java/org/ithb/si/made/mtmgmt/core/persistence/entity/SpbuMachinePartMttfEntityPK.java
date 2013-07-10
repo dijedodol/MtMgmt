@@ -11,12 +11,10 @@ import javax.persistence.Column;
 import javax.persistence.Embeddable;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  *
- * @author gde.satrigraha
+ * @author Uyeee
  */
 @Embeddable
 public class SpbuMachinePartMttfEntityPK implements Serializable {
@@ -40,8 +38,6 @@ public class SpbuMachinePartMttfEntityPK implements Serializable {
   @Size(min = 1, max = 40)
   @Column(name = "machine_model_part_identifier", nullable = false, length = 40)
 	private String machineModelPartIdentifier;
-
-    private static final Logger LOG = LoggerFactory.getLogger(SpbuMachinePartMttfEntityPK.class);
 
 	public SpbuMachinePartMttfEntityPK() {
 	}
@@ -121,4 +117,5 @@ public class SpbuMachinePartMttfEntityPK implements Serializable {
 	public String toString() {
 		return "org.ithb.si.made.mtmgmt.core.persistence.entity.SpbuMachinePartMttfEntityPK[ machineSerial=" + machineSerial + ", modelId=" + modelId + ", partId=" + partId + ", machineModelPartIdentifier=" + machineModelPartIdentifier + " ]";
 	}
+
 }

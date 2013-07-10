@@ -23,12 +23,10 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  *
- * @author gde.satrigraha
+ * @author Uyeee
  */
 @Entity
 @Table(name = "failure_mode_handlings")
@@ -56,8 +54,6 @@ public class FailureModeHandlingEntity implements Serializable {
 	private PartFailureModeEntity partFailureModeEntity;
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "failureModeHandlingEntity", fetch = FetchType.LAZY)
 	private List<ServiceReportEntity> serviceReportEntityList;
-
-    private static final Logger LOG = LoggerFactory.getLogger(FailureModeHandlingEntity.class);
 
 	public FailureModeHandlingEntity() {
 	}
@@ -140,4 +136,5 @@ public class FailureModeHandlingEntity implements Serializable {
 	public String toString() {
 		return "org.ithb.si.made.mtmgmt.core.persistence.entity.FailureModeHandlingEntity[ failureModeHandlingEntityPK=" + failureModeHandlingEntityPK + " ]";
 	}
+
 }

@@ -11,6 +11,9 @@ import javax.validation.ConstraintViolationException;
 import javax.validation.Valid;
 import org.ithb.si.made.mtmgmt.core.exception.InvalidDataException;
 import org.ithb.si.made.mtmgmt.core.persistence.entity.FailureModeHandlingEntity;
+import org.ithb.si.made.mtmgmt.core.persistence.entity.FailureModeHandlingEntityPK;
+import org.ithb.si.made.mtmgmt.core.persistence.entity.MachineModelPartEntity;
+import org.ithb.si.made.mtmgmt.core.persistence.entity.MachineModelPartEntityPK;
 import org.ithb.si.made.mtmgmt.core.persistence.entity.ServiceReportEntity;
 import org.ithb.si.made.mtmgmt.core.persistence.entity.ServiceReportSpbuMachineTotalizerEntity;
 import org.ithb.si.made.mtmgmt.core.persistence.entity.ServiceReportSpbuMachineTotalizerEntityPK;
@@ -18,6 +21,7 @@ import org.ithb.si.made.mtmgmt.core.persistence.entity.SpbuMachineEntity;
 import org.ithb.si.made.mtmgmt.core.persistence.entity.SpbuMachineTotalizerEntity;
 import org.ithb.si.made.mtmgmt.core.persistence.entity.UserEntity;
 import org.ithb.si.made.mtmgmt.core.persistence.repository.FailureModeHandlingRepository;
+import org.ithb.si.made.mtmgmt.core.persistence.repository.MachineModelPartRepository;
 import org.ithb.si.made.mtmgmt.core.persistence.repository.MachineModelTotalizerRepository;
 import org.ithb.si.made.mtmgmt.core.persistence.repository.ServiceReportRepository;
 import org.ithb.si.made.mtmgmt.core.persistence.repository.SpbuMachineRepository;
@@ -58,6 +62,8 @@ public class InputServiceReportController {
 	private FailureModeHandlingRepository failureModeHandlingRepository;
 	@Autowired
 	private ServiceReportRepository serviceReportRepository;
+	@Autowired
+	private MachineModelPartRepository machineModelPartRepository;
 
 	public InputServiceReportController() {
 	}
@@ -92,18 +98,32 @@ public class InputServiceReportController {
 			throw new InvalidDataException("SPBU machine not found: " + formData.getSpbuId());
 		}
 
-		final FailureModeHandlingEntity dbFailureModeHandling = failureModeHandlingRepository.findOne(formData.getFailureModeHandlingCode());
-		if (dbFailureModeHandling == null) {
+		final MachineModelPartEntityPK machineModelPartEntityPK = new MachineModelPartEntityPK();
+		machineModelPartEntityPK.setModelId(spbuMachineEntity.getMachineModelEntity().getModelId());
+		machineModelPartEntityPK.setPartId(formData.getPartId());
+		machineModelPartEntityPK.setMachineModelPartIdentifier(formData.getMachineModelPartIdentifier());
+		final MachineModelPartEntity machineModelPartEntity = machineModelPartRepository.findOne(machineModelPartEntityPK);
+		if (machineModelPartEntity == null) {
 			bindingResult.reject("common.error.invalidData");
-			throw new InvalidDataException("FailureModeHandling not found: " + formData.getSpbuId());
+			throw new InvalidDataException("MachineModelPart not found: " + machineModelPartEntityPK);
 		}
 
+		final FailureModeHandlingEntityPK failureModeHandlingEntityPK = new FailureModeHandlingEntityPK();
+		failureModeHandlingEntityPK.setPartId(machineModelPartEntity.getMachinePartTypeEntity().getPartId());
+		failureModeHandlingEntityPK.setFailureModeCode(formData.getFailureModeCode());
+		failureModeHandlingEntityPK.setFailureModeHandlingCode(formData.getFailureModeHandlingCode());
+		final FailureModeHandlingEntity failureModeHandlingEntity = failureModeHandlingRepository.findOne(failureModeHandlingEntityPK);
+		if (failureModeHandlingEntity == null) {
+			bindingResult.reject("common.error.invalidData");
+			throw new InvalidDataException("FailureModeHandling not found: " + failureModeHandlingEntityPK);
+		}
 		try {
 			final Date serviceReportDate = DateUtil.parse(formData.getDate());
 			final ServiceReportEntity serviceReportEntity = new ServiceReportEntity();
 			serviceReportEntity.setDate(serviceReportDate);
-			serviceReportEntity.setFailureModeHandlingEntity(dbFailureModeHandling);
 			serviceReportEntity.setSpbuMachineEntity(spbuMachineEntity);
+			serviceReportEntity.setMachineModelPartEntity(machineModelPartEntity);
+			serviceReportEntity.setFailureModeHandlingEntity(failureModeHandlingEntity);
 			serviceReportEntity.setTechnicianEntity(technicianEntity);
 			serviceReportRepository.saveAndFlush(serviceReportEntity);
 
@@ -112,7 +132,6 @@ public class InputServiceReportController {
 				tmpPk.setServiceReportId(serviceReportEntity.getId());
 				tmpPk.setModelId(spbuMachineEntity.getMachineModelEntity().getModelId());
 				tmpPk.setTotalizerId(spbuMachineTotalizerEntity.getSpbuMachineTotalizerEntityPK().getTotalizerId());
-				tmpPk.setServiceReportId(serviceReportEntity.getId());
 
 				final ServiceReportSpbuMachineTotalizerEntity tmp = new ServiceReportSpbuMachineTotalizerEntity(tmpPk);
 				tmp.setCounter(spbuMachineTotalizerEntity.getCounter());
@@ -130,9 +149,10 @@ public class InputServiceReportController {
 		private long spbuId;
 		private String machineSerial;
 		private String date = DateUtil.format(new Date());
-		private long partId;
-		private long failureModeCode;
-		private long failureModeHandlingCode;
+		private String partId;
+		private String machineModelPartIdentifier;
+		private String failureModeCode;
+		private String failureModeHandlingCode;
 
 		public FormData() {
 		}
@@ -161,33 +181,41 @@ public class InputServiceReportController {
 			this.date = date;
 		}
 
-		public long getPartId() {
+		public String getPartId() {
 			return partId;
 		}
 
-		public void setPartId(long partId) {
+		public void setPartId(String partId) {
 			this.partId = partId;
 		}
 
-		public long getFailureModeCode() {
+		public String getMachineModelPartIdentifier() {
+			return machineModelPartIdentifier;
+		}
+
+		public void setMachineModelPartIdentifier(String machineModelPartIdentifier) {
+			this.machineModelPartIdentifier = machineModelPartIdentifier;
+		}
+
+		public String getFailureModeCode() {
 			return failureModeCode;
 		}
 
-		public void setFailureModeCode(long failureModeCode) {
+		public void setFailureModeCode(String failureModeCode) {
 			this.failureModeCode = failureModeCode;
 		}
 
-		public long getFailureModeHandlingCode() {
+		public String getFailureModeHandlingCode() {
 			return failureModeHandlingCode;
 		}
 
-		public void setFailureModeHandlingCode(long failureModeHandlingCode) {
+		public void setFailureModeHandlingCode(String failureModeHandlingCode) {
 			this.failureModeHandlingCode = failureModeHandlingCode;
 		}
 
 		@Override
 		public String toString() {
-			return "FormData{" + "spbuId=" + spbuId + ", machineSerial=" + machineSerial + ", date=" + date + ", partId=" + partId + ", failureModeCode=" + failureModeCode + ", failureModeHandlingCode=" + failureModeHandlingCode + '}';
+			return "FormData{" + "spbuId=" + spbuId + ", machineSerial=" + machineSerial + ", date=" + date + ", partId=" + partId + ", machineModelPartIdentifier=" + machineModelPartIdentifier + ", failureModeCode=" + failureModeCode + ", failureModeHandlingCode=" + failureModeHandlingCode + '}';
 		}
 	}
 }

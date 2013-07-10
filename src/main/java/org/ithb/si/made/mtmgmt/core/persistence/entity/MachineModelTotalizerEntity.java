@@ -12,18 +12,17 @@ import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  *
- * @author gde.satrigraha
+ * @author Uyeee
  */
 @Entity
 @Table(name = "machine_model_totalizers")
@@ -33,17 +32,21 @@ public class MachineModelTotalizerEntity implements Serializable {
 	private static final long serialVersionUID = 1L;
 	@EmbeddedId
 	protected MachineModelTotalizerEntityPK machineModelTotalizerEntityPK;
-	@ManyToMany(mappedBy = "machineModelTotalizerEntityList", fetch = FetchType.LAZY)
+	@JoinTable(name = "machine_model_part_totalizers", joinColumns = {
+  	@JoinColumn(name = "model_id", referencedColumnName = "model_id", nullable = false),
+  	@JoinColumn(name = "totalizer_id", referencedColumnName = "totalizer_id", nullable = false)}, inverseJoinColumns = {
+  	@JoinColumn(name = "model_id", referencedColumnName = "model_id", nullable = false),
+  	@JoinColumn(name = "part_id", referencedColumnName = "part_id", nullable = false),
+  	@JoinColumn(name = "machine_model_part_identifier", referencedColumnName = "machine_model_part_identifier", nullable = false)})
+  @ManyToMany(fetch = FetchType.LAZY)
 	private List<MachineModelPartEntity> machineModelPartEntityList;
+	@JoinColumn(name = "model_id", referencedColumnName = "model_id", nullable = false, insertable = false, updatable = false)
+  @ManyToOne(optional = false, fetch = FetchType.LAZY)
+	private MachineModelEntity machineModelEntity;
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "machineModelTotalizerEntity", fetch = FetchType.LAZY)
 	private List<ServiceReportSpbuMachineTotalizerEntity> serviceReportSpbuMachineTotalizerEntityList;
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "machineModelTotalizerEntity", fetch = FetchType.LAZY)
 	private List<SpbuMachineTotalizerEntity> spbuMachineTotalizerEntityList;
-	@JoinColumn(name = "model_id", referencedColumnName = "model_id", nullable = false, insertable = false, updatable = false)
-  @ManyToOne(optional = false, fetch = FetchType.LAZY)
-	private MachineModelEntity machineModelEntity;
-
-    private static final Logger LOG = LoggerFactory.getLogger(MachineModelTotalizerEntity.class);
 
 	public MachineModelTotalizerEntity() {
 	}
@@ -72,6 +75,14 @@ public class MachineModelTotalizerEntity implements Serializable {
 		this.machineModelPartEntityList = machineModelPartEntityList;
 	}
 
+	public MachineModelEntity getMachineModelEntity() {
+		return machineModelEntity;
+	}
+
+	public void setMachineModelEntity(MachineModelEntity machineModelEntity) {
+		this.machineModelEntity = machineModelEntity;
+	}
+
 	public List<ServiceReportSpbuMachineTotalizerEntity> getServiceReportSpbuMachineTotalizerEntityList() {
 		return serviceReportSpbuMachineTotalizerEntityList;
 	}
@@ -86,14 +97,6 @@ public class MachineModelTotalizerEntity implements Serializable {
 
 	public void setSpbuMachineTotalizerEntityList(List<SpbuMachineTotalizerEntity> spbuMachineTotalizerEntityList) {
 		this.spbuMachineTotalizerEntityList = spbuMachineTotalizerEntityList;
-	}
-
-	public MachineModelEntity getMachineModelEntity() {
-		return machineModelEntity;
-	}
-
-	public void setMachineModelEntity(MachineModelEntity machineModelEntity) {
-		this.machineModelEntity = machineModelEntity;
 	}
 
 	@Override
@@ -120,4 +123,5 @@ public class MachineModelTotalizerEntity implements Serializable {
 	public String toString() {
 		return "org.ithb.si.made.mtmgmt.core.persistence.entity.MachineModelTotalizerEntity[ machineModelTotalizerEntityPK=" + machineModelTotalizerEntityPK + " ]";
 	}
+
 }

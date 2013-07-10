@@ -18,12 +18,10 @@ import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  *
- * @author gde.satrigraha
+ * @author Uyeee
  */
 @Entity
 @Table(name = "service_report_spbu_machine_totalizers")
@@ -37,16 +35,14 @@ public class ServiceReportSpbuMachineTotalizerEntity implements Serializable {
   @NotNull
   @Column(name = "counter", nullable = false)
 	private double counter;
+	@JoinColumn(name = "service_report_id", referencedColumnName = "id", nullable = false, insertable = false, updatable = false)
+  @ManyToOne(optional = false, fetch = FetchType.LAZY)
+	private ServiceReportEntity serviceReportEntity;
 	@JoinColumns({
   	@JoinColumn(name = "model_id", referencedColumnName = "model_id", nullable = false, insertable = false, updatable = false),
   	@JoinColumn(name = "totalizer_id", referencedColumnName = "totalizer_id", nullable = false, insertable = false, updatable = false)})
   @ManyToOne(optional = false, fetch = FetchType.LAZY)
 	private MachineModelTotalizerEntity machineModelTotalizerEntity;
-	@JoinColumn(name = "service_report_id", referencedColumnName = "id", nullable = false, insertable = false, updatable = false)
-  @ManyToOne(optional = false, fetch = FetchType.LAZY)
-	private ServiceReportEntity serviceReportEntity;
-
-    private static final Logger LOG = LoggerFactory.getLogger(ServiceReportSpbuMachineTotalizerEntity.class);
 
 	public ServiceReportSpbuMachineTotalizerEntity() {
 	}
@@ -80,20 +76,20 @@ public class ServiceReportSpbuMachineTotalizerEntity implements Serializable {
 		this.counter = counter;
 	}
 
-	public MachineModelTotalizerEntity getMachineModelTotalizerEntity() {
-		return machineModelTotalizerEntity;
-	}
-
-	public void setMachineModelTotalizerEntity(MachineModelTotalizerEntity machineModelTotalizerEntity) {
-		this.machineModelTotalizerEntity = machineModelTotalizerEntity;
-	}
-
 	public ServiceReportEntity getServiceReportEntity() {
 		return serviceReportEntity;
 	}
 
 	public void setServiceReportEntity(ServiceReportEntity serviceReportEntity) {
 		this.serviceReportEntity = serviceReportEntity;
+	}
+
+	public MachineModelTotalizerEntity getMachineModelTotalizerEntity() {
+		return machineModelTotalizerEntity;
+	}
+
+	public void setMachineModelTotalizerEntity(MachineModelTotalizerEntity machineModelTotalizerEntity) {
+		this.machineModelTotalizerEntity = machineModelTotalizerEntity;
 	}
 
 	@Override
@@ -120,4 +116,5 @@ public class ServiceReportSpbuMachineTotalizerEntity implements Serializable {
 	public String toString() {
 		return "org.ithb.si.made.mtmgmt.core.persistence.entity.ServiceReportSpbuMachineTotalizerEntity[ serviceReportSpbuMachineTotalizerEntityPK=" + serviceReportSpbuMachineTotalizerEntityPK + " ]";
 	}
+
 }

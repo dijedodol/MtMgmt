@@ -24,12 +24,10 @@ import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  *
- * @author gde.satrigraha
+ * @author Uyeee
  */
 @Entity
 @Table(name = "spbus", uniqueConstraints = {
@@ -64,8 +62,6 @@ public class SpbuEntity implements Serializable {
 	private UserEntity supervisorEntity;
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "spbuEntity", fetch = FetchType.LAZY)
 	private List<SpbuMachineEntity> spbuMachineEntityList;
-
-    private static final Logger LOG = LoggerFactory.getLogger(SpbuEntity.class);
 
 	public SpbuEntity() {
 	}
@@ -153,4 +149,5 @@ public class SpbuEntity implements Serializable {
 	public String toString() {
 		return "org.ithb.si.made.mtmgmt.core.persistence.entity.SpbuEntity[ id=" + id + " ]";
 	}
+
 }
