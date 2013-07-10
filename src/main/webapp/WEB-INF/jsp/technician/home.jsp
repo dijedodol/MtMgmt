@@ -23,6 +23,19 @@
 				<li><a href="input_service_report.htm"><s:message code="technician.menu.serviceReport"/></a></li>
 			</ul>
 		</div>
-		<div id="content"></div>
+		<div id="content">
+			<h1>Maintenance Predictions</h1>
+			<table>
+				<thead>
+					<tr>
+						<td>Spbu</td>
+						<td>Machine</td>
+						<td>Part</td>
+						<td>Unit Type</td>
+						<td>Unit Time to Failure</td>
+					</tr>
+				</thead>
+			</table>
+		</div>
 	</body>
 </html>

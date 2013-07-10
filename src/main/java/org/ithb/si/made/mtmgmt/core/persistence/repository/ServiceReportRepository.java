@@ -5,9 +5,11 @@
 package org.ithb.si.made.mtmgmt.core.persistence.repository;
 
 import java.util.List;
+import org.ithb.si.made.mtmgmt.core.persistence.entity.MachineModelPartEntity;
 import org.ithb.si.made.mtmgmt.core.persistence.entity.ServiceReportEntity;
 import org.ithb.si.made.mtmgmt.core.persistence.entity.SpbuEntity;
 import org.ithb.si.made.mtmgmt.core.persistence.entity.SpbuMachineEntity;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 /**
@@ -19,4 +21,8 @@ public interface ServiceReportRepository extends JpaRepository<ServiceReportEnti
 	List<ServiceReportEntity> findBySpbuMachineEntity_SpbuEntityOrderByDateDesc(SpbuEntity spbuEntity);
 
 	List<ServiceReportEntity> findBySpbuMachineEntityOrderByDateDesc(SpbuMachineEntity spbuMachineEntity);
+
+	List<ServiceReportEntity> findBySpbuMachineEntityAndMachineModelPartEntityOrderByDateDesc(SpbuMachineEntity spbuMachineEntity, MachineModelPartEntity machineModelPartEntity);
+
+	List<ServiceReportEntity> findBySpbuMachineEntityAndMachineModelPartEntityOrderByDateDesc(SpbuMachineEntity spbuMachineEntity, MachineModelPartEntity machineModelPartEntity, Pageable pageable);
 }

@@ -6,9 +6,11 @@ package org.ithb.si.made.mtmgmt.web.controller.technician;
 
 import java.security.Principal;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import org.ithb.si.made.mtmgmt.core.persistence.entity.FailureModeHandlingEntity;
 import org.ithb.si.made.mtmgmt.core.persistence.entity.MachineModelPartEntity;
 import org.ithb.si.made.mtmgmt.core.persistence.entity.MachineModelPartEntityPK;
@@ -25,6 +27,7 @@ import org.ithb.si.made.mtmgmt.core.persistence.repository.SpbuMachineTotalizerR
 import org.ithb.si.made.mtmgmt.core.persistence.repository.SpbuRepository;
 import org.ithb.si.made.mtmgmt.core.persistence.repository.UserRepository;
 import org.ithb.si.made.mtmgmt.core.util.DateUtil;
+import org.ithb.si.made.mtmgmt.core.util.MaintenancePredictor;
 import org.ithb.si.made.mtmgmt.core.util.MapBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -47,6 +50,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 public class AjaxDataController {
 
 	private static final Logger LOG = LoggerFactory.getLogger(AjaxDataController.class);
+	@Autowired
+	private MaintenancePredictor maintenancePredictor;
 	@Autowired
 	private ServiceReportRepository serviceReportRepository;
 	@Autowired
@@ -199,7 +204,7 @@ public class AjaxDataController {
 			for (final ServiceReportEntity serviceReportEntity : serviceReports) {
 				final FailureModeHandlingEntity failureModeHandlingEntity = serviceReportEntity.getFailureModeHandlingEntity();
 				final PartFailureModeEntity partFailureModeEntity = failureModeHandlingEntity.getPartFailureModeEntity();
-				
+
 				final Map<String, Object> tmp = new MapBuilder<>(new HashMap<String, Object>())
 								.put("date", DateUtil.format(serviceReportEntity.getDate()))
 								.put("machineSerial", serviceReportEntity.getSpbuMachineEntity().getMachineSerial())
@@ -219,5 +224,30 @@ public class AjaxDataController {
 		}
 		ret = new ResponseEntity(respEntity, HttpStatus.OK);
 		return ret;
+	}
+
+	@Transactional
+	@ResponseBody
+	@RequestMapping(value = "maintenance_predictions", produces = "application/json", method = RequestMethod.GET)
+	public List<Map<String, Object>> getMaintenancePredictions(Principal principal, @PathVariable long spbuId) {
+		final List<MaintenancePredictor.PredictionResult> predictionResults = maintenancePredictor.getPredictions();
+		final List<Map<String, Object>> predictionResultsView = new LinkedList<>();
+
+		for (final MaintenancePredictor.PredictionResult predictionResult : predictionResults) {
+			final SpbuMachineEntity spbuMachineEntity = predictionResult.getSpbuMachineEntity();
+			final Map<String, Object> predictionResultMap = new MapBuilder<>(new HashMap<String, Object>())
+							.put("machineSerial", spbuMachineEntity.getMachineSerial())
+							.put("machineIdentifier", spbuMachineEntity.getMachineIdentifier())
+							.put("machineModelId", spbuMachineEntity.getMachineModelEntity().getModelId())
+							.put("partId", predictionResult.getMachineModelPartEntity().getMachineModelPartEntityPK().getPartId())
+							.put("partName", predictionResult.getMachineModelPartEntity().getMachinePartTypeEntity().getName())
+							.put("predictionType", predictionResult.getPredictionType())
+							.put("mttf", predictionResult.getMachinePartMttf().getMttf())
+							.put("mttfThreshold", predictionResult.getMachinePartMttf().getMttfThreshold())
+							.put("ttf", predictionResult.getTtf())
+							.getMap();
+			predictionResultsView.add(predictionResultMap);
+		}
+		return predictionResultsView;
 	}
 }
