@@ -235,19 +235,33 @@ public class AjaxDataController {
 
 		for (final MaintenancePredictor.PredictionResult predictionResult : predictionResults) {
 			final SpbuMachineEntity spbuMachineEntity = predictionResult.getSpbuMachineEntity();
-			final Map<String, Object> predictionResultMap = new MapBuilder<>(new HashMap<String, Object>())
-							.put("spbuId", spbuMachineEntity.getSpbuEntity().getId())
-							.put("spbuCode", spbuMachineEntity.getSpbuEntity().getCode())
-							.put("machineSerial", spbuMachineEntity.getMachineSerial())
-							.put("machineIdentifier", spbuMachineEntity.getMachineIdentifier())
-							.put("machineModelId", spbuMachineEntity.getMachineModelEntity().getModelId())
-							.put("partId", predictionResult.getMachineModelPartEntity().getMachineModelPartEntityPK().getPartId())
-							.put("partName", predictionResult.getMachineModelPartEntity().getMachinePartTypeEntity().getName())
-							.put("predictionType", predictionResult.getPredictionType())
-							.put("mttf", predictionResult.getMachinePartMttf().getMttf())
-							.put("mttfThreshold", predictionResult.getMachinePartMttf().getMttfThreshold())
-							.put("ttf", predictionResult.getTtf())
-							.getMap();
+			final MapBuilder<String, Object> mapBuilder = new MapBuilder(new HashMap<String, Object>());
+			mapBuilder.put("spbuId", spbuMachineEntity.getSpbuEntity().getId());
+			mapBuilder.put("spbuCode", spbuMachineEntity.getSpbuEntity().getCode());
+			mapBuilder.put("machineSerial", spbuMachineEntity.getMachineSerial());
+			mapBuilder.put("machineIdentifier", spbuMachineEntity.getMachineIdentifier());
+			mapBuilder.put("machineModelId", spbuMachineEntity.getMachineModelEntity().getModelId());
+			mapBuilder.put("partId", predictionResult.getMachineModelPartEntity().getMachineModelPartEntityPK().getPartId());
+			mapBuilder.put("partName", predictionResult.getMachineModelPartEntity().getMachinePartTypeEntity().getName());
+			mapBuilder.put("predictionType", predictionResult.getPredictionType());
+			mapBuilder.put("mttf", predictionResult.getMachinePartMttf().getMttf());
+			mapBuilder.put("mttfThreshold", predictionResult.getMachinePartMttf().getMttfThreshold());
+			mapBuilder.put("ttf", predictionResult.getTtf());
+
+			final Map<String, Object> predictionResultMap = mapBuilder.getMap();
+//			final Map<String, Object> predictionResultMap = new MapBuilder<>(new HashMap<String, Object>())
+//							.put("spbuId", spbuMachineEntity.getSpbuEntity().getId())
+//							.put("spbuCode", spbuMachineEntity.getSpbuEntity().getCode())
+//							.put("machineSerial", spbuMachineEntity.getMachineSerial())
+//							.put("machineIdentifier", spbuMachineEntity.getMachineIdentifier())
+//							.put("machineModelId", spbuMachineEntity.getMachineModelEntity().getModelId())
+//							.put("partId", predictionResult.getMachineModelPartEntity().getMachineModelPartEntityPK().getPartId())
+//							.put("partName", predictionResult.getMachineModelPartEntity().getMachinePartTypeEntity().getName())
+//							.put("predictionType", predictionResult.getPredictionType())
+//							.put("mttf", predictionResult.getMachinePartMttf().getMttf())
+//							.put("mttfThreshold", predictionResult.getMachinePartMttf().getMttfThreshold())
+//							.put("ttf", predictionResult.getTtf())
+//							.getMap();
 			predictionResultsView.add(predictionResultMap);
 		}
 		return predictionResultsView;

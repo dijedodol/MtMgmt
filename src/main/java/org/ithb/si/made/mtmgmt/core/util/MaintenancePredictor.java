@@ -80,7 +80,7 @@ public class MaintenancePredictor {
 		for (final MachineModelPartEntity machineModelPartEntity : machineModelEntity.getMachineModelPartEntityList()) {
 			final ServiceReportEntity latestServiceReportEntity = getLatestServiceReport(spbuMachineEntity, machineModelPartEntity);
 			if (latestServiceReportEntity == null) {
-				final PredictionResult predictionResult = new PredictionResult(spbuMachineEntity, machineModelPartEntity, PredictionType.UNTRACKED);
+				final PredictionResult predictionResult = new PredictionResult(spbuMachineEntity, machineModelPartEntity, PredictionType.UNTRACKED, getMttf(spbuMachineEntity, machineModelPartEntity));
 				result.add(predictionResult);
 			} else {
 				final PredictionType predictionType = getPredictionType(machineModelPartEntity);
@@ -118,8 +118,7 @@ public class MaintenancePredictor {
 		final MachinePartMttf machinePartMttf = getMttf(latestServiceReportEntity);
 
 		if (tickDiffInDays > machinePartMttf.getMttf() || tickDiffInDays > machinePartMttf.getMttfThreshold()) {
-			final PredictionResult predictionResult = new PredictionResult(latestServiceReportEntity.getSpbuMachineEntity(), latestServiceReportEntity.getMachineModelPartEntity(), PredictionType.TIME);
-			predictionResult.setMachinePartMttf(machinePartMttf);
+			final PredictionResult predictionResult = new PredictionResult(latestServiceReportEntity.getSpbuMachineEntity(), latestServiceReportEntity.getMachineModelPartEntity(), PredictionType.TIME, machinePartMttf);
 			predictionResult.setTtf(((latestServiceDate.getTime() + (machinePartMttf.getMttf() * UNIT_DAY)) - tickDiff) / UNIT_DAY);
 			return predictionResult;
 		}
@@ -133,8 +132,7 @@ public class MaintenancePredictor {
 		final MachinePartMttf machinePartMttf = getMttf(latestServiceReportEntity);
 
 		if (totalizerDiff > machinePartMttf.getMttfThreshold()) {
-			final PredictionResult predictionResult = new PredictionResult(latestServiceReportEntity.getSpbuMachineEntity(), latestServiceReportEntity.getMachineModelPartEntity(), PredictionType.TOTALIZER);
-			predictionResult.setMachinePartMttf(machinePartMttf);
+			final PredictionResult predictionResult = new PredictionResult(latestServiceReportEntity.getSpbuMachineEntity(), latestServiceReportEntity.getMachineModelPartEntity(), PredictionType.TOTALIZER, machinePartMttf);
 			predictionResult.setTtf((accumulatedTotalizerOnLastService + machinePartMttf.getMttf()) - totalizerDiff);
 			return predictionResult;
 		}
@@ -180,11 +178,15 @@ public class MaintenancePredictor {
 	}
 
 	private MachinePartMttf getMttf(ServiceReportEntity latestServiceReportEntity) {
+		return getMttf(latestServiceReportEntity.getSpbuMachineEntity(), latestServiceReportEntity.getMachineModelPartEntity());
+	}
+
+	private MachinePartMttf getMttf(SpbuMachineEntity spbuMachineEntity, MachineModelPartEntity machineModelPartEntity) {
 		final MachinePartMttf mttf = new MachinePartMttf();
-		final SpbuMachinePartMttfEntity spbuMachinePartMttfEntity = machinePartMttfRepository.findBySpbuMachineEntityAndMachineModelPartEntity(latestServiceReportEntity.getSpbuMachineEntity(), latestServiceReportEntity.getMachineModelPartEntity());
+		final SpbuMachinePartMttfEntity spbuMachinePartMttfEntity = machinePartMttfRepository.findBySpbuMachineEntityAndMachineModelPartEntity(spbuMachineEntity, machineModelPartEntity);
 		if (spbuMachinePartMttfEntity == null) {
-			mttf.setMttf(latestServiceReportEntity.getMachineModelPartEntity().getMachinePartTypeEntity().getDefaultMttf());
-			mttf.setMttfThreshold(latestServiceReportEntity.getMachineModelPartEntity().getMachinePartTypeEntity().getDefaultMttfThreshold());
+			mttf.setMttf(machineModelPartEntity.getMachinePartTypeEntity().getDefaultMttf());
+			mttf.setMttfThreshold(machineModelPartEntity.getMachinePartTypeEntity().getDefaultMttfThreshold());
 		} else {
 			mttf.setMttf(spbuMachinePartMttfEntity.getMttf());
 			mttf.setMttfThreshold(spbuMachinePartMttfEntity.getMttfThreshold());
@@ -197,13 +199,14 @@ public class MaintenancePredictor {
 		private final SpbuMachineEntity spbuMachineEntity;
 		private final MachineModelPartEntity machineModelPartEntity;
 		private final PredictionType predictionType;
-		private MachinePartMttf machinePartMttf;
-		private double ttf;
+		private final MachinePartMttf machinePartMttf;
+		private double ttf = 0d;
 
-		public PredictionResult(SpbuMachineEntity spbuMachineEntity, MachineModelPartEntity machineModelPartEntity, PredictionType predictionType) {
+		public PredictionResult(SpbuMachineEntity spbuMachineEntity, MachineModelPartEntity machineModelPartEntity, PredictionType predictionType, MachinePartMttf machinePartMttf) {
 			this.spbuMachineEntity = spbuMachineEntity;
 			this.machineModelPartEntity = machineModelPartEntity;
 			this.predictionType = predictionType;
+			this.machinePartMttf = machinePartMttf;
 		}
 
 		public SpbuMachineEntity getSpbuMachineEntity() {
@@ -220,10 +223,6 @@ public class MaintenancePredictor {
 
 		public MachinePartMttf getMachinePartMttf() {
 			return machinePartMttf;
-		}
-
-		public void setMachinePartMttf(MachinePartMttf machinePartMttf) {
-			this.machinePartMttf = machinePartMttf;
 		}
 
 		public double getTtf() {
