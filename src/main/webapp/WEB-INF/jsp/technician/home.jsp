@@ -14,6 +14,7 @@
 		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 		<title>Technician - Home</title>
 		<link rel="stylesheet" href="../asset/css/default.css"/>
+		<script type="text/javascript" src="../asset/js/jquery.js"></script>
 	</head>
 	<body>
 		<div id="sidebar">
@@ -35,7 +36,54 @@
 						<td>Unit Time to Failure</td>
 					</tr>
 				</thead>
+				<tbody></tbody>
 			</table>
 		</div>
+		<script type="text/javascript">
+			loadPredictions();
+			
+			function loadPredictions() {
+				var url = "ajax/spbu/" + $("#spbuId").val() + "/service_report.json";
+				console.log("url: " + url);
+				$(document).ready(function() {
+					$.ajax({
+						url: url,
+						dataType: "json",
+						success: function(data, textStatus, jqXHR) {
+							console.log(url + ": " + JSON.stringify(data));
+							$("#tblServiceReports tbody").children().remove();
+
+							$.each(data, function(index, prediction) {
+								console.log("serviceReport " + JSON.stringify(prediction));
+								var newRow = "";
+								newRow += "<tr>";
+								newRow += "<td>";
+								newRow += prediction.spbuCode;
+								newRow += "</td>";
+								newRow += "<td>";
+								newRow += prediction.machineIdentifier;
+								newRow += "</td>";
+								newRow += "<td>";
+								newRow += prediction.partId;
+								newRow += "</td>";
+								newRow += "<td>";
+								newRow += prediction.predictionType;
+								newRow += "</td>";
+								newRow += "<td>";
+								newRow += prediction.ttf;
+								newRow += "</td>";
+								newRow += "</tr>";
+
+								console.log("serviceReport newRow: " + newRow);
+								$('#tblServiceReports tbody').append(newRow);
+							});
+						},
+						error: function(jqXHR, textStatus, errorThrown) {
+							alert("Ajax data load fail!");
+						}
+					});
+				});
+			}
+		</script>
 	</body>
 </html>

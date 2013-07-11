@@ -126,7 +126,7 @@
 
 								console.log("serviceReport newRow: " + newRow);
 								$('#tblServiceReports tbody').append(newRow);
-							})
+							});
 						},
 						error: function(jqXHR, textStatus, errorThrown) {
 							alert("Ajax data load fail!");

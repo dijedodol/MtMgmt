@@ -229,13 +229,15 @@ public class AjaxDataController {
 	@Transactional
 	@ResponseBody
 	@RequestMapping(value = "maintenance_predictions", produces = "application/json", method = RequestMethod.GET)
-	public List<Map<String, Object>> getMaintenancePredictions(Principal principal, @PathVariable long spbuId) {
+	public List<Map<String, Object>> getMaintenancePredictions(Principal principal) {
 		final List<MaintenancePredictor.PredictionResult> predictionResults = maintenancePredictor.getPredictions();
 		final List<Map<String, Object>> predictionResultsView = new LinkedList<>();
 
 		for (final MaintenancePredictor.PredictionResult predictionResult : predictionResults) {
 			final SpbuMachineEntity spbuMachineEntity = predictionResult.getSpbuMachineEntity();
 			final Map<String, Object> predictionResultMap = new MapBuilder<>(new HashMap<String, Object>())
+							.put("spbuId", spbuMachineEntity.getSpbuEntity().getId())
+							.put("spbuCode", spbuMachineEntity.getSpbuEntity().getCode())
 							.put("machineSerial", spbuMachineEntity.getMachineSerial())
 							.put("machineIdentifier", spbuMachineEntity.getMachineIdentifier())
 							.put("machineModelId", spbuMachineEntity.getMachineModelEntity().getModelId())
