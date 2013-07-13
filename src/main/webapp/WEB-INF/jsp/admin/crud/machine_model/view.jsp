@@ -21,15 +21,15 @@
 			<tr>
 				<td>Model ID</td>
 				<td>
-					<s:url value="update.htm" var="viewUrl">
+					<s:url value="update.htm" var="updateUrl">
 						<s:param name="modelId" value="${viewData.modelId}"/>
 					</s:url>
-					<a href="${viewUrl}">${viewData.modelId}</a>
+					<a href="${updateUrl}">${viewData.modelId}</a>
 				</td>
 			</tr>
 			<tr>
 				<td>Name</td>
-				<td><a href="${viewUrl}">${viewData.name}</a></td>
+				<td><a href="${updateUrl}">${viewData.name}</a></td>
 			</tr>
 			<tr>
 				<td>Totalizers</td>

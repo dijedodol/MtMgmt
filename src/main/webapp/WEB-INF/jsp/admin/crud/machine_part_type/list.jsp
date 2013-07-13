@@ -15,7 +15,7 @@
 		<title>Admin - List Machine Part Types</title>
 	</head>
 	<body>
-		<a href="add.htm">Add Machine Part Types</a>
+		<a href="add.htm">Add Machine Part Type</a>
 		<table>
 			<thead>
 				<tr>

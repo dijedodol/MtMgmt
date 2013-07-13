@@ -12,18 +12,18 @@
 <html>
 	<head>
 		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-		<title>Admin - List Machine Part Types</title>
+		<title>Admin - Spbu List</title>
 	</head>
 	<body>
-		<a href="add.htm">Add Machine Part Types</a>
+		<a href="add.htm">Add Spbu</a>
 		<table>
 			<thead>
 				<tr>
-					<td>Part ID</td>
-					<td>Name</td>
-					<td>Default MTTF</td>
-					<td>Default MTTF Threshold</td>
-					<td>Manage</td>
+					<td>Spbu Code</td>
+					<td>Address</td>
+					<td>Phone</td>
+					<td>Supervisor</td>
+					<td>Machine Count</td>
 				</tr>
 			</thead>
 			<tbody>
@@ -31,20 +31,21 @@
 					<tr>
 						<td>
 							<s:url value="view.htm" var="viewUrl">
-								<s:param name="partId" value="${viewData.partId}"/>
+								<s:param name="spbuId" value="${viewData.id}"/>
 							</s:url>
-							<a href="${viewUrl}">${viewData.partId}</a>
+							<a href="${viewUrl}">${viewData.code}</a>
 						</td>
-						<td>${viewData.name}</td>
-						<td>${viewData.defaultMttf}</td>
-						<td>${viewData.defaultMttfThreshold}</td>
+						<td>${viewData.address}</td>
+						<td>${viewData.phone}</td>
+						<td>${viewData.supervisorName}</td>
+						<td>${viewData.machineSerials.size()}</td>
 						<td>
 							<s:url value="update.htm" var="updateUrl">
-								<s:param name="partId" value="${viewData.partId}"/>
+								<s:param name="spbuId" value="${viewData.id}"/>
 							</s:url>
 							<a href="${updateUrl}">Update</a>
 							<s:url value="delete.htm" var="deleteUrl">
-								<s:param name="partId" value="${viewData.partId}"/>
+								<s:param name="spbuId" value="${viewData.id}"/>
 							</s:url>
 							<a href="${deleteUrl}">Delete</a>
 						</td>

@@ -116,6 +116,7 @@ public class CrudMachineModelController {
 					machineModelEntity.getMachineModelPartEntityList().add(new MachineModelPartEntity(machineModelPartEntityPK));
 				}
 				machineModelEntity = machineModelRepository.saveAndFlush(machineModelEntity);
+				model.addAttribute("formData", getFormData(machineModelEntity));
 			} else {
 				bindingResult.rejectValue("modelId", "common.error.invalidData");
 			}
@@ -165,6 +166,7 @@ public class CrudMachineModelController {
 					machineModelEntity.getMachineModelPartEntityList().add(new MachineModelPartEntity(machineModelPartEntityPK));
 				}
 				machineModelEntity = machineModelRepository.saveAndFlush(machineModelEntity);
+				model.addAttribute("formData", getFormData(machineModelEntity));
 			} else {
 				bindingResult.rejectValue("modelId", "admin.crud.machineModel.notExist");
 			}

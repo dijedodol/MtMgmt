@@ -21,21 +21,21 @@
 			<tr>
 				<td>Model ID</td>
 				<td>
-					<s:url value="update.htm" var="viewUrl">
+					<s:url value="update.htm" var="updateUrl">
 						<s:param name="modelId" value="${viewData.modelId}"/>
 						<s:param name="partId" value="${viewData.partId}"/>
 						<s:param name="machineModelPartIdentifier" value="${viewData.machineModelPartIdentifier}"/>
 					</s:url>
-					<a href="${viewUrl}">${viewData.modelId}</a>
+					<a href="${updateUrl}">${viewData.modelId}</a>
 				</td>
 			</tr>
 			<tr>
 				<td>Part ID</td>
-				<td><a href="${viewUrl}">${viewData.partId}</a></td>
+				<td><a href="${updateUrl}">${viewData.partId}</a></td>
 			</tr>
 			<tr>
 				<td>Machine Model Part Identifier</td>
-				<td><a href="${viewUrl}">${viewData.machineModelPartIdentifier}</a></td>
+				<td><a href="${updateUrl}">${viewData.machineModelPartIdentifier}</a></td>
 			</tr>
 			<tr>
 				<td>Totalizers</td>

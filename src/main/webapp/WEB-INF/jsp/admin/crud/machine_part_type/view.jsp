@@ -21,28 +21,28 @@
 			<tr>
 				<td>Model ID</td>
 				<td>
-					<s:url value="update.htm" var="viewUrl">
+					<s:url value="update.htm" var="updateUrl">
 						<s:param name="partId" value="${viewData.partId}"/>
 					</s:url>
-					<a href="${viewUrl}">${viewData.partId}</a>
+					<a href="${updateUrl}">${viewData.partId}</a>
 				</td>
 			</tr>
 			<tr>
 				<td>Name</td>
 				<td>
-					<a href="${viewUrl}">${viewData.name}</a>
+					<a href="${updateUrl}">${viewData.name}</a>
 				</td>
 			</tr>
 			<tr>
 				<td>Default MTTF</td>
 				<td>
-					<a href="${viewUrl}">${viewData.defaultMttf}</a>
+					<a href="${updateUrl}">${viewData.defaultMttf}</a>
 				</td>
 			</tr>
 			<tr>
 				<td>Default MTTF Threshold</td>
 				<td>
-					<a href="${viewUrl}">${viewData.defaultMttfThreshold}</a>
+					<a href="${updateUrl}">${viewData.defaultMttfThreshold}</a>
 				</td>
 			</tr>
 		</table>

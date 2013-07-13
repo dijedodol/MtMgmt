@@ -13,38 +13,53 @@
 <html>
 	<head>
 		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-		<title>Admin - View Machine Part Type</title>
+		<title>Admin - View Spbu</title>
 	</head>
 	<body>
-		<a href="index.htm">List Machine Models</a> | <a href="add.htm">Add Machine Part Type</a>
+		<a href="index.htm">Spbu List</a> | <a href="add.htm">Add Spbu</a>
 		<table>
 			<tr>
-				<td>Model ID</td>
+				<td>Spbu Code</td>
 				<td>
-					<s:url value="update.htm" var="viewUrl">
-						<s:param name="partId" value="${viewData.partId}"/>
+					<s:url value="update.htm" var="updateUrl">
+						<s:param name="spbuId" value="${viewData.id}"/>
 					</s:url>
-					<a href="${viewUrl}">${viewData.partId}</a>
+					<a href="${updateUrl}">${viewData.code}</a>
 				</td>
 			</tr>
 			<tr>
-				<td>Name</td>
-				<td>
-					<a href="${viewUrl}">${viewData.name}</a>
-				</td>
+				<td>Address</td>
+				<td><a href="${updateUrl}">${viewData.address}</a></td>
 			</tr>
 			<tr>
-				<td>Default MTTF</td>
-				<td>
-					<a href="${viewUrl}">${viewData.defaultMttf}</a>
-				</td>
+				<td>Phone</td>
+				<td><a href="${updateUrl}">${viewData.phone}</a></td>
 			</tr>
 			<tr>
-				<td>Default MTTF Threshold</td>
-				<td>
-					<a href="${viewUrl}">${viewData.defaultMttfThreshold}</a>
-				</td>
+				<td>Supervisor</td>
+				<td><a href="${updateUrl}">${viewData.supervisorName}</a></td>
 			</tr>
-		</table>
-	</body>
+			<tr>
+				<td>Machines</td>
+				<td>
+					<table>
+						<thead>
+							<tr>
+								<td>Machine Serial</td>
+								<td>Model ID</td>
+								<td>Machine Identifier</td>
+							</tr>
+						</thead>
+						<c:forEach var="machineSerial" varStatus="machineSerialStatus" items="${viewData.machineSerials}">
+							<tr>
+								<td>${machineSerial}</td>
+								<td>${viewData.modelIds[machineSerialStatus.index]}</td>
+								<td>${viewData.machineIdentifiers[machineSerialStatus.index]}</td>
+							</tr>
+						</c:forEach>
+					</table>
+			</td>
+		</tr>
+	</table>
+</body>
 </html>

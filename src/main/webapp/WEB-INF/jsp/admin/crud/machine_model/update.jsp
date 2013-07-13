@@ -89,6 +89,34 @@
 			var currentPartCount = 0;
 			var partCache = [];
 
+			function loadPart() {
+				$.ajax({
+					url: "../ajax/machine_parts.json",
+					dataType: "json",
+					success: function(data, textStatus, jqXHR) {
+						console.log("../ajax/machine_parts.json: " + JSON.stringify(data));
+						$.each(data, function(index, part) {
+							partCache.push({value: part.partId, label: part.name});
+						});
+
+						var totalizerCountStr = $("#totalizerCount").val();
+						if (isFinite(totalizerCountStr)) {
+							currentTotalizerCount = parseInt(totalizerCountStr);
+						}
+						var partCountStr = $("#partCount").val();
+						if (isFinite(partCountStr)) {
+							currentPartCount = parseInt(partCountStr);
+						}
+
+						for (var i = 0; i < currentPartCount; i++) {
+							var partIdId = "partId_" + i;
+							var partIdentifierId = "partIdentifier_" + i;
+							partIdAutoComplete(partIdId, partIdentifierId, i);
+						}
+					}
+				});
+			}
+
 			function partIdAutoComplete(partIdId, partIdentifierId, index) {
 				$('#' + partIdId).autocomplete({
 					minLength: 0,
@@ -101,32 +129,7 @@
 			}
 
 			$(document).ready(function() {
-				var totalizerCountStr = $("#totalizerCount").val();
-				if (isFinite(totalizerCountStr)) {
-					var currentTotalizerCount = parseInt(totalizerCountStr);
-				}
-				var partCountStr = $("#partCount").val();
-				if (isFinite(partCountStr)) {
-					var currentPartCount = parseInt(partCountStr);
-				}
-
-				$.ajax({
-					url: "../ajax/machine_parts.json",
-					dataType: "json",
-					success: function(data, textStatus, jqXHR) {
-						console.log("../ajax/machine_parts.json: " + JSON.stringify(data));
-						$.each(data, function(index, part) {
-							partCache.push({value: part.partId, label: part.name});
-						});
-					}
-				});
-
-				for (var i = 0; i < currentPartCount; i++) {
-					var partIdId = "partId_" + i;
-					var partIdentifierId = "partIdentifier_" + i;
-					partIdAutoComplete(partIdId, partIdentifierId, i);
-				}
-
+				loadPart();
 				$("#partCount").change(function() {
 					var partCountStr = $("#partCount").val();
 					if (isFinite(partCountStr)) {

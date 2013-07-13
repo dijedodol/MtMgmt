@@ -91,6 +91,7 @@ public class CrudMachinePartTypeController {
 				machinePartTypeEntity.setDefaultMttf(formData.getDefaultMttf());
 				machinePartTypeEntity.setDefaultMttfThreshold(formData.getDefaultMttfThreshold());
 				machinePartTypeEntity = machinePartTypeRepository.saveAndFlush(machinePartTypeEntity);
+				model.addAttribute("formData", getFormData(machinePartTypeEntity));
 			} else {
 				bindingResult.rejectValue("partId", "common.error.invalidData");
 			}
@@ -122,6 +123,7 @@ public class CrudMachinePartTypeController {
 				machinePartTypeEntity.setDefaultMttf(formData.getDefaultMttf());
 				machinePartTypeEntity.setDefaultMttfThreshold(formData.getDefaultMttfThreshold());
 				machinePartTypeEntity = machinePartTypeRepository.saveAndFlush(machinePartTypeEntity);
+				model.addAttribute("formData", getFormData(machinePartTypeEntity));
 			} else {
 				bindingResult.rejectValue("partId", "admin.crud.machinePartType.notExist");
 			}

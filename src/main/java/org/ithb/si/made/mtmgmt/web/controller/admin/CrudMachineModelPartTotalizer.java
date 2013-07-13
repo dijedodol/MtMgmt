@@ -111,10 +111,10 @@ public class CrudMachineModelPartTotalizer {
 				}
 			}
 			model.addAttribute("totalizerIdOptions", getTotalizerIds(machineModelPartEntity.getMachineModelEntity()));
+			model.addAttribute("formData", getFormData(machineModelPartEntity));
 		} else {
 			model.addAttribute("totalizerIdOptions", new LinkedList<>());
 		}
-		model.addAttribute("formData", getFormData(machineModelPartEntity));
 		return CONTROLLER_VIEW_ROOT + "/add";
 	}
 
@@ -158,10 +158,10 @@ public class CrudMachineModelPartTotalizer {
 				}
 			}
 			model.addAttribute("totalizerIdOptions", getTotalizerIds(machineModelPartEntity.getMachineModelEntity()));
+			model.addAttribute("formData", getFormData(machineModelPartEntity));
 		} else {
 			model.addAttribute("totalizerIdOptions", new LinkedList<>());
 		}
-		model.addAttribute("formData", getFormData(machineModelPartEntity));
 		return CONTROLLER_VIEW_ROOT + "/update";
 	}
 

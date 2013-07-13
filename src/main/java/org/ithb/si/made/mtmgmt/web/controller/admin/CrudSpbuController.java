@@ -72,7 +72,7 @@ public class CrudSpbuController {
 
 	@Transactional
 	@RequestMapping(value = "view", method = RequestMethod.GET)
-	public String view(Model model, @RequestParam("partId") long spbuId) {
+	public String view(Model model, @RequestParam("spbuId") long spbuId) {
 		final SpbuEntity spbuEntity = spbuRepository.findOne(spbuId);
 		final ViewData viewData = getViewData(spbuEntity);
 		model.addAttribute("viewData", viewData);
@@ -90,11 +90,15 @@ public class CrudSpbuController {
 	@Transactional
 	@RequestMapping(value = "add", method = RequestMethod.POST)
 	public String add(@Valid @ModelAttribute("formData") FormData formData, BindingResult bindingResult, Model model) {
+		System.out.println("1");
 		if (!bindingResult.hasErrors()) {
+			System.out.println("2");
 			SpbuEntity spbuEntity = spbuRepository.findByCode(formData.getCode());
 			if (spbuEntity == null) {
+				System.out.println("3");
 				final UserEntity supervisorEntity = userRepository.findOne(formData.getSupervisorId());
 				if (supervisorEntity != null) {
+					System.out.println("4");
 					spbuEntity = new SpbuEntity();
 					spbuEntity.setCode(formData.getCode());
 					spbuEntity.setAddress(formData.getAddress());
@@ -102,6 +106,7 @@ public class CrudSpbuController {
 					spbuEntity.setSupervisorEntity(supervisorEntity);
 					spbuEntity = spbuRepository.saveAndFlush(spbuEntity);
 					System.out.println("Supervisor Spbu: " + supervisorEntity.getSpbuEntityList().size());
+					System.out.println("Spbu ID: " + spbuEntity);
 
 					for (int i = 0; i < formData.getMachineSerials().size(); i++) {
 						final String machineSerial = formData.getMachineSerials().get(i);
@@ -109,17 +114,19 @@ public class CrudSpbuController {
 						final String machineIdentifier = formData.getMachineIdentifiers().get(i);
 						SpbuMachineEntity spbuMachineEntity = spbuMachineRepository.findOne(machineSerial);
 						if (spbuMachineEntity == null) {
-							final MachineModelEntity machineModelEntity = machineModelRepository.findOne(modelId);
-							if (machineModelEntity != null) {
-								spbuMachineEntity = new SpbuMachineEntity(machineSerial);
-								spbuMachineEntity.setMachineModelEntity(machineModelEntity);
-								spbuMachineEntity.setMachineIdentifier(machineIdentifier);
-								spbuEntity.getSpbuMachineEntityList().add(spbuMachineEntity);
-							} else {
-								bindingResult.rejectValue("modelIds", "common.error.invalidData");
-							}
+							spbuMachineEntity = new SpbuMachineEntity(machineSerial);
+						}
+
+						final MachineModelEntity machineModelEntity = machineModelRepository.findOne(modelId);
+						if (machineModelEntity != null) {
+							spbuMachineEntity = new SpbuMachineEntity(machineSerial);
+							spbuMachineEntity.setMachineModelEntity(machineModelEntity);
+							spbuMachineEntity.setMachineIdentifier(machineIdentifier);
+							spbuMachineEntity.setSpbuEntity(spbuEntity);
+							spbuEntity.getSpbuMachineEntityList().add(spbuMachineEntity);
+							model.addAttribute("formData", getFormData(spbuEntity));
 						} else {
-							bindingResult.rejectValue("machineSerials", "common.error.invalidData");
+							bindingResult.rejectValue("modelIds", "common.error.invalidData");
 						}
 					}
 				} else {
@@ -142,7 +149,7 @@ public class CrudSpbuController {
 			model.addAttribute("formData", getFormData(spbuEntity));
 			return CONTROLLER_VIEW_ROOT + "/update";
 		} else {
-			throw new RuntimeException("Unknown partId");
+			throw new RuntimeException("Unknown spbuId");
 		}
 	}
 
@@ -150,7 +157,7 @@ public class CrudSpbuController {
 	@RequestMapping(value = "update", method = RequestMethod.POST)
 	public String update(@Valid FormData formData, BindingResult bindingResult, Model model) {
 		if (!bindingResult.hasErrors()) {
-			SpbuEntity spbuEntity = spbuRepository.findByCode(formData.getCode());
+			SpbuEntity spbuEntity = spbuRepository.findOne(formData.getId());
 			if (spbuEntity != null) {
 				final UserEntity supervisorEntity = userRepository.findOne(formData.getSupervisorId());
 				if (supervisorEntity != null) {
@@ -158,36 +165,12 @@ public class CrudSpbuController {
 					spbuEntity.setAddress(formData.getAddress());
 					spbuEntity.setPhone(formData.getPhone());
 					spbuEntity.setSupervisorEntity(supervisorEntity);
-
-					spbuEntity.getSpbuMachineEntityList().clear();
-					for (int i = 0; i < formData.getMachineSerials().size(); i++) {
-						final String machineSerial = formData.getMachineSerials().get(i);
-						final String modelId = formData.getModelIds().get(i);
-						final String machineIdentifier = formData.getMachineIdentifiers().get(i);
-						SpbuMachineEntity spbuMachineEntity = spbuMachineRepository.findOne(machineSerial);
-						if (spbuMachineEntity == null) {
-							spbuMachineEntity = new SpbuMachineEntity(machineSerial);
-							spbuMachineEntity.setSpbuEntity(spbuEntity);
-						}
-						
-						if (spbuMachineEntity.getSpbuEntity().equals(spbuEntity)) {
-							final MachineModelEntity machineModelEntity = machineModelRepository.findOne(modelId);
-							if (machineModelEntity != null) {
-								spbuMachineEntity.setMachineModelEntity(machineModelEntity);
-								spbuMachineEntity.setMachineIdentifier(machineIdentifier);
-								spbuEntity.getSpbuMachineEntityList().add(spbuMachineEntity);
-							} else {
-								bindingResult.rejectValue("modelIds", "common.error.invalidData");
-							}
-						} else {
-							bindingResult.rejectValue("machineSerials", "common.error.invalidData");
-						}
-					}
+					model.addAttribute("formData", getFormData(spbuEntity));
 				} else {
 					bindingResult.rejectValue("supervisorId", "common.error.invalidData");
 				}
 			} else {
-				bindingResult.rejectValue("spbuCode", "common.error.invalidData");
+				bindingResult.rejectValue("id", "common.error.invalidData");
 			}
 		} else {
 			bindingResult.reject("common.error.invalidData");
@@ -197,10 +180,12 @@ public class CrudSpbuController {
 
 	private FormData getFormData(SpbuEntity spbuEntity) {
 		final FormData formData = new FormData();
+		formData.setId(spbuEntity.getId());
 		formData.setCode(spbuEntity.getCode());
 		formData.setAddress(spbuEntity.getAddress());
 		formData.setPhone(spbuEntity.getPhone());
 		formData.setSupervisorId(spbuEntity.getSupervisorEntity().getId());
+		formData.setSupervisorName(spbuEntity.getSupervisorEntity().getFullName());
 		formData.setMachineSerials(getMachineSerials(spbuEntity));
 		formData.setModelIds(getModelIds(spbuEntity));
 		formData.setMachineIdentifiers(getMachineIdentifiers(spbuEntity));
@@ -214,6 +199,7 @@ public class CrudSpbuController {
 		viewData.setAddress(spbuEntity.getAddress());
 		viewData.setPhone(spbuEntity.getPhone());
 		viewData.setSupervisorId(spbuEntity.getSupervisorEntity().getId());
+		viewData.setSupervisorName(spbuEntity.getSupervisorEntity().getFullName());
 		viewData.setMachineSerials(getMachineSerials(spbuEntity));
 		viewData.setModelIds(getModelIds(spbuEntity));
 		viewData.setMachineIdentifiers(getMachineIdentifiers(spbuEntity));
@@ -251,6 +237,7 @@ public class CrudSpbuController {
 		private String address;
 		private String phone;
 		private long supervisorId;
+		private String supervisorName;
 		private List<String> machineSerials = new LinkedList<>();
 		private List<String> modelIds = new LinkedList<>();
 		private List<String> machineIdentifiers = new LinkedList<>();
@@ -322,23 +309,41 @@ public class CrudSpbuController {
 			this.machineIdentifiers = machineIdentifiers;
 		}
 
+		public String getSupervisorName() {
+			return supervisorName;
+		}
+
+		public void setSupervisorName(String supervisorName) {
+			this.supervisorName = supervisorName;
+		}
+
 		@Override
 		public String toString() {
-			return "ViewData{" + "id=" + id + ", code=" + code + ", address=" + address + ", phone=" + phone + ", supervisorId=" + supervisorId + ", machineSerials=" + machineSerials + ", modelIds=" + modelIds + ", machineIdentifiers=" + machineIdentifiers + '}';
+			return "ViewData{" + "id=" + id + ", code=" + code + ", address=" + address + ", phone=" + phone + ", supervisorId=" + supervisorId + ", supervisorName=" + supervisorName + ", machineSerials=" + machineSerials + ", modelIds=" + modelIds + ", machineIdentifiers=" + machineIdentifiers + '}';
 		}
 	}
 
 	public static class FormData {
 
+		private long id;
 		private String code;
 		private String address;
 		private String phone;
 		private long supervisorId;
+		private String supervisorName;
 		private List<String> machineSerials = new LinkedList<>();
 		private List<String> modelIds = new LinkedList<>();
 		private List<String> machineIdentifiers = new LinkedList<>();
 
 		public FormData() {
+		}
+
+		public long getId() {
+			return id;
+		}
+
+		public void setId(long id) {
+			this.id = id;
 		}
 
 		public String getCode() {
@@ -373,6 +378,14 @@ public class CrudSpbuController {
 			this.supervisorId = supervisorId;
 		}
 
+		public String getSupervisorName() {
+			return supervisorName;
+		}
+
+		public void setSupervisorName(String supervisorName) {
+			this.supervisorName = supervisorName;
+		}
+
 		public List<String> getMachineSerials() {
 			return machineSerials;
 		}
@@ -399,7 +412,7 @@ public class CrudSpbuController {
 
 		@Override
 		public String toString() {
-			return "FormData{" + "code=" + code + ", address=" + address + ", phone=" + phone + ", supervisorId=" + supervisorId + ", machineSerials=" + machineSerials + ", modelIds=" + modelIds + ", machineIdentifiers=" + machineIdentifiers + '}';
+			return "FormData{" + "id=" + id + ", code=" + code + ", address=" + address + ", phone=" + phone + ", supervisorId=" + supervisorId + ", supervisorName=" + supervisorName + ", machineSerials=" + machineSerials + ", modelIds=" + modelIds + ", machineIdentifiers=" + machineIdentifiers + '}';
 		}
 	}
 }
