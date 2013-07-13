@@ -49,10 +49,6 @@ public class MachinePartTypeEntity implements Serializable {
   @NotNull
   @Column(name = "default_mttf_threshold", nullable = false)
 	private double defaultMttfThreshold;
-	@Basic(optional = false)
-  @NotNull
-  @Column(name = "mttf_by_totalizer", nullable = false)
-	private boolean mttfByTotalizer;
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "machinePartTypeEntity", fetch = FetchType.LAZY)
 	private List<MachineModelPartEntity> machineModelPartEntityList;
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "machinePartTypeEntity", fetch = FetchType.LAZY)
@@ -65,12 +61,11 @@ public class MachinePartTypeEntity implements Serializable {
 		this.partId = partId;
 	}
 
-	public MachinePartTypeEntity(String partId, String name, double defaultMttf, double defaultMttfThreshold, boolean mttfByTotalizer) {
+	public MachinePartTypeEntity(String partId, String name, double defaultMttf, double defaultMttfThreshold) {
 		this.partId = partId;
 		this.name = name;
 		this.defaultMttf = defaultMttf;
 		this.defaultMttfThreshold = defaultMttfThreshold;
-		this.mttfByTotalizer = mttfByTotalizer;
 	}
 
 	public String getPartId() {
@@ -103,14 +98,6 @@ public class MachinePartTypeEntity implements Serializable {
 
 	public void setDefaultMttfThreshold(double defaultMttfThreshold) {
 		this.defaultMttfThreshold = defaultMttfThreshold;
-	}
-
-	public boolean getMttfByTotalizer() {
-		return mttfByTotalizer;
-	}
-
-	public void setMttfByTotalizer(boolean mttfByTotalizer) {
-		this.mttfByTotalizer = mttfByTotalizer;
 	}
 
 	public List<MachineModelPartEntity> getMachineModelPartEntityList() {

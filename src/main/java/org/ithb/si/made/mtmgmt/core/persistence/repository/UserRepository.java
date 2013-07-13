@@ -4,7 +4,9 @@
  */
 package org.ithb.si.made.mtmgmt.core.persistence.repository;
 
+import java.util.List;
 import org.ithb.si.made.mtmgmt.core.persistence.entity.UserEntity;
+import org.ithb.si.made.mtmgmt.core.security.AccessRole;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 /**
@@ -13,5 +15,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
  */
 public interface UserRepository extends JpaRepository<UserEntity, Long> {
 
-    UserEntity findByLoginId(String loginId);
+	UserEntity findByLoginId(String loginId);
+
+	List<UserEntity> findByAccessRole(AccessRole accessRole);
 }

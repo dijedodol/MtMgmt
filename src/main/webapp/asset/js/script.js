@@ -53,7 +53,7 @@ $(document).ready(function() {
 		$content.find('div.slider').wl_Slider();
 		
 		//Multiselects
-		$content.find('select[multiple]').wl_Multiselect();
+		//$content.find('select[multiple]').wl_Multiselect();
 		
 		//The Form is called for the demo with options on line 497
 		//$content.find('form').wl_Form();
