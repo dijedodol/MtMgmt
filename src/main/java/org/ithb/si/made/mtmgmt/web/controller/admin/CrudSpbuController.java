@@ -90,23 +90,17 @@ public class CrudSpbuController {
 	@Transactional
 	@RequestMapping(value = "add", method = RequestMethod.POST)
 	public String add(@Valid @ModelAttribute("formData") FormData formData, BindingResult bindingResult, Model model) {
-		System.out.println("1");
 		if (!bindingResult.hasErrors()) {
-			System.out.println("2");
 			SpbuEntity spbuEntity = spbuRepository.findByCode(formData.getCode());
 			if (spbuEntity == null) {
-				System.out.println("3");
 				final UserEntity supervisorEntity = userRepository.findOne(formData.getSupervisorId());
 				if (supervisorEntity != null) {
-					System.out.println("4");
 					spbuEntity = new SpbuEntity();
 					spbuEntity.setCode(formData.getCode());
 					spbuEntity.setAddress(formData.getAddress());
 					spbuEntity.setPhone(formData.getPhone());
 					spbuEntity.setSupervisorEntity(supervisorEntity);
 					spbuEntity = spbuRepository.saveAndFlush(spbuEntity);
-					System.out.println("Supervisor Spbu: " + supervisorEntity.getSpbuEntityList().size());
-					System.out.println("Spbu ID: " + spbuEntity);
 
 					for (int i = 0; i < formData.getMachineSerials().size(); i++) {
 						final String machineSerial = formData.getMachineSerials().get(i);

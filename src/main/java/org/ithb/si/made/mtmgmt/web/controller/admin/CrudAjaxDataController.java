@@ -12,10 +12,14 @@ import org.ithb.si.made.mtmgmt.core.persistence.entity.MachineModelEntity;
 import org.ithb.si.made.mtmgmt.core.persistence.entity.MachineModelPartEntity;
 import org.ithb.si.made.mtmgmt.core.persistence.entity.MachineModelTotalizerEntity;
 import org.ithb.si.made.mtmgmt.core.persistence.entity.MachinePartTypeEntity;
+import org.ithb.si.made.mtmgmt.core.persistence.entity.PartFailureModeEntity;
+import org.ithb.si.made.mtmgmt.core.persistence.entity.SpbuEntity;
 import org.ithb.si.made.mtmgmt.core.persistence.entity.UserEntity;
 import org.ithb.si.made.mtmgmt.core.persistence.repository.MachineModelPartRepository;
 import org.ithb.si.made.mtmgmt.core.persistence.repository.MachineModelRepository;
 import org.ithb.si.made.mtmgmt.core.persistence.repository.MachinePartTypeRepository;
+import org.ithb.si.made.mtmgmt.core.persistence.repository.PartFailureModeRepository;
+import org.ithb.si.made.mtmgmt.core.persistence.repository.SpbuRepository;
 import org.ithb.si.made.mtmgmt.core.persistence.repository.UserRepository;
 import org.ithb.si.made.mtmgmt.core.security.AccessRole;
 import org.ithb.si.made.mtmgmt.core.util.MapBuilder;
@@ -43,6 +47,10 @@ public class CrudAjaxDataController {
 	private MachineModelPartRepository machineModelPartRepository;
 	@Autowired
 	private UserRepository userRepository;
+	@Autowired
+	private SpbuRepository spbuRepository;
+	@Autowired
+	private PartFailureModeRepository partFailureModeRepository;
 
 	@Transactional
 	@ResponseBody
@@ -91,6 +99,23 @@ public class CrudAjaxDataController {
 
 	@Transactional
 	@ResponseBody
+	@RequestMapping(value = "spbus", produces = "application/json", method = RequestMethod.GET)
+	public List<Map> getAllSpbus() {
+		final List<Map> ret = new LinkedList<>();
+		final List<SpbuEntity> spbuEntities = spbuRepository.findAll();
+		for (final SpbuEntity spbuEntity : spbuEntities) {
+			ret.add(new MapBuilder(new HashMap<String, Object>())
+							.put("id", spbuEntity.getId())
+							.put("code", spbuEntity.getCode())
+							.put("address", spbuEntity.getAddress())
+							.put("phone", spbuEntity.getPhone())
+							.getMap());
+		}
+		return ret;
+	}
+
+	@Transactional
+	@ResponseBody
 	@RequestMapping(value = "machine_model/{modelId}/machine_model_parts", produces = "application/json", method = RequestMethod.GET)
 	public List<Map> getMachineModelParts(@PathVariable("modelId") String modelId) {
 		final List<Map> ret = new LinkedList<>();
@@ -116,6 +141,24 @@ public class CrudAjaxDataController {
 			for (final MachineModelTotalizerEntity machineModelTotalizerEntity : machineModelEntity.getMachineModelTotalizerEntityList()) {
 				ret.add(new MapBuilder(new HashMap<String, Object>())
 								.put("totalizerId", machineModelTotalizerEntity.getMachineModelTotalizerEntityPK().getTotalizerId())
+								.getMap());
+			}
+		}
+		return ret;
+	}
+	
+	@Transactional
+	@ResponseBody
+	@RequestMapping(value = "machine_part/{partId}/failure_modes", produces = "application/json", method = RequestMethod.GET)
+	public List<Map> getMachinePartFailureModes(@PathVariable("partId") String partId) {
+		final List<Map> ret = new LinkedList<>();
+		final MachinePartTypeEntity machinePartTypeEntity = machinePartTypeRepository.findOne(partId);
+		if (machinePartTypeEntity != null) {
+			for (final PartFailureModeEntity partFailureModeEntity : machinePartTypeEntity.getPartFailureModeEntityList()) {
+				ret.add(new MapBuilder(new HashMap<String, Object>())
+								.put("code", partFailureModeEntity.getPartFailureModeEntityPK().getFailureModeCode())
+								.put("name", partFailureModeEntity.getName())
+								.put("description", partFailureModeEntity.getDescription())
 								.getMap());
 			}
 		}
