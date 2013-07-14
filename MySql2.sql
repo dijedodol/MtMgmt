@@ -8,6 +8,10 @@
 -- Target DBMS : MySQL 5.x
 --
 
+drop database mtmgmt;
+create database mtmgmt;
+use mtmgmt;
+
 -- 
 -- TABLE: `failure_mode_handlings` 
 --

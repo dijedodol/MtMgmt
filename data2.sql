@@ -2,10 +2,9 @@ ALTER TABLE users AUTO_INCREMENT = 0;
 ALTER TABLE spbus AUTO_INCREMENT = 0;
 
 start transaction;
-insert into users(full_name, access_role, login_id, password_hash) values('Administrator', 0, 'adm', 'adm');
-insert into users(full_name, access_role, login_id, password_hash) values('Technician', 1, 'tch', 'tch');
-insert into users(full_name, access_role, login_id, password_hash) values('Supervisor', 2, 'spv', 'spv');
-insert into users(full_name, access_role, login_id, password_hash) values('Supervisor Palsu', 2, 'spvpalsu', 'spvpalsu');
+insert into users(full_name, access_role, login_id, password_hash) values('Administrator', 0, 'admin', 'admin');
+insert into users(full_name, access_role, login_id, password_hash) values('Ketut Sukamawa', 1, 'sukamawa', '123');
+insert into users(full_name, access_role, login_id, password_hash) values('Putu Juliarta', 2, 'juliarta', '123');
 
 insert into spbus(code, address, phone, supervisor_id) values('54-801.21', 'Jalan Imam Bonjol', '0361 701111', 3);
 insert into spbus(code, address, phone, supervisor_id) values('Palsu', 'Jalan Palsu', '0361 Palsu', 4);
