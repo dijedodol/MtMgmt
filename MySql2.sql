@@ -8,7 +8,7 @@
 -- Target DBMS : MySQL 5.x
 --
 
-drop database mtmgmt;
+drop database if exists mtmgmt;
 create database mtmgmt;
 use mtmgmt;
 

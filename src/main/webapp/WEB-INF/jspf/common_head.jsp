@@ -64,3 +64,4 @@
 
 <!-- the script which handles all the access to plugins etc... -->
 <script src="<%=application.getContextPath()%>/asset/js/script.js"></script>
+<script src="<%=application.getContextPath()%>/asset/js/html_encoder.js"></script>

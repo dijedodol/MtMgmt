@@ -14,71 +14,86 @@
 		<title>Technician - Input Service Report</title>
 	</head>
 	<body>
-		<sf:form commandName="formData" method="post" id="formTotalizer">
+		<sf:form commandName="formData" data-ajax="false" method="post" id="formTotalizer">
 			<sf:errors/>
-			<table>
-				<tr>
-					<td><sf:label path="spbuId"><s:message code="technician.input.serviceReport.spbuId"/>:</sf:label></td>
-					<td><sf:select path="spbuId" id="spbuId"/></td>
-					<td><sf:errors path="spbuId"/></td>
-				</tr>
-				<tr>
-					<td><sf:label path="machineSerial"><s:message code="technician.input.serviceReport.machineIdentifier"/>:</sf:label></td>
-					<td><sf:select path="machineSerial" id="machineSerial"/></td>
-					<td><sf:errors path="machineSerial"/></td>
-				</tr>
-				<tr>
-					<td><sf:label path="date"><s:message code="technician.input.serviceReport.date"/>:</sf:label></td>
-					<td><sf:input path="date" id="date"/>#yyyy-mm-dd</td>
-					<td><sf:errors path="date"/></td>
-				</tr>
-				<tr>
-					<td><sf:label path="partId"><s:message code="technician.input.serviceReport.machinePartId"/>:</sf:label></td>
-					<td><sf:select path="partId" id="partId"/></td>
-					<td><sf:errors path="partId"/></td>
-				</tr>
-				<tr>
-					<td><sf:label path="machineModelPartIdentifier"><s:message code="technician.input.serviceReport.machineModelPartIdentifier"/>:</sf:label></td>
-					<td><sf:select path="machineModelPartIdentifier" id="machineModelPartIdentifier"/></td>
-					<td><sf:errors path="machineModelPartIdentifier"/></td>
-				</tr>
-				<tr>
-					<td><sf:label path="failureModeCode"><s:message code="technician.input.serviceReport.failureModeId"/>:</sf:label></td>
-					<td><sf:select path="failureModeCode" id="failureModeCode"/></td>
-					<td><sf:errors path="failureModeCode"/></td>
-				</tr>
-				<tr>
-					<td><sf:label path="failureModeHandlingCode"><s:message code="technician.input.serviceReport.failureModeHandlingId"/>:</sf:label></td>
-					<td><sf:select path="failureModeHandlingCode" id="failureModeHandlingCode"/></td>
-					<td><sf:errors path="failureModeHandlingCode"/></td>
-				</tr>
-				<tr>
-					<td>&nbsp;</td>
-					<td colspan="2"><input type="button" id="btSubmit" value="Submit"/></td>
-				</tr>
-			</table>
+			<fieldset>
+				<section>
+					<sf:label path="spbuId"><s:message code="technician.input.serviceReport.spbuId"/>:</sf:label>
+						<div>
+						<sf:select path="spbuId" id="spbuId"/>
+						<sf:errors path="spbuId"/>
+					</div>
+				</section>
+				<section>
+					<sf:label path="machineSerial"><s:message code="technician.input.serviceReport.machineIdentifier"/>:</sf:label>
+					<div>
+						<sf:select path="machineSerial" id="machineSerial"/>
+						<sf:errors path="machineSerial"/>
+					</div>
+				</section>
+				<section>
+					<sf:label path="date"><s:message code="technician.input.serviceReport.date"/>:</sf:label>
+					<div>
+						<sf:input path="date" id="date" class="g2"/>#yyyy-mm-dd
+						<sf:errors path="date"/>
+					</div>
+				</section>
+				<section>
+					<sf:label path="partId"><s:message code="technician.input.serviceReport.machinePartId"/>:</sf:label>
+					<div>
+						<sf:select path="partId" id="partId"/>
+						<sf:errors path="partId"/>
+					</div>
+				</section>
+				<section>
+					<sf:label path="machineModelPartIdentifier"><s:message code="technician.input.serviceReport.machineModelPartIdentifier"/>:</sf:label>
+					<div>
+						<sf:select path="machineModelPartIdentifier" id="machineModelPartIdentifier"/>
+						<sf:errors path="machineModelPartIdentifier"/>
+					</div>
+				</section>
+				<section>
+					<sf:label path="failureModeCode"><s:message code="technician.input.serviceReport.failureModeId"/>:</sf:label>
+					<div>
+						<sf:select path="failureModeCode" id="failureModeCode"/>
+						<sf:errors path="failureModeCode"/>
+					</div>
+				</section>
+				<section>
+					<sf:label path="failureModeHandlingCode"><s:message code="technician.input.serviceReport.failureModeHandlingId"/>:</sf:label>
+					<div>
+						<sf:select path="failureModeHandlingCode" id="failureModeHandlingCode"/>
+						<sf:errors path="failureModeHandlingCode"/>
+					</div>
+				</section>
+				<section>
+					<div>
+						<button class="submit">Submit</button>
+					</div>
+				</section>
+			</fieldset>
 		</sf:form>
 
 		<script type="text/javascript">
 			var machineModelParts = {};
 
-			$("#btSubmit").click(function() {
-				$("#formTotalizer").submit();
-			});
 			$("#spbuId").change(function() {
 				loadMachine();
 			});
-			$("#machineIdentifier").change(function() {
+			$("#machineSerial").change(function() {
 				loadMachinePart();
 			});
 			$("#partId").change(function() {
 				loadMachineModelPart();
 				loadFailureMode();
 			});
-			$("#failureModeId").change(function() {
+			$("#failureModeCode").change(function() {
 				loadFailureModeHandling();
 			});
-			loadSpbu();
+
+			$(document).ready(function() {
+				loadSpbu();
+			});
 
 			function loadSpbu() {
 				$(document).ready(function() {
@@ -91,13 +106,12 @@
 
 							$.each(data, function(index, spbu) {
 								console.log("spbu: " + JSON.stringify(spbu));
-								if (index === 0) {
-									$("#spbuId").append(new Option(spbu.code, spbu.id, true, true));
-								} else {
-									$("#spbuId").append(new Option(spbu.code, spbu.id, false, false));
-								}
+								$("#spbuId").append(new Option(spbu.code, spbu.id, false, false));
 							});
-							loadMachine();
+
+							if (data.length > 0) {
+								$("#spbuId option:first").attr('selected', 'selected').change();
+							}
 						},
 						error: function(jqXHR, textStatus, errorThrown) {
 							alert("Ajax data load fail!");
@@ -119,13 +133,13 @@
 
 							$.each(data, function(index, machine) {
 								console.log("spbuMachine: " + JSON.stringify(machine));
-								if (index === 0) {
-									$("#machineSerial").append(new Option(machine.machineIdentifier, machine.machineSerial, true, true));
-								} else {
-									$("#machineSerial").append(new Option(machine.machineIdentifier, machine.machineSerial, false, false));
-								}
+								$("#machineSerial").append(new Option(machine.machineIdentifier, machine.machineSerial, false, false));
 							});
-							loadMachinePart();
+
+							if (data.length > 0) {
+								console.log("Selecting: " + $("#machineSerial option:first").val());
+								$("#machineSerial option:first").attr('selected', 'selected').change();
+							}
 						},
 						error: function(jqXHR, textStatus, errorThrown) {
 							alert("Ajax data load fail!");
@@ -147,18 +161,16 @@
 							$("#partId").children().remove();
 
 							$.each(data, function(index, machinePart) {
-								if (machineModelParts[machinePart.partId] == null) {
+								if (!machineModelParts[machinePart.partId]) {
 									machineModelParts[machinePart.partId] = [];
-									if (index === 0) {
-										$("#partId").append(new Option(machinePart.name, machinePart.partId, true, true));
-									} else {
-										$("#partId").append(new Option(machinePart.name, machinePart.partId, false, false));
-									}
+									$("#partId").append(new Option(machinePart.name, machinePart.partId, false, false));
 								}
 								machineModelParts[machinePart.partId].push(machinePart.machineModelPartIdentifier);
 							});
-							loadMachineModelPart();
-							loadFailureMode();
+
+							if (data.length > 0) {
+								$("#partId option:first").attr('selected', 'selected').change();
+							}
 						},
 						error: function(jqXHR, textStatus, errorThrown) {
 							alert("Ajax data load fail!");
@@ -170,12 +182,12 @@
 			function loadMachineModelPart() {
 				$("#machineModelPartIdentifier").children().remove();
 				$.each(machineModelParts[$("#partId").val()], function(index, machineModelPartIdentifier) {
-					if (index === 0) {
-						$("#machineModelPartIdentifier").append(new Option(machineModelPartIdentifier, machineModelPartIdentifier, true, true));
-					} else {
-						$("#machineModelPartIdentifier").append(new Option(machineModelPartIdentifier, machineModelPartIdentifier, false, false));
-					}
+					$("#machineModelPartIdentifier").append(new Option(machineModelPartIdentifier, machineModelPartIdentifier, false, false));
 				});
+
+				if (machineModelParts[$("#partId").val()].length > 0) {
+					$("#machineModelPartIdentifier option:first").attr('selected', 'selected').change();
+				}
 			}
 
 			function loadFailureMode() {
@@ -190,13 +202,12 @@
 							$("#failureModeCode").children().remove();
 
 							$.each(data, function(index, failureMode) {
-								if (index === 0) {
-									$("#failureModeCode").append(new Option(failureMode.name, failureMode.failureModeCode, true, true));
-								} else {
-									$("#failureModeCode").append(new Option(failureMode.name, failureMode.failureModeCode, false, false));
-								}
+								$("#failureModeCode").append(new Option(failureMode.name, failureMode.failureModeCode, false, false));
 							});
-							loadFailureModeHandling();
+
+							if (data.length > 0) {
+								$("#failureModeCode option:first").attr('selected', 'selected').change();
+							}
 						},
 						error: function(jqXHR, textStatus, errorThrown) {
 							alert("Ajax data load fail!");
@@ -217,12 +228,12 @@
 							$("#failureModeHandlingCode").children().remove();
 
 							$.each(data, function(index, failureModeHandling) {
-								if (index === 0) {
-									$("#failureModeHandlingCode").append(new Option(failureModeHandling.name, failureModeHandling.failureModeHandlingCode, true, true));
-								} else {
-									$("#failureModeHandlingCode").append(new Option(failureModeHandling.name, failureModeHandling.failureModeHandlingCode, false, false));
-								}
+								$("#failureModeHandlingCode").append(new Option(failureModeHandling.name, failureModeHandling.failureModeHandlingCode, false, false));
 							});
+
+							if (data.length > 0) {
+								$("#failureModeHandlingCode option:first").attr('selected', 'selected').change();
+							}
 						},
 						error: function(jqXHR, textStatus, errorThrown) {
 							alert("Ajax data load fail!");

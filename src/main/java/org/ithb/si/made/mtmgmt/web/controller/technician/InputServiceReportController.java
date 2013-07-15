@@ -7,6 +7,10 @@ package org.ithb.si.made.mtmgmt.web.controller.technician;
 import java.security.Principal;
 import java.text.ParseException;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 import javax.validation.ConstraintViolationException;
 import javax.validation.Valid;
 import org.ithb.si.made.mtmgmt.core.exception.InvalidDataException;
@@ -17,6 +21,7 @@ import org.ithb.si.made.mtmgmt.core.persistence.entity.MachineModelPartEntityPK;
 import org.ithb.si.made.mtmgmt.core.persistence.entity.ServiceReportEntity;
 import org.ithb.si.made.mtmgmt.core.persistence.entity.ServiceReportSpbuMachineTotalizerEntity;
 import org.ithb.si.made.mtmgmt.core.persistence.entity.ServiceReportSpbuMachineTotalizerEntityPK;
+import org.ithb.si.made.mtmgmt.core.persistence.entity.SpbuEntity;
 import org.ithb.si.made.mtmgmt.core.persistence.entity.SpbuMachineEntity;
 import org.ithb.si.made.mtmgmt.core.persistence.entity.SpbuMachineTotalizerEntity;
 import org.ithb.si.made.mtmgmt.core.persistence.entity.UserEntity;
@@ -29,6 +34,7 @@ import org.ithb.si.made.mtmgmt.core.persistence.repository.SpbuMachineTotalizerR
 import org.ithb.si.made.mtmgmt.core.persistence.repository.SpbuRepository;
 import org.ithb.si.made.mtmgmt.core.persistence.repository.UserRepository;
 import org.ithb.si.made.mtmgmt.core.util.DateUtil;
+import org.ithb.si.made.mtmgmt.web.controller.supervisor.InputTotalizerController;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -69,9 +75,12 @@ public class InputServiceReportController {
 	}
 
 	@RequestMapping(method = RequestMethod.GET)
-	public String showInputTotalizer(Principal principal, Model model) {
+	public String showInputServiceReport(Principal principal, Model model) {
 		LOG.debug("showInputTotalizer principal:[{}]", principal);
+		final List<SpbuEntity> spbuEntities = spbuRepository.findAll();
 		model.addAttribute("formData", new FormData());
+		model.addAttribute("spbuOptions", getSpbuOptions(spbuEntities));
+		model.addAttribute("machineSerialOptions", spbuEntities.isEmpty() ? new HashMap<>() : getMachineSerialOptions(spbuEntities.get(0)));
 		return "technician/input_service_report";
 	}
 
@@ -79,7 +88,10 @@ public class InputServiceReportController {
 	public String doInputServiceReport(Principal principal, @Valid FormData formData, BindingResult bindingResult, Model model) {
 		LOG.debug("doInputTotalizer formData:[{}]", formData);
 		try {
-			_doInputServiceReport(principal, formData, bindingResult);
+			_doInputServiceReport(principal, formData, bindingResult, model);
+			model.addAttribute("formData", formData);
+			model.addAttribute("spbuOptions", getSpbuOptions(spbuRepository.findAll()));
+			model.addAttribute("machineSerialOptions", getMachineSerialOptions(spbuRepository.findOne(formData.getSpbuId())));
 		} catch (InvalidDataException ex) {
 			LOG.error("doInputTotalizer Exception:[{}]", ex.getMessage(), ex);
 		} catch (ConstraintViolationException ex) {
@@ -90,7 +102,7 @@ public class InputServiceReportController {
 	}
 
 	@Transactional
-	private void _doInputServiceReport(Principal principal, @Valid FormData formData, BindingResult bindingResult) {
+	private void _doInputServiceReport(Principal principal, @Valid FormData formData, BindingResult bindingResult, Model model) {
 		final UserEntity technicianEntity = userRepository.findByLoginId(principal.getName());
 		final SpbuMachineEntity spbuMachineEntity = spbuMachineRepository.findOne(formData.getMachineSerial());
 		if (spbuMachineEntity == null) {
@@ -142,6 +154,23 @@ public class InputServiceReportController {
 			bindingResult.rejectValue("date", "common.error.invalidDateFormat");
 			throw new InvalidDataException("Invalid date format: " + formData.getDate());
 		}
+	}
+
+	private Map<Long, String> getSpbuOptions(List<SpbuEntity> spbuEntities) {
+		final Map<Long, String> ret = new LinkedHashMap<>();
+		for (final SpbuEntity spbuEntity : spbuEntities) {
+			ret.put(spbuEntity.getId(), spbuEntity.getCode());
+		}
+		return ret;
+	}
+
+	private Map<String, String> getMachineSerialOptions(SpbuEntity spbuEntity) {
+		final Map<String, String> ret = new LinkedHashMap<>();
+		final List<SpbuMachineEntity> spbuMachines = spbuEntity.getSpbuMachineEntityList();
+		for (final SpbuMachineEntity spbuMachine : spbuMachines) {
+			ret.put(spbuMachine.getMachineSerial(), spbuMachine.getMachineIdentifier());
+		}
+		return ret;
 	}
 
 	public static class FormData {

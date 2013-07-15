@@ -14,22 +14,26 @@
 		<title>Supervisor - Input Totalizer</title>
 	</head>
 	<body>
-		<sf:form commandName="formData" method="post" id="formTotalizer">
+		<sf:form commandName="formData" data-ajax="false" method="post" id="formTotalizer">
 			<sf:errors/>
-			<table>
-				<tr>
-					<td><sf:label path="spbuId"><s:message code="supervisor.input.totalizer.spbuId"/>:</sf:label></td>
-					<td><sf:select path="spbuId" id="spbuId"/></td>
-					<td><sf:errors path="spbuId"/></td>
-				</tr>
-				<tr>
-					<td><sf:label path="machineSerial"><s:message code="supervisor.input.totalizer.machineIdentifier"/>:</sf:label></td>
-					<td><sf:select path="machineSerial" id="machineSerial"/></td>
-					<td><sf:errors path="machineSerial"/></td>
-				</tr>
-				<tr>
-					<td><s:message code="supervisor.input.totalizer.totalizers"/>:</td>
-					<td colspan="2">
+			<fieldset>
+				<section>
+					<sf:label path="spbuId"><s:message code="supervisor.input.totalizer.spbuId"/></sf:label>
+						<div>
+						<sf:select path="spbuId" id="spbuId" items="${spbuOptions}"/>
+						<sf:errors path="machineSerial"/>
+					</div>
+				</section>
+				<section>
+					<sf:label path="machineSerial"><s:message code="supervisor.input.totalizer.machineIdentifier"/></sf:label>
+						<div>
+						<sf:select path="machineSerial" id="machineSerial" items="${machineSerialOptions}"/>
+						<sf:errors path="machineSerial"/>
+					</div>
+				</section>
+				<section>
+					<s:message code="supervisor.input.totalizer.totalizers"/>
+					<div>
 						<table id="tblTotalizer">
 							<thead>
 								<tr>
@@ -41,54 +45,33 @@
 							<tbody>
 							</tbody>
 						</table>
-					</td>
-				</tr>
-				<tr>
-					<td>&nbsp;</td>
-					<td colspan="2"><input type="button" id="btSubmit" value="Submit"/></td>
-				</tr>
-			</table>
+					</div>
+				</section>
+				<section>
+					<div>
+						<button class="submit">Submit</button>
+					</div>
+				</section>
+			</fieldset>
 		</sf:form>
 
 		<script type="text/javascript">
-			$("#btSubmit").click(function() {
-				$("#formTotalizer").submit();
-			});
 			$("#spbuId").change(function() {
 				loadMachineId();
 			});
 			$("#machineSerial").change(function() {
 				loadTotalizers();
 			});
-			loadSpbuId();
 
-			function loadSpbuId() {
-				$(document).ready(function() {
-					$.ajax({
-						url: "ajax/spbu.json",
-						dataType: "json",
-						success: function(data, textStatus, jqXHR) {
-							console.log("ajax/spbu.json: " + JSON.stringify(data));
-							$("#spbuId").children().remove();
-
-							$.each(data, function(index, spbu) {
-								console.log("spbu: " + JSON.stringify(spbu));
-								if (index === 0) {
-									$("#spbuId").append(new Option(spbu.code, spbu.id, true, true));
-								} else {
-									$("#spbuId").append(new Option(spbu.code, spbu.id, false, false));
-								}
-							});
-							loadMachineId();
-						},
-						error: function(jqXHR, textStatus, errorThrown) {
-							alert("Ajax data load fail!");
-						}
-					});
-				});
-			}
+			$(document).ready(function() {
+				loadTotalizers();
+			});
 
 			function loadMachineId() {
+				if ($("#spbuId").val() === null) {
+					return;
+				}
+				
 				var url = "ajax/spbu/" + $("#spbuId").val() + "/machine.json";
 				console.log("url: " + url);
 				$(document).ready(function() {
@@ -101,13 +84,12 @@
 
 							$.each(data, function(index, spbuMachine) {
 								console.log("spbuMachine: " + JSON.stringify(spbuMachine));
-								if (index === 0) {
-									$("#machineSerial").append(new Option(spbuMachine.machineIdentifier, spbuMachine.machineSerial, true, true));
-								} else {
-									$("#machineSerial").append(new Option(spbuMachine.machineIdentifier, spbuMachine.machineSerial, false, false));
-								}
+								$("#machineSerial").append(new Option(spbuMachine.machineIdentifier, spbuMachine.machineSerial, false, false));
 							});
-							loadTotalizers();
+
+							if (data.length > 0) {
+								$("#machineSerial option:first").attr('selected', 'selected').change();
+							}
 						},
 						error: function(jqXHR, textStatus, errorThrown) {
 							alert("Ajax data load fail!");
@@ -117,6 +99,10 @@
 			}
 
 			function loadTotalizers() {
+				if ($("#machineSerial").val() === null) {
+					return;
+				}
+
 				var url = "ajax/spbu/" + $("#spbuId").val() + "/machine/" + $("#machineSerial").val() + "/totalizer.json";
 				console.log("url: " + url);
 				$(document).ready(function() {

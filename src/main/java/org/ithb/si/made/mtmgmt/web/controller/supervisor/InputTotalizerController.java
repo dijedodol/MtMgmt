@@ -5,11 +5,15 @@
 package org.ithb.si.made.mtmgmt.web.controller.supervisor;
 
 import java.security.Principal;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import javax.validation.Valid;
 import org.ithb.si.made.mtmgmt.core.exception.InvalidDataException;
 import org.ithb.si.made.mtmgmt.core.persistence.entity.MachineModelTotalizerEntity;
 import org.ithb.si.made.mtmgmt.core.persistence.entity.MachineModelTotalizerEntityPK;
+import org.ithb.si.made.mtmgmt.core.persistence.entity.SpbuEntity;
 import org.ithb.si.made.mtmgmt.core.persistence.entity.SpbuMachineEntity;
 import org.ithb.si.made.mtmgmt.core.persistence.entity.SpbuMachineTotalizerEntity;
 import org.ithb.si.made.mtmgmt.core.persistence.entity.SpbuMachineTotalizerEntityPK;
@@ -56,7 +60,13 @@ public class InputTotalizerController {
 	@RequestMapping(method = RequestMethod.GET)
 	public String showInputTotalizer(Principal principal, Model model) {
 		LOG.debug("showInputTotalizer principal:[{}]", principal);
+		
+		final UserEntity supervisor = userRepository.findByLoginId(principal.getName());
+		final List<SpbuEntity> spbuEntities = supervisor.getSpbuEntityList();
+		
 		model.addAttribute("formData", new FormData());
+		model.addAttribute("spbuOptions", getSpbuOptions(spbuEntities));
+		model.addAttribute("machineSerialOptions", spbuEntities.isEmpty() ? new HashMap<>() : getMachineSerialOptions(spbuEntities.get(0)));
 		return "supervisor/input_totalizer";
 	}
 
@@ -65,10 +75,12 @@ public class InputTotalizerController {
 		LOG.debug("doInputTotalizer formData:[{}]", formData);
 		try {
 			_doInputTotalizer(principal, formData, bindingResult);
+			model.addAttribute("formData", formData);
+			model.addAttribute("spbuOptions", getSpbuOptions(userRepository.findByLoginId(principal.getName())));
+			model.addAttribute("machineSerialOptions", getMachineSerialOptions(spbuRepository.findOne(formData.getSpbuId())));
 		} catch (InvalidDataException ex) {
 			LOG.error("doInputTotalizer Exception:[{}]", ex.getMessage(), ex);
 		}
-		model.addAttribute("formData", formData);
 		return "supervisor/input_totalizer";
 	}
 
@@ -115,6 +127,27 @@ public class InputTotalizerController {
 		} else {
 			bindingResult.reject("supervisor.error.spbuMismatch");
 		}
+	}
+
+	private Map<Long, String> getSpbuOptions(UserEntity supervisorEntity) {
+		return getSpbuOptions(supervisorEntity.getSpbuEntityList());
+	}
+
+	private Map<Long, String> getSpbuOptions(List<SpbuEntity> spbuEntities) {
+		final Map<Long, String> ret = new LinkedHashMap<>();
+		for (final SpbuEntity spbuEntity : spbuEntities) {
+			ret.put(spbuEntity.getId(), spbuEntity.getCode());
+		}
+		return ret;
+	}
+
+	private Map<String, String> getMachineSerialOptions(SpbuEntity spbuEntity) {
+		final Map<String, String> ret = new LinkedHashMap<>();
+		final List<SpbuMachineEntity> spbuMachines = spbuEntity.getSpbuMachineEntityList();
+		for (final SpbuMachineEntity spbuMachine : spbuMachines) {
+			ret.put(spbuMachine.getMachineSerial(), spbuMachine.getMachineIdentifier());
+		}
+		return ret;
 	}
 
 	public static class FormData {
