@@ -45,6 +45,7 @@ public class MaintenancePredictor {
 	private static final long UNIT_MINUTE = 60 * UNIT_SECOND;
 	private static final long UNIT_HOUR = 60 * UNIT_MINUTE;
 	private static final long UNIT_DAY = 24 * UNIT_HOUR;
+	private static final long TOTALIZER_PREDICT_PER_DAY = 17000;
 	@Autowired
 	private SpbuRepository spbuRepository;
 	@Autowired
@@ -139,7 +140,7 @@ public class MaintenancePredictor {
 		if (totalizerDiff > machinePartMttf.getMttfThreshold()) {
 			final PredictionResult predictionResult = new PredictionResult(latestServiceReportEntity.getSpbuMachineEntity(), latestServiceReportEntity.getMachineModelPartEntity(), PredictionType.TOTALIZER, machinePartMttf);
 			
-			predictionResult.setTtf((accumulatedTotalizerOnLastService + machinePartMttf.getMttf()) - totalizerDiff);
+			predictionResult.setTtf(((accumulatedTotalizerOnLastService + machinePartMttf.getMttf()) - totalizerDiff) / TOTALIZER_PREDICT_PER_DAY);
 			return predictionResult;
 		}
 		return null;

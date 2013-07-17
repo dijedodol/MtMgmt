@@ -58,7 +58,7 @@
 								newRow += prediction.predictionType;
 								newRow += "</td>";
 								newRow += "<td>";
-								newRow += prediction.ttf.toFixed(2);
+								newRow += prediction.ttf.toFixed(2) + " day(s)";
 								newRow += "</td>";
 								newRow += "</tr>";
 
