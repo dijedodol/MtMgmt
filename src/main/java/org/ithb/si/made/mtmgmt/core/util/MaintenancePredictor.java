@@ -140,6 +140,7 @@ public class MaintenancePredictor {
 		if (totalizerDiff > machinePartMttf.getMttfThreshold()) {
 			final PredictionResult predictionResult = new PredictionResult(latestServiceReportEntity.getSpbuMachineEntity(), latestServiceReportEntity.getMachineModelPartEntity(), PredictionType.TOTALIZER, machinePartMttf);
 			
+			LOG.debug("accumulatedTotalizerOnLastService:[{}], MTTF:[{}], TTF:[{}]", accumulatedTotalizerOnLastService, machinePartMttf.getMttf(), ((accumulatedTotalizerOnLastService + machinePartMttf.getMttf()) - totalizerDiff));
 			predictionResult.setTtf(((accumulatedTotalizerOnLastService + machinePartMttf.getMttf()) - totalizerDiff) / TOTALIZER_PREDICT_PER_DAY);
 			return predictionResult;
 		}
@@ -195,6 +196,7 @@ public class MaintenancePredictor {
 			mttf.setMttf(machineModelPartEntity.getMachinePartTypeEntity().getDefaultMttf());
 			mttf.setMttfThreshold(machineModelPartEntity.getMachinePartTypeEntity().getDefaultMttfThreshold());
 		} else {
+			LOG.debug("Found SpbuMachinePartMttfEntity:[{}], MTTF:[{}], MTTF_Threshold:[{}]", spbuMachinePartMttfEntity, spbuMachinePartMttfEntity.getMttf(), spbuMachinePartMttfEntity.getMttfThreshold());
 			mttf.setMttf(spbuMachinePartMttfEntity.getMttf());
 			mttf.setMttfThreshold(spbuMachinePartMttfEntity.getMttfThreshold());
 		}
