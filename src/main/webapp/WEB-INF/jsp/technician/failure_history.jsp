@@ -16,32 +16,32 @@
 	<body>
 		<sf:form commandName="formData" method="get" id="formTotalizer">
 			<sf:errors/>
-			<table>
-				<tr>
-					<td><sf:label path="spbuId"><s:message code="supervisor.input.totalizer.spbuId"/>:</sf:label></td>
-					<td><sf:select path="spbuId" id="spbuId"/></td>
-					<td><sf:errors path="spbuId"/></td>
-				</tr>
-				<tr>
-					<td><s:message code="supervisor.input.totalizer.totalizers"/>:</td>
-					<td colspan="2">
-						<table id="tblServiceReports">
-							<thead>
-								<tr>
-									<td><s:message code="supervisor.history.failure.date"/></td>
-									<td><s:message code="supervisor.history.failure.machine"/></td>
-									<td><s:message code="supervisor.history.failure.machine.part"/></td>
-									<td><s:message code="supervisor.history.failure.failure.mode"/></td>
-									<td><s:message code="supervisor.history.failure.failure.handling"/></td>
-									<td><s:message code="supervisor.history.failure.technician"/></td>
-								</tr>
-							</thead>
-							<tbody>
-							</tbody>
-						</table>
-					</td>
-				</tr>
-			</table>
+			<fieldset>
+				<section>
+					<sf:label path="spbuId">SPBU</sf:label>
+						<div>
+						<sf:select path="spbuId" id="spbuId"/>
+						<sf:errors path="spbuId"/>
+					</div>
+				</section>
+				<section>
+					Service Report
+					<table id="tblServiceReports">
+						<thead>
+							<tr>
+								<td><s:message code="supervisor.history.failure.date"/></td>
+								<td><s:message code="supervisor.history.failure.machine"/></td>
+								<td><s:message code="supervisor.history.failure.machine.part"/></td>
+								<td><s:message code="supervisor.history.failure.failure.mode"/></td>
+								<td><s:message code="supervisor.history.failure.failure.handling"/></td>
+								<td><s:message code="supervisor.history.failure.technician"/></td>
+							</tr>
+						</thead>
+						<tbody>
+						</tbody>
+					</table>
+				</section>
+			</fieldset>
 		</sf:form>
 
 		<script type="text/javascript">
@@ -61,13 +61,12 @@
 
 							$.each(data, function(index, spbu) {
 								console.log("spbu: " + JSON.stringify(spbu));
-								if (index === 0) {
-									$("#spbuId").append(new Option(spbu.code, spbu.id, true, true));
-								} else {
 									$("#spbuId").append(new Option(spbu.code, spbu.id, false, false));
-								}
 							});
-							loadServiceReport();
+							
+							if (data.length > 0) {
+								$("#spbuId option:first").attr('selected', 'selected').change();
+							}
 						},
 						error: function(jqXHR, textStatus, errorThrown) {
 							alert("Ajax data load fail!");

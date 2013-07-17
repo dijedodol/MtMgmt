@@ -21,7 +21,7 @@
 					<sf:label path="spbuId"><s:message code="supervisor.input.totalizer.spbuId"/></sf:label>
 						<div>
 						<sf:select path="spbuId" id="spbuId" items="${spbuOptions}"/>
-						<sf:errors path="machineSerial"/>
+						<sf:errors path="spbuId"/>
 					</div>
 				</section>
 				<section>

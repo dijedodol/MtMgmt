@@ -243,6 +243,7 @@ public class AjaxDataController {
 			mapBuilder.put("machineModelId", spbuMachineEntity.getMachineModelEntity().getModelId());
 			mapBuilder.put("partId", predictionResult.getMachineModelPartEntity().getMachineModelPartEntityPK().getPartId());
 			mapBuilder.put("partName", predictionResult.getMachineModelPartEntity().getMachinePartTypeEntity().getName());
+			mapBuilder.put("machineModelPartIdentifier", predictionResult.getMachineModelPartEntity().getMachineModelPartEntityPK().getMachineModelPartIdentifier());
 			mapBuilder.put("predictionType", predictionResult.getPredictionType());
 			mapBuilder.put("mttf", predictionResult.getMachinePartMttf().getMttf());
 			mapBuilder.put("mttfThreshold", predictionResult.getMachinePartMttf().getMttfThreshold());

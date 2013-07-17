@@ -52,13 +52,13 @@
 								newRow += prediction.machineIdentifier;
 								newRow += "</td>";
 								newRow += "<td>";
-								newRow += prediction.partId;
+								newRow += prediction.machineModelPartIdentifier;
 								newRow += "</td>";
 								newRow += "<td>";
 								newRow += prediction.predictionType;
 								newRow += "</td>";
 								newRow += "<td>";
-								newRow += prediction.ttf;
+								newRow += prediction.ttf.toFixed(2);
 								newRow += "</td>";
 								newRow += "</tr>";
 

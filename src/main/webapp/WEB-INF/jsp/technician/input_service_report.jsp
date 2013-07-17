@@ -26,55 +26,61 @@
 				</section>
 				<section>
 					<sf:label path="machineSerial"><s:message code="technician.input.serviceReport.machineIdentifier"/>:</sf:label>
-					<div>
+						<div>
 						<sf:select path="machineSerial" id="machineSerial"/>
 						<sf:errors path="machineSerial"/>
 					</div>
 				</section>
 				<section>
 					<sf:label path="date"><s:message code="technician.input.serviceReport.date"/>:</sf:label>
-					<div>
+						<div>
 						<sf:input path="date" id="date" class="g2"/>#yyyy-mm-dd
 						<sf:errors path="date"/>
 					</div>
 				</section>
 				<section>
 					<sf:label path="partId"><s:message code="technician.input.serviceReport.machinePartId"/>:</sf:label>
-					<div>
+						<div>
 						<sf:select path="partId" id="partId"/>
 						<sf:errors path="partId"/>
 					</div>
 				</section>
 				<section>
 					<sf:label path="machineModelPartIdentifier"><s:message code="technician.input.serviceReport.machineModelPartIdentifier"/>:</sf:label>
-					<div>
+						<div>
 						<sf:select path="machineModelPartIdentifier" id="machineModelPartIdentifier"/>
 						<sf:errors path="machineModelPartIdentifier"/>
 					</div>
 				</section>
 				<section>
 					<sf:label path="failureModeCode"><s:message code="technician.input.serviceReport.failureModeId"/>:</sf:label>
-					<div>
+						<div>
 						<sf:select path="failureModeCode" id="failureModeCode"/>
 						<sf:errors path="failureModeCode"/>
 					</div>
 				</section>
 				<section>
 					<sf:label path="failureModeHandlingCode"><s:message code="technician.input.serviceReport.failureModeHandlingId"/>:</sf:label>
-					<div>
+						<div>
 						<sf:select path="failureModeHandlingCode" id="failureModeHandlingCode"/>
 						<sf:errors path="failureModeHandlingCode"/>
 					</div>
 				</section>
 				<section>
 					<div>
-						<button class="submit">Submit</button>
+						<button class="submit" id="btSubmit">Submit</button>
 					</div>
 				</section>
 			</fieldset>
 		</sf:form>
 
 		<script type="text/javascript">
+			var loadSpbuOk = false;
+			var loadMachineOk = false;
+			var loadMachinePartOk = false;
+			var loadMachineModelPartOk = false;
+			var loadFailureModeOk = false;
+			var loadFailureModeHandlingOk = false;
 			var machineModelParts = {};
 
 			$("#spbuId").change(function() {
@@ -110,8 +116,13 @@
 							});
 
 							if (data.length > 0) {
-								$("#spbuId option:first").attr('selected', 'selected').change();
+								loadSpbuOk = true;
+							} else {
+								$("#spbuId").append(new Option("N/A", "-", false, false));
+								loadSpbuOk = false;
 							}
+							$("#spbuId option:first").attr('selected', 'selected').change();
+							enableSubmitButton();
 						},
 						error: function(jqXHR, textStatus, errorThrown) {
 							alert("Ajax data load fail!");
@@ -137,9 +148,13 @@
 							});
 
 							if (data.length > 0) {
-								console.log("Selecting: " + $("#machineSerial option:first").val());
-								$("#machineSerial option:first").attr('selected', 'selected').change();
+								loadMachineOk = true;
+							} else {
+								$("#machineSerial").append(new Option("N/A", "-", false, false));
+								loadMachineOk = false;
 							}
+							$("#machineSerial option:first").attr('selected', 'selected').change();
+							enableSubmitButton();
 						},
 						error: function(jqXHR, textStatus, errorThrown) {
 							alert("Ajax data load fail!");
@@ -169,8 +184,13 @@
 							});
 
 							if (data.length > 0) {
-								$("#partId option:first").attr('selected', 'selected').change();
+								loadMachinePartOk = true;
+							} else {
+								$("#partId").append(new Option("N/A", "-", false, false));
+								loadMachinePartOk = false;
 							}
+							$("#partId option:first").attr('selected', 'selected').change();
+							enableSubmitButton();
 						},
 						error: function(jqXHR, textStatus, errorThrown) {
 							alert("Ajax data load fail!");
@@ -186,8 +206,13 @@
 				});
 
 				if (machineModelParts[$("#partId").val()].length > 0) {
-					$("#machineModelPartIdentifier option:first").attr('selected', 'selected').change();
+					loadMachineModelPartOk = true;
+				} else {
+					$("#machineModelPartIdentifier").append(new Option("N/A", "-", false, false));
+					loadMachineModelPartOk = false;
 				}
+				$("#machineModelPartIdentifier option:first").attr('selected', 'selected').change();
+				enableSubmitButton();
 			}
 
 			function loadFailureMode() {
@@ -206,8 +231,13 @@
 							});
 
 							if (data.length > 0) {
-								$("#failureModeCode option:first").attr('selected', 'selected').change();
+								loadFailureModeOk = true;
+							} else {
+								$("#failureModeCode").append(new Option("N/A", "-", false, false));
+								loadFailureModeOk = false;
 							}
+							$("#failureModeCode option:first").attr('selected', 'selected').change();
+							enableSubmitButton();
 						},
 						error: function(jqXHR, textStatus, errorThrown) {
 							alert("Ajax data load fail!");
@@ -232,14 +262,29 @@
 							});
 
 							if (data.length > 0) {
-								$("#failureModeHandlingCode option:first").attr('selected', 'selected').change();
+								loadFailureModeHandlingOk = true;
+							} else {
+								$("#failureModeHandlingCode").append(new Option("N/A", "-", false, false));
+								loadFailureModeHandlingOk = false;
 							}
+							$("#failureModeHandlingCode option:first").attr('selected', 'selected').change();
+							enableSubmitButton();
 						},
 						error: function(jqXHR, textStatus, errorThrown) {
 							alert("Ajax data load fail!");
 						}
 					});
 				});
+			}
+
+			function enableSubmitButton() {
+				if (loadFailureModeHandlingOk && loadFailureModeOk && loadMachineModelPartOk && loadMachineOk && loadMachinePartOk && loadSpbuOk) {
+					console.log("enabling submit button");
+					$("#btSubmit").prop("disabled", false);
+				} else {
+					console.log("disabling submit button");
+					$("#btSubmit").prop("disabled", true);
+				}
 			}
 		</script>
 	</body>
