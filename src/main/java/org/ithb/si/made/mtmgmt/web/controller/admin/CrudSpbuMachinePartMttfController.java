@@ -173,6 +173,13 @@ public class CrudSpbuMachinePartMttfController {
 			if (spbuMachinePartMttfEntity != null) {
 				spbuMachinePartMttfEntity.setMttf(formData.getMttf());
 				spbuMachinePartMttfEntity.setMttfThreshold(formData.getMttfThreshold());
+				spbuMachinePartMttfEntity.setSpbuMachineEntity(spbuMachineRepository.findOne(formData.getMachineSerial()));
+				
+				final MachineModelPartEntityPK machineModelPartEntityPK = new MachineModelPartEntityPK();
+				machineModelPartEntityPK.setModelId(formData.getModelId());
+				machineModelPartEntityPK.setPartId(formData.getPartId());
+				machineModelPartEntityPK.setMachineModelPartIdentifier(formData.getMachineModelPartIdentifier());
+				spbuMachinePartMttfEntity.setMachineModelPartEntity(machineModelPartRepository.findOne(machineModelPartEntityPK));
 				spbuMachinePartMttfEntity = spbuMachinePartMttfRepository.save(spbuMachinePartMttfEntity);
 				model.addAttribute("formData", getFormData(spbuMachinePartMttfEntity));
 			} else {
