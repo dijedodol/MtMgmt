@@ -29,7 +29,7 @@
 				</td>
 			</tr>
 			<tr>
-				<td>Code</td>
+				<td>Failure Code</td>
 				<td>
 					<a href="${updateUrl}">${viewData.code}</a>
 				</td>

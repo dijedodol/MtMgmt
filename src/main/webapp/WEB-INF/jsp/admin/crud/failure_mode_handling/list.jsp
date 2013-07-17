@@ -20,7 +20,7 @@
 			<thead>
 				<tr>
 					<td>Part ID</td>
-					<td>Code</td>
+					<td>Failure Code</td>
 					<td>Handling Code</td>
 					<td>Name</td>
 					<td>Description</td>

@@ -26,7 +26,7 @@
 					</div>
 				</section>
 				<section>
-					<sf:label path="code">Code</sf:label>
+					<sf:label path="code">Failure Code</sf:label>
 						<div>
 						<sf:input path="code" readonly="true"/>
 					</div>
