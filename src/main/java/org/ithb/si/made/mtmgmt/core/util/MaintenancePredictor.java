@@ -119,7 +119,12 @@ public class MaintenancePredictor {
 
 		if (tickDiffInDays > machinePartMttf.getMttf() || tickDiffInDays > machinePartMttf.getMttfThreshold()) {
 			final PredictionResult predictionResult = new PredictionResult(latestServiceReportEntity.getSpbuMachineEntity(), latestServiceReportEntity.getMachineModelPartEntity(), PredictionType.TIME, machinePartMttf);
-			predictionResult.setTtf(((latestServiceDate.getTime() + (machinePartMttf.getMttf() * UNIT_DAY)) - tickDiff) / UNIT_DAY);
+			//predictionResult.setTtf(((latestServiceDate.getTime() + (machinePartMttf.getMttf() * UNIT_DAY)) - tickDiff) / UNIT_DAY);
+			long deadLine = (long) (latestServiceDate.getTime() + (machinePartMttf.getMttf() * UNIT_DAY));
+			long tickToDeadLine = deadLine - System.currentTimeMillis();
+			long daysToDeadLine = tickToDeadLine / UNIT_DAY;
+			LOG.debug("Latest ServiceReportTime:[{}], MTTF:[{}], MTTF_Tick:[{}], DeadLine:[{}], TickToDeadLine:[{}], DaysToDeadLine:[{}]", latestServiceDate, machinePartMttf.getMttf(), ((long) machinePartMttf.getMttf() * UNIT_DAY), new Date(deadLine), tickToDeadLine, daysToDeadLine);
+			predictionResult.setTtf(daysToDeadLine);
 			return predictionResult;
 		}
 		return null;
@@ -133,6 +138,7 @@ public class MaintenancePredictor {
 
 		if (totalizerDiff > machinePartMttf.getMttfThreshold()) {
 			final PredictionResult predictionResult = new PredictionResult(latestServiceReportEntity.getSpbuMachineEntity(), latestServiceReportEntity.getMachineModelPartEntity(), PredictionType.TOTALIZER, machinePartMttf);
+			
 			predictionResult.setTtf((accumulatedTotalizerOnLastService + machinePartMttf.getMttf()) - totalizerDiff);
 			return predictionResult;
 		}
