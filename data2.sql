@@ -7,7 +7,6 @@ insert into users(full_name, access_role, login_id, password_hash) values('Ketut
 insert into users(full_name, access_role, login_id, password_hash) values('Putu Juliarta', 2, 'juliarta', '123');
 
 insert into spbus(code, address, phone, supervisor_id) values('54-801.21', 'Jalan Imam Bonjol', '0361 701111', 3);
-insert into spbus(code, address, phone, supervisor_id) values('Palsu', 'Jalan Palsu', '0361 Palsu', 4);
 
 insert into machine_models(model_id, name) values('Encore S-300.1', 'Encore S-300 6 Assy');
 insert into machine_models(model_id, name) values('Encore S-300.2', 'Encore S-300 4 Assy');
