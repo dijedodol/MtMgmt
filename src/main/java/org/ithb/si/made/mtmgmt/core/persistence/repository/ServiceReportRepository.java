@@ -10,6 +10,7 @@ import org.ithb.si.made.mtmgmt.core.persistence.entity.ServiceReportEntity;
 import org.ithb.si.made.mtmgmt.core.persistence.entity.SpbuEntity;
 import org.ithb.si.made.mtmgmt.core.persistence.entity.SpbuMachineEntity;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 /**
@@ -18,11 +19,11 @@ import org.springframework.data.jpa.repository.JpaRepository;
  */
 public interface ServiceReportRepository extends JpaRepository<ServiceReportEntity, Long> {
 
-	List<ServiceReportEntity> findBySpbuMachineEntity_SpbuEntityOrderByDateDesc(SpbuEntity spbuEntity);
+	List<ServiceReportEntity> findBySpbuMachineEntity_SpbuEntity(SpbuEntity spbuEntity, Sort sort);
 
-	List<ServiceReportEntity> findBySpbuMachineEntityOrderByDateDesc(SpbuMachineEntity spbuMachineEntity);
+	List<ServiceReportEntity> findBySpbuMachineEntity(SpbuMachineEntity spbuMachineEntity, Sort sort);
 
-	List<ServiceReportEntity> findBySpbuMachineEntityAndMachineModelPartEntityOrderByDateDesc(SpbuMachineEntity spbuMachineEntity, MachineModelPartEntity machineModelPartEntity);
+	List<ServiceReportEntity> findBySpbuMachineEntityAndMachineModelPartEntity(SpbuMachineEntity spbuMachineEntity, MachineModelPartEntity machineModelPartEntity, Sort sort);
 
-	List<ServiceReportEntity> findBySpbuMachineEntityAndMachineModelPartEntityOrderByDateDesc(SpbuMachineEntity spbuMachineEntity, MachineModelPartEntity machineModelPartEntity, Pageable pageable);
+	List<ServiceReportEntity> findBySpbuMachineEntityAndMachineModelPartEntity(SpbuMachineEntity spbuMachineEntity, MachineModelPartEntity machineModelPartEntity, Sort sort, Pageable pageable);
 }

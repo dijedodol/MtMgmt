@@ -37,6 +37,7 @@ import org.ithb.si.made.mtmgmt.core.util.MapBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -222,7 +223,7 @@ public class AjaxDataController {
 
 		final List<Map> respEntity = new LinkedList<>();
 		if (spbuEntity != null) {
-			final List<ServiceReportEntity> serviceReports = serviceReportRepository.findBySpbuMachineEntity_SpbuEntityOrderByDateDesc(spbuEntity);
+			final List<ServiceReportEntity> serviceReports = serviceReportRepository.findBySpbuMachineEntity_SpbuEntity(spbuEntity, new Sort(new Sort.Order(Sort.Direction.DESC, "date"), new Sort.Order(Sort.Direction.DESC, "id")));
 			for (final ServiceReportEntity serviceReportEntity : serviceReports) {
 				final FailureModeHandlingEntity failureModeHandlingEntity = serviceReportEntity.getFailureModeHandlingEntity();
 				final PartFailureModeEntity partFailureModeEntity = failureModeHandlingEntity.getPartFailureModeEntity();
@@ -309,7 +310,6 @@ public class AjaxDataController {
 				} else {
 					ret = 0;
 				}
-				LOG.debug("Comparing TTF:[{}] with TTF:[{}] result:[{}]", o1.getTtf(), o2.getTtf(), ret);
 				return ret;
 			}
 		});

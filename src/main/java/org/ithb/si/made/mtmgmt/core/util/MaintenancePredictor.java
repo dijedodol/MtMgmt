@@ -28,6 +28,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -171,7 +172,7 @@ public class MaintenancePredictor {
 	}
 
 	private ServiceReportEntity getLatestServiceReport(SpbuMachineEntity spbuMachineEntity, MachineModelPartEntity machineModelPartEntity) {
-		final List<ServiceReportEntity> latestServiceReports = serviceReportRepository.findBySpbuMachineEntityAndMachineModelPartEntityOrderByDateDesc(spbuMachineEntity, machineModelPartEntity, new PageRequest(0, 1));
+		final List<ServiceReportEntity> latestServiceReports = serviceReportRepository.findBySpbuMachineEntityAndMachineModelPartEntity(spbuMachineEntity, machineModelPartEntity, new Sort(new Sort.Order(Sort.Direction.DESC, "date"), new Sort.Order(Sort.Direction.DESC, "id")), new PageRequest(0, 1));
 		assert (latestServiceReports.size() <= 1);
 		return latestServiceReports.isEmpty() ? null : latestServiceReports.get(0);
 	}
