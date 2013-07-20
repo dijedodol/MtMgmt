@@ -32,7 +32,7 @@
 					<td>Machine</td>
 					<td>Part</td>
 					<td>Unit Type</td>
-					<td>Unit Time to Failure</td>
+					<td>Time to Failure</td>
 				</tr>
 			</thead>
 			<tbody></tbody>
@@ -136,8 +136,17 @@
 
 							$.each(data, function(index, prediction) {
 								console.log("serviceReport " + JSON.stringify(prediction));
+								var rowColor = '66FF33';
+								if (prediction.predictionType === 'UNTRACKED') {
+									rowColor = 'CCCCCC';
+								} else if (prediction.ttf <= 7 && prediction.ttf > 3) {
+									rowColor = 'FFFF66';
+								} else if (prediction.ttf <= 3) {
+									rowColor = 'FF0000';
+								}
+
 								var newRow = "";
-								newRow += "<tr>";
+								newRow += "<tr style='background: #" + rowColor + "; color: #FFFFFF'>";
 								newRow += "<td>";
 								newRow += prediction.spbuCode;
 								newRow += "</td>";

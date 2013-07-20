@@ -8,6 +8,7 @@ import java.security.Principal;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -249,36 +250,6 @@ public class AjaxDataController {
 
 	@Transactional
 	@ResponseBody
-	@RequestMapping(value = "maintenance_predictions", produces = "application/json", method = RequestMethod.GET)
-	public List<Map<String, Object>> getAllMaintenancePredictions(Principal principal) {
-		final List<MaintenancePredictor.PredictionResult> predictionResults = maintenancePredictor.getPredictions();
-		final List<Map<String, Object>> predictionResultsView = new LinkedList<>();
-		sortPredictionResults(predictionResults);
-
-		for (final MaintenancePredictor.PredictionResult predictionResult : predictionResults) {
-			final SpbuMachineEntity spbuMachineEntity = predictionResult.getSpbuMachineEntity();
-			final MapBuilder<String, Object> mapBuilder = new MapBuilder(new HashMap<String, Object>());
-			mapBuilder.put("spbuId", spbuMachineEntity.getSpbuEntity().getId());
-			mapBuilder.put("spbuCode", spbuMachineEntity.getSpbuEntity().getCode());
-			mapBuilder.put("machineSerial", spbuMachineEntity.getMachineSerial());
-			mapBuilder.put("machineIdentifier", spbuMachineEntity.getMachineIdentifier());
-			mapBuilder.put("machineModelId", spbuMachineEntity.getMachineModelEntity().getModelId());
-			mapBuilder.put("partId", predictionResult.getMachineModelPartEntity().getMachineModelPartEntityPK().getPartId());
-			mapBuilder.put("partName", predictionResult.getMachineModelPartEntity().getMachinePartTypeEntity().getName());
-			mapBuilder.put("machineModelPartIdentifier", predictionResult.getMachineModelPartEntity().getMachineModelPartEntityPK().getMachineModelPartIdentifier());
-			mapBuilder.put("predictionType", predictionResult.getPredictionType());
-			mapBuilder.put("mttf", predictionResult.getMachinePartMttf().getMttf());
-			mapBuilder.put("mttfThreshold", predictionResult.getMachinePartMttf().getMttfThreshold());
-			mapBuilder.put("ttf", predictionResult.getTtf());
-
-			final Map<String, Object> predictionResultMap = mapBuilder.getMap();
-			predictionResultsView.add(predictionResultMap);
-		}
-		return predictionResultsView;
-	}
-
-	@Transactional
-	@ResponseBody
 	@RequestMapping(value = "maintenance_predictions/{spbuId}/{partId}", produces = "application/json", method = RequestMethod.GET)
 	public List<Map<String, Object>> getMaintenancePredictions(Principal principal, @PathVariable("spbuId") long spbuId, @PathVariable("partId") String partId) {
 		final List<Map<String, Object>> predictionResultsView = new LinkedList<>();
@@ -288,10 +259,20 @@ public class AjaxDataController {
 		}
 
 		final List<MaintenancePredictor.PredictionResult> predictionResults = maintenancePredictor.analyzeSpbu(spbuEntity);
-		sortPredictionResults(predictionResults);
+		final List<MaintenancePredictor.PredictionResult> untrackedResults = new LinkedList<>();
+		for (Iterator<MaintenancePredictor.PredictionResult> it = predictionResults.iterator(); it.hasNext();) {
+			final MaintenancePredictor.PredictionResult predictionResult = it.next();
+			if (!predictionResult.getMachineModelPartEntity().getMachinePartTypeEntity().getPartId().equals(partId)) {
+				it.remove();
+			} else if (predictionResult.getPredictionType() == MaintenancePredictor.PredictionType.UNTRACKED) {
+				it.remove();
+				untrackedResults.add(predictionResult);
+			}
+		}
 
+		sortPredictionResults(predictionResults);
+		predictionResults.addAll(untrackedResults);
 		for (final MaintenancePredictor.PredictionResult predictionResult : predictionResults) {
-			if (predictionResult.getMachineModelPartEntity().getMachinePartTypeEntity().getPartId().equals(partId)) {
 				final SpbuMachineEntity spbuMachineEntity = predictionResult.getSpbuMachineEntity();
 				final MapBuilder<String, Object> mapBuilder = new MapBuilder(new HashMap<String, Object>());
 				mapBuilder.put("spbuId", spbuMachineEntity.getSpbuEntity().getId());
@@ -309,7 +290,6 @@ public class AjaxDataController {
 
 				final Map<String, Object> predictionResultMap = mapBuilder.getMap();
 				predictionResultsView.add(predictionResultMap);
-			}
 		}
 		return predictionResultsView;
 	}
@@ -318,13 +298,18 @@ public class AjaxDataController {
 		Collections.sort(result, new Comparator<MaintenancePredictor.PredictionResult>() {
 			@Override
 			public int compare(MaintenancePredictor.PredictionResult o1, MaintenancePredictor.PredictionResult o2) {
-				if (o1.getTtf() < o2.getTtf()) {
-					return -1;
+				final int ret;
+				if (o1.getPredictionType() == MaintenancePredictor.PredictionType.UNTRACKED) {
+					ret = 1;
+				} else if (o1.getTtf() < o2.getTtf()) {
+					ret = -1;
 				} else if (o1.getTtf() > o2.getTtf()) {
-					return 1;
+					ret = 1;
 				} else {
-					return 0;
+					ret = 0;
 				}
+				LOG.debug("Comparing TTF:[{}] with TTF:[{}] result:[{}]", o1.getTtf(), o2.getTtf(), ret);
+				return ret;
 			}
 		});
 	}
