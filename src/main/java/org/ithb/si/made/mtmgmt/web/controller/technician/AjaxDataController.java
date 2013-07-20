@@ -5,6 +5,8 @@
 package org.ithb.si.made.mtmgmt.web.controller.technician;
 
 import java.security.Principal;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
@@ -14,12 +16,14 @@ import java.util.Map.Entry;
 import org.ithb.si.made.mtmgmt.core.persistence.entity.FailureModeHandlingEntity;
 import org.ithb.si.made.mtmgmt.core.persistence.entity.MachineModelPartEntity;
 import org.ithb.si.made.mtmgmt.core.persistence.entity.MachineModelPartEntityPK;
+import org.ithb.si.made.mtmgmt.core.persistence.entity.MachinePartTypeEntity;
 import org.ithb.si.made.mtmgmt.core.persistence.entity.PartFailureModeEntity;
 import org.ithb.si.made.mtmgmt.core.persistence.entity.PartFailureModeEntityPK;
 import org.ithb.si.made.mtmgmt.core.persistence.entity.ServiceReportEntity;
 import org.ithb.si.made.mtmgmt.core.persistence.entity.SpbuEntity;
 import org.ithb.si.made.mtmgmt.core.persistence.entity.SpbuMachineEntity;
 import org.ithb.si.made.mtmgmt.core.persistence.repository.MachineModelPartRepository;
+import org.ithb.si.made.mtmgmt.core.persistence.repository.MachinePartTypeRepository;
 import org.ithb.si.made.mtmgmt.core.persistence.repository.PartFailureModeRepository;
 import org.ithb.si.made.mtmgmt.core.persistence.repository.ServiceReportRepository;
 import org.ithb.si.made.mtmgmt.core.persistence.repository.SpbuMachineRepository;
@@ -66,6 +70,23 @@ public class AjaxDataController {
 	private MachineModelPartRepository machineModelPartRepository;
 	@Autowired
 	private PartFailureModeRepository partFailureModeRepository;
+	@Autowired
+	private MachinePartTypeRepository machinePartTypeRepository;
+
+	@Transactional
+	@ResponseBody
+	@RequestMapping(value = "machine_parts", produces = "application/json", method = RequestMethod.GET)
+	public List<Map> technicianListMachineParts() {
+		final List<Map> ret = new LinkedList<>();
+		final List<MachinePartTypeEntity> machinePartTypeEntities = machinePartTypeRepository.findAll();
+		for (final MachinePartTypeEntity machinePartTypeEntity : machinePartTypeEntities) {
+			ret.add(new MapBuilder(new HashMap<String, Object>())
+							.put("partId", machinePartTypeEntity.getPartId())
+							.put("name", machinePartTypeEntity.getName())
+							.getMap());
+		}
+		return ret;
+	}
 
 	@Transactional
 	@ResponseBody
@@ -194,7 +215,7 @@ public class AjaxDataController {
 	@Transactional
 	@ResponseBody
 	@RequestMapping(value = "spbu/{spbuId}/service_report", produces = "application/json", method = RequestMethod.GET)
-	public ResponseEntity<List<Map>> technicianListServiceReport(Principal principal, @PathVariable long spbuId) {
+	public ResponseEntity<List<Map>> technicianListServiceReport(Principal principal, @PathVariable("spbuId") long spbuId) {
 		final SpbuEntity spbuEntity = spbuRepository.findOne(spbuId);
 		final ResponseEntity<List<Map>> ret;
 
@@ -229,9 +250,10 @@ public class AjaxDataController {
 	@Transactional
 	@ResponseBody
 	@RequestMapping(value = "maintenance_predictions", produces = "application/json", method = RequestMethod.GET)
-	public List<Map<String, Object>> getMaintenancePredictions(Principal principal) {
+	public List<Map<String, Object>> getAllMaintenancePredictions(Principal principal) {
 		final List<MaintenancePredictor.PredictionResult> predictionResults = maintenancePredictor.getPredictions();
 		final List<Map<String, Object>> predictionResultsView = new LinkedList<>();
+		sortPredictionResults(predictionResults);
 
 		for (final MaintenancePredictor.PredictionResult predictionResult : predictionResults) {
 			final SpbuMachineEntity spbuMachineEntity = predictionResult.getSpbuMachineEntity();
@@ -250,21 +272,60 @@ public class AjaxDataController {
 			mapBuilder.put("ttf", predictionResult.getTtf());
 
 			final Map<String, Object> predictionResultMap = mapBuilder.getMap();
-//			final Map<String, Object> predictionResultMap = new MapBuilder<>(new HashMap<String, Object>())
-//							.put("spbuId", spbuMachineEntity.getSpbuEntity().getId())
-//							.put("spbuCode", spbuMachineEntity.getSpbuEntity().getCode())
-//							.put("machineSerial", spbuMachineEntity.getMachineSerial())
-//							.put("machineIdentifier", spbuMachineEntity.getMachineIdentifier())
-//							.put("machineModelId", spbuMachineEntity.getMachineModelEntity().getModelId())
-//							.put("partId", predictionResult.getMachineModelPartEntity().getMachineModelPartEntityPK().getPartId())
-//							.put("partName", predictionResult.getMachineModelPartEntity().getMachinePartTypeEntity().getName())
-//							.put("predictionType", predictionResult.getPredictionType())
-//							.put("mttf", predictionResult.getMachinePartMttf().getMttf())
-//							.put("mttfThreshold", predictionResult.getMachinePartMttf().getMttfThreshold())
-//							.put("ttf", predictionResult.getTtf())
-//							.getMap();
 			predictionResultsView.add(predictionResultMap);
 		}
 		return predictionResultsView;
+	}
+
+	@Transactional
+	@ResponseBody
+	@RequestMapping(value = "maintenance_predictions/{spbuId}/{partId}", produces = "application/json", method = RequestMethod.GET)
+	public List<Map<String, Object>> getMaintenancePredictions(Principal principal, @PathVariable("spbuId") long spbuId, @PathVariable("partId") String partId) {
+		final List<Map<String, Object>> predictionResultsView = new LinkedList<>();
+		final SpbuEntity spbuEntity = spbuRepository.findOne(spbuId);
+		if (spbuEntity == null) {
+			return predictionResultsView;
+		}
+
+		final List<MaintenancePredictor.PredictionResult> predictionResults = maintenancePredictor.analyzeSpbu(spbuEntity);
+		sortPredictionResults(predictionResults);
+
+		for (final MaintenancePredictor.PredictionResult predictionResult : predictionResults) {
+			if (predictionResult.getMachineModelPartEntity().getMachinePartTypeEntity().getPartId().equals(partId)) {
+				final SpbuMachineEntity spbuMachineEntity = predictionResult.getSpbuMachineEntity();
+				final MapBuilder<String, Object> mapBuilder = new MapBuilder(new HashMap<String, Object>());
+				mapBuilder.put("spbuId", spbuMachineEntity.getSpbuEntity().getId());
+				mapBuilder.put("spbuCode", spbuMachineEntity.getSpbuEntity().getCode());
+				mapBuilder.put("machineSerial", spbuMachineEntity.getMachineSerial());
+				mapBuilder.put("machineIdentifier", spbuMachineEntity.getMachineIdentifier());
+				mapBuilder.put("machineModelId", spbuMachineEntity.getMachineModelEntity().getModelId());
+				mapBuilder.put("partId", predictionResult.getMachineModelPartEntity().getMachineModelPartEntityPK().getPartId());
+				mapBuilder.put("partName", predictionResult.getMachineModelPartEntity().getMachinePartTypeEntity().getName());
+				mapBuilder.put("machineModelPartIdentifier", predictionResult.getMachineModelPartEntity().getMachineModelPartEntityPK().getMachineModelPartIdentifier());
+				mapBuilder.put("predictionType", predictionResult.getPredictionType());
+				mapBuilder.put("mttf", predictionResult.getMachinePartMttf().getMttf());
+				mapBuilder.put("mttfThreshold", predictionResult.getMachinePartMttf().getMttfThreshold());
+				mapBuilder.put("ttf", predictionResult.getTtf());
+
+				final Map<String, Object> predictionResultMap = mapBuilder.getMap();
+				predictionResultsView.add(predictionResultMap);
+			}
+		}
+		return predictionResultsView;
+	}
+
+	private void sortPredictionResults(List<MaintenancePredictor.PredictionResult> result) {
+		Collections.sort(result, new Comparator<MaintenancePredictor.PredictionResult>() {
+			@Override
+			public int compare(MaintenancePredictor.PredictionResult o1, MaintenancePredictor.PredictionResult o2) {
+				if (o1.getTtf() < o2.getTtf()) {
+					return -1;
+				} else if (o1.getTtf() > o2.getTtf()) {
+					return 1;
+				} else {
+					return 0;
+				}
+			}
+		});
 	}
 }

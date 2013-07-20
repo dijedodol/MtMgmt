@@ -65,15 +65,17 @@ public class MaintenancePredictor {
 		final List<PredictionResult> result = new LinkedList<>();
 
 		for (final SpbuEntity dbSpbuEntity : dbSpbuEntities) {
-			analyzeSpbu(result, dbSpbuEntity);
+			result.addAll(analyzeSpbu(dbSpbuEntity));
 		}
 		return result;
 	}
 
-	private void analyzeSpbu(List<PredictionResult> result, SpbuEntity spbuEntity) {
+	public List<PredictionResult> analyzeSpbu(SpbuEntity spbuEntity) {
+		final List<PredictionResult> result = new LinkedList<>();
 		for (final SpbuMachineEntity spbuMachineEntity : spbuEntity.getSpbuMachineEntityList()) {
 			analyzeSpbuMachine(result, spbuMachineEntity);
 		}
+		return result;
 	}
 
 	private void analyzeSpbuMachine(List<PredictionResult> result, SpbuMachineEntity spbuMachineEntity) {

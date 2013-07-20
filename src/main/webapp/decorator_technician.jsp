@@ -24,6 +24,7 @@
     <nav>
 			<ul id="nav">
 				<li><a href="home.htm"><span><s:message code="technician.menu.home"/></span></a></li>
+				<li><a href="maintenance_schedule.htm"><span><s:message code="technician.menu.maintenanceSchedule"/></span></a></li>
 				<li><a href="failure_history.htm"><span><s:message code="technician.menu.failureHistory"/></span></a></li>
 				<li><a href="input_service_report.htm"><span><s:message code="technician.menu.serviceReport"/></span></a></li>
 			</ul>
