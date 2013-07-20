@@ -228,6 +228,7 @@ public class AjaxDataController {
 				final PartFailureModeEntity partFailureModeEntity = failureModeHandlingEntity.getPartFailureModeEntity();
 
 				final Map<String, Object> tmp = new MapBuilder<>(new HashMap<String, Object>())
+								.put("id", serviceReportEntity.getId())
 								.put("date", DateUtil.format(serviceReportEntity.getDate()))
 								.put("machineSerial", serviceReportEntity.getSpbuMachineEntity().getMachineSerial())
 								.put("machineIdentifier", serviceReportEntity.getSpbuMachineEntity().getMachineIdentifier())

@@ -35,6 +35,7 @@
 								<td><s:message code="supervisor.history.failure.failure.mode"/></td>
 								<td><s:message code="supervisor.history.failure.failure.handling"/></td>
 								<td><s:message code="supervisor.history.failure.technician"/></td>
+								<td>Detail</td>
 							</tr>
 						</thead>
 						<tbody>
@@ -108,6 +109,9 @@
 								newRow += "</td>";
 								newRow += "<td>";
 								newRow += serviceReport.technicianName;
+								newRow += "</td>";
+								newRow += "<td>";
+								newRow += "<a href='failure_history/detail.htm?serviceReportId=" +serviceReport.id +"'>Detail</a>";
 								newRow += "</td>";
 								newRow += "</tr>";
 
