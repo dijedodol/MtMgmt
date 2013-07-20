@@ -117,6 +117,9 @@ public class MaintenancePredictor {
 		final long tickDiff = currentDate.getTime() - latestServiceDate.getTime();
 		final long tickDiffInDays = tickDiff / UNIT_DAY;
 		final MachinePartMttf machinePartMttf = getMttf(latestServiceReportEntity);
+		if (machinePartMttf.getMttf() < 0) {
+			return null;
+		}
 
 		if (tickDiffInDays > machinePartMttf.getMttf() || tickDiffInDays > machinePartMttf.getMttfThreshold()) {
 			final PredictionResult predictionResult = new PredictionResult(latestServiceReportEntity.getSpbuMachineEntity(), latestServiceReportEntity.getMachineModelPartEntity(), PredictionType.TIME, machinePartMttf);
@@ -136,7 +139,10 @@ public class MaintenancePredictor {
 		final double accumulatedCurrentTotalizer = getCurrentTotalizerCounter(latestServiceReportEntity);
 		final double totalizerDiff = accumulatedCurrentTotalizer - accumulatedTotalizerOnLastService;
 		final MachinePartMttf machinePartMttf = getMttf(latestServiceReportEntity);
-
+		if (machinePartMttf.getMttf() < 0) {
+			return null;
+		}
+		
 		if (totalizerDiff > machinePartMttf.getMttfThreshold()) {
 			final PredictionResult predictionResult = new PredictionResult(latestServiceReportEntity.getSpbuMachineEntity(), latestServiceReportEntity.getMachineModelPartEntity(), PredictionType.TOTALIZER, machinePartMttf);
 			
