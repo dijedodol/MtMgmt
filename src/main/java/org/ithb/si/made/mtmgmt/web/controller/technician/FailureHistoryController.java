@@ -12,6 +12,7 @@ import org.ithb.si.made.mtmgmt.core.persistence.entity.ServiceReportSpbuMachineT
 import org.ithb.si.made.mtmgmt.core.persistence.entity.SpbuEntity;
 import org.ithb.si.made.mtmgmt.core.persistence.entity.SpbuMachineEntity;
 import org.ithb.si.made.mtmgmt.core.persistence.repository.ServiceReportRepository;
+import org.ithb.si.made.mtmgmt.core.util.DateUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -53,6 +54,7 @@ public class FailureHistoryController {
 		final SpbuEntity spbu = spbuMachine.getSpbuEntity();
 		final MachineModelEntity machineModel = spbuMachine.getMachineModelEntity();
 		
+		model.addAttribute("date", DateUtil.format(serviceReport.getDate()));
 		model.addAttribute("spbuCode", spbu.getCode());
 		model.addAttribute("supervisorName", spbu.getSupervisorEntity().getFullName());
 		model.addAttribute("spbuAddress", spbu.getAddress());
