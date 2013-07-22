@@ -172,7 +172,7 @@ public class MaintenancePredictor {
 	}
 
 	private ServiceReportEntity getLatestServiceReport(SpbuMachineEntity spbuMachineEntity, MachineModelPartEntity machineModelPartEntity) {
-		final List<ServiceReportEntity> latestServiceReports = serviceReportRepository.findBySpbuMachineEntityAndMachineModelPartEntity(spbuMachineEntity, machineModelPartEntity, new Sort(new Sort.Order(Sort.Direction.DESC, "date"), new Sort.Order(Sort.Direction.DESC, "id")), new PageRequest(0, 1));
+		final List<ServiceReportEntity> latestServiceReports = serviceReportRepository.findBySpbuMachineEntityAndMachineModelPartEntity(spbuMachineEntity, machineModelPartEntity, new PageRequest(0, 1, new Sort(new Sort.Order(Sort.Direction.DESC, "date"), new Sort.Order(Sort.Direction.DESC, "id"))));
 		assert (latestServiceReports.size() <= 1);
 		return latestServiceReports.isEmpty() ? null : latestServiceReports.get(0);
 	}

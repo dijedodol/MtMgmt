@@ -25,5 +25,5 @@ public interface ServiceReportRepository extends JpaRepository<ServiceReportEnti
 
 	List<ServiceReportEntity> findBySpbuMachineEntityAndMachineModelPartEntity(SpbuMachineEntity spbuMachineEntity, MachineModelPartEntity machineModelPartEntity, Sort sort);
 
-	List<ServiceReportEntity> findBySpbuMachineEntityAndMachineModelPartEntity(SpbuMachineEntity spbuMachineEntity, MachineModelPartEntity machineModelPartEntity, Sort sort, Pageable pageable);
+	List<ServiceReportEntity> findBySpbuMachineEntityAndMachineModelPartEntity(SpbuMachineEntity spbuMachineEntity, MachineModelPartEntity machineModelPartEntity, Pageable pageable);
 }
