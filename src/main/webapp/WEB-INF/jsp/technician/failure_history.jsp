@@ -110,7 +110,7 @@
 								newRow += serviceReport.technicianName;
 								newRow += "</td>";
 								newRow += "<td>";
-								newRow += "<a href='failure_history/detail.htm?serviceReportId=" +serviceReport.id +"'>Detail</a>";
+								newRow += "<a href='service_report_detail.htm?serviceReportId=" +serviceReport.id +"'>Detail</a>";
 								newRow += "</td>";
 								newRow += "</tr>";
 								newRow += "";
